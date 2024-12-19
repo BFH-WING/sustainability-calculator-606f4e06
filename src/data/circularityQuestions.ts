@@ -70,11 +70,11 @@ export const circularityQuestions: QuizSection[] = [
         type: "percentage",
         weight: 0.6,
         options: [
-          { id: "s1-1", text: "Countries outside of Europe (0-100%)", value: 0.2 },
-          { id: "s1-2", text: "Other european countries (0-100%)", value: 0.4 },
-          { id: "s1-3", text: "Switzerland's neighboring countries (0-100%)", value: 0.6 },
-          { id: "s1-4", text: "Switzerland (0-100%)", value: 0.8 },
-          { id: "s1-5", text: "Same canton as HQ (0-100%)", value: 1.0 },
+          { id: "s1-1", text: "Countries outside of Europe (0-100%)", value: 20 },
+          { id: "s1-2", text: "Other european countries (0-100%)", value: 40 },
+          { id: "s1-3", text: "Switzerland's neighboring countries (0-100%)", value: 60 },
+          { id: "s1-4", text: "Switzerland (0-100%)", value: 80 },
+          { id: "s1-5", text: "Same canton as HQ (0-100%)", value: 100 },
           { id: "s1-6", text: "I don't know", value: 0 }
         ]
       },
