@@ -85,11 +85,11 @@ export const circularityQuestions: QuizSection[] = [
         type: "percentage",
         weight: 0.4,
         options: [
-          { id: "s2-1", text: "Air (0%)", value: 1 },
-          { id: "s2-2", text: "Maritime (0%)", value: 2 },
-          { id: "s2-3", text: "Rail (0%)", value: 4 },
-          { id: "s2-4", text: "Road (0%)", value: 3 },
-          { id: "s2-5", text: "Other (0%)", value: 2 },
+          { id: "s2-1", text: "Air (0-100%)", value: 20 },
+          { id: "s2-2", text: "Maritime (0-100%)", value: 40 },
+          { id: "s2-3", text: "Rail (0-100%)", value: 80 },
+          { id: "s2-4", text: "Road (0-100%)", value: 60 },
+          { id: "s2-5", text: "Other (0-100%)", value: 40 },
           { id: "s2-6", text: "I don't know", value: 0 }
         ]
       }
