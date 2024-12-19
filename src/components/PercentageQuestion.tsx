@@ -14,7 +14,7 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
   const [percentages, setPercentages] = useState<{ [key: string]: number }>(
     question.options.reduce((acc, option) => ({
       ...acc,
-      [option.id]: selectedValue || 0
+      [option.id]: 0  // Initialize all options to 0%
     }), {})
   );
 
