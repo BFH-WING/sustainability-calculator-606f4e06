@@ -1,7 +1,7 @@
 import { Question } from "../types/quiz";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface QuizQuestionProps {
   question: Question;
@@ -17,13 +17,42 @@ const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) 
     }), {})
   );
 
+  const [error, setError] = useState<string | null>(null);
+
+  // Calculate total percentage
+  const totalPercentage = Object.values(percentages).reduce((sum, value) => sum + value, 0);
+
+  useEffect(() => {
+    if (question.type === 'percentage') {
+      if (totalPercentage !== 100) {
+        setError(`Total must equal 100% (currently ${totalPercentage}%)`);
+      } else {
+        setError(null);
+      }
+    }
+  }, [totalPercentage, question.type]);
+
   const handleSliderChange = (value: number[], optionId: string) => {
     const newValue = value[0];
-    setPercentages(prev => ({
-      ...prev,
-      [optionId]: newValue
-    }));
-    onAnswer(newValue);
+    const otherOptionsTotal = Object.entries(percentages)
+      .filter(([id]) => id !== optionId)
+      .reduce((sum, [, value]) => sum + value, 0);
+
+    // If the new total would exceed 100%, adjust the value
+    if (otherOptionsTotal + newValue > 100) {
+      const adjustedValue = 100 - otherOptionsTotal;
+      setPercentages(prev => ({
+        ...prev,
+        [optionId]: adjustedValue
+      }));
+      onAnswer(adjustedValue);
+    } else {
+      setPercentages(prev => ({
+        ...prev,
+        [optionId]: newValue
+      }));
+      onAnswer(newValue);
+    }
   };
 
   const renderPercentageQuestion = () => (
@@ -44,6 +73,14 @@ const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) 
           />
         </div>
       ))}
+      {error && (
+        <div className="text-red-500 text-sm mt-2">
+          {error}
+        </div>
+      )}
+      <div className="text-sm text-gray-500 mt-2">
+        Total: {totalPercentage}%
+      </div>
     </div>
   );
 
