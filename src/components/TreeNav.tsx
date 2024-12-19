@@ -50,15 +50,15 @@ const TreeNav = ({
 
     sectionQuestions.forEach(question => {
       const answer = answers[question.id];
-      if (answer !== undefined && answer !== 0) { // Skip "I don't know" answers
-        totalScore += answer; // Answer is already normalized to 0-100%
+      if (answer !== undefined) {
+        totalScore += answer;
         answeredCount++;
       }
     });
 
     return {
       score: totalScore,
-      maxScore: answeredCount * 100, // Max score is now 100% per question
+      maxScore: answeredCount * 100,
       answeredCount,
       totalQuestions: sectionQuestions.length,
       percentage: answeredCount > 0 ? totalScore / answeredCount : 0
@@ -107,10 +107,15 @@ const TreeNav = ({
                     isCurrentSection && "text-eco-primary font-medium"
                   )}
                 >
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center justify-between w-full">
                     <span className="text-sm">
                       {sectionIndex + 1}. {section.title}
                     </span>
+                    {isDebugMode && sectionScore.answeredCount > 0 && (
+                      <span className="text-xs text-gray-500">
+                        {sectionScore.percentage.toFixed(1)}%
+                      </span>
+                    )}
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pt-1">

@@ -1,8 +1,8 @@
 import { cn } from "@/lib/utils";
-import { QuizQuestion } from "@/types/quiz";
+import { Question } from "@/types/quiz";
 
 interface QuestionListProps {
-  questions: QuizQuestion[];
+  questions: Question[];
   sectionIndex: number;
   currentSectionIndex: number;
   currentQuestionIndex: number;
@@ -27,13 +27,14 @@ const QuestionList = ({
       const isAnswered = answers[question.id] !== undefined;
       const isCurrent = currentSectionIndex === sectionIndex && currentQuestionIndex === qIndex;
       const hasError = questionErrors?.[question.id];
+      const score = answers[question.id];
 
       return (
-        <li key={question.id}>
+        <li key={question.id} className="text-sm">
           <button
             onClick={() => canNavigate && onQuestionSelect(sectionIndex, qIndex)}
             className={cn(
-              "text-left w-full px-2 py-1 rounded text-sm",
+              "text-left w-full px-2 py-1 rounded",
               isCurrent && "bg-eco-light text-eco-dark font-medium",
               !isCurrent && canNavigate && "hover:bg-gray-50",
               hasError && "text-red-500",
@@ -41,10 +42,17 @@ const QuestionList = ({
             )}
             disabled={!canNavigate}
           >
-            <span className="flex items-center">
-              <span className="mr-2">{isAnswered ? "✓" : "○"}</span>
-              {question.text}
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="flex items-center">
+                <span className="mr-2">{isAnswered ? "✓" : "○"}</span>
+                <span className="truncate">{question.text}</span>
+              </span>
+              {isAnswered && (
+                <span className="ml-2 text-xs text-gray-500">
+                  {score.toFixed(1)}% (w: {question.weight})
+                </span>
+              )}
+            </div>
           </button>
         </li>
       );
