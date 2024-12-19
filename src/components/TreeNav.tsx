@@ -1,12 +1,7 @@
 import { QuizSection } from "@/types/quiz";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Folder, FolderOpen, FileText, CheckCircle2, AlertCircle } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
 interface TreeNavProps {
   sections: QuizSection[];
@@ -25,14 +20,14 @@ const TreeNav = ({
   answers,
   onQuestionSelect,
   canNavigateToSection,
-  questionErrors = {},
+  questionErrors,
 }: TreeNavProps) => {
   // This would typically come from an admin settings context
-  const isDebugMode = true; // TODO: Make this configurable via admin settings
+  const isDebugMode = true;
 
   // Calculate total progress
   const totalQuestions = sections.reduce(
-    (acc, section) => acc + section.questions.length,
+    (total, section) => total + section.questions.length,
     0
   );
   const answeredQuestions = Object.keys(answers).length;
@@ -47,7 +42,9 @@ const TreeNav = ({
 
     sectionQuestions.forEach(question => {
       const answer = answers[question.id];
-      if (answer !== undefined) {
+      
+      // Skip "I don't know" answers (value of 0)
+      if (answer !== undefined && answer !== 0) {
         if (question.type === 'single_choice') {
           totalScore += answer * question.weight;
           maxPossibleScore += 5 * question.weight; // 5 is max score for single choice
@@ -61,7 +58,7 @@ const TreeNav = ({
           answeredCount++;
         }
       }
-      // Add to max possible score even if not answered
+      // Add to max possible score only if question is not answered or answer is not "I don't know"
       if (answer === undefined) {
         maxPossibleScore += 5 * question.weight;
       }
@@ -80,30 +77,28 @@ const TreeNav = ({
   const defaultExpandedSections = [`section-${currentSectionIndex}`];
 
   return (
-    <div className="w-[33.33%] bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 flex flex-col">
-      {/* Overall Progress */}
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm text-gray-600">Overall Progress</span>
-          <span className="text-sm font-medium text-eco-primary">
-            {answeredQuestions}/{totalQuestions}
-          </span>
+    <div className="fixed top-0 left-0 w-1/3 h-screen bg-white border-r border-gray-200 overflow-y-auto">
+      <div className="p-6">
+        <div className="mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2">
+            Progress Overview
+          </h2>
+          <div className="bg-gray-200 h-2 rounded-full overflow-hidden">
+            <div
+              className="bg-eco-primary h-full rounded-full transition-all duration-500"
+              style={{ width: `${progressPercentage}%` }}
+            />
+          </div>
+          <div className="text-sm text-gray-600 mt-2">
+            {answeredQuestions} of {totalQuestions} questions answered (
+            {Math.round(progressPercentage)}%)
+          </div>
         </div>
-        <div className="h-2 bg-eco-light rounded-full overflow-hidden">
-          <div
-            className="h-full bg-eco-primary transition-all duration-300"
-            style={{ width: `${progressPercentage}%` }}
-          />
-        </div>
-      </div>
 
-      {/* Tree Navigation */}
-      <div className="flex-1 overflow-y-auto p-2">
-        <Accordion 
-          type="multiple" 
-          className="w-full"
+        <Accordion
+          type="multiple"
           defaultValue={defaultExpandedSections}
-          value={defaultExpandedSections}
+          className="w-full"
         >
           {sections.map((section, sectionIndex) => {
             const isCurrentSection = currentSectionIndex === sectionIndex;
@@ -112,26 +107,23 @@ const TreeNav = ({
 
             return (
               <AccordionItem 
-                value={`section-${sectionIndex}`} 
                 key={section.id}
-                className="border-none"
+                value={`section-${sectionIndex}`}
+                className={cn(
+                  "border-b",
+                  !canNavigate && "opacity-50"
+                )}
               >
                 <AccordionTrigger
-                  className={`py-1 hover:no-underline ${
-                    !canNavigate
-                      ? "text-gray-400 cursor-not-allowed"
-                      : isCurrentSection
-                      ? "text-eco-primary font-medium"
-                      : ""
-                  }`}
+                  className={cn(
+                    "hover:no-underline",
+                    isCurrentSection && "text-eco-primary font-medium"
+                  )}
                 >
-                  <div className="flex items-center gap-2">
-                    {isCurrentSection ? (
-                      <FolderOpen className="h-4 w-4" />
-                    ) : (
-                      <Folder className="h-4 w-4" />
-                    )}
-                    <span className="text-sm">{section.title}</span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm">
+                      {sectionIndex + 1}. {section.title}
+                    </span>
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pt-1">
@@ -150,7 +142,7 @@ const TreeNav = ({
                       const isCurrent =
                         isCurrentSection &&
                         currentQuestionIndex === qIndex;
-                      const hasError = questionErrors[question.id];
+                      const hasError = questionErrors?.[question.id];
 
                       return (
                         <li key={question.id}>
@@ -159,34 +151,22 @@ const TreeNav = ({
                               canNavigate &&
                               onQuestionSelect(sectionIndex, qIndex)
                             }
-                            disabled={!canNavigate}
-                            className={`w-full text-left py-1 text-sm flex items-center gap-2 rounded transition-colors ${
-                              hasError 
-                                ? "text-red-500"
-                                : isCurrent
-                                ? "text-eco-primary font-medium"
-                                : canNavigate
-                                ? "hover:text-eco-primary"
-                                : "text-gray-400 cursor-not-allowed"
-                            }`}
-                          >
-                            {hasError ? (
-                              <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
-                            ) : isAnswered ? (
-                              <CheckCircle2 className="h-4 w-4 text-eco-primary shrink-0" />
-                            ) : (
-                              <FileText className="h-4 w-4 text-gray-400 shrink-0" />
+                            className={cn(
+                              "text-left w-full px-2 py-1 rounded text-sm",
+                              isCurrent &&
+                                "bg-eco-light text-eco-dark font-medium",
+                              !isCurrent && canNavigate && "hover:bg-gray-50",
+                              hasError && "text-red-500",
+                              !canNavigate && "cursor-not-allowed"
                             )}
-                            <div className="flex flex-col">
-                              <span className="truncate">
-                                {question.text}
+                            disabled={!canNavigate}
+                          >
+                            <span className="flex items-center">
+                              <span className="mr-2">
+                                {isAnswered ? "✓" : "○"}
                               </span>
-                              {hasError && (
-                                <span className="text-xs text-red-500">
-                                  Total must equal 100%
-                                </span>
-                              )}
-                            </div>
+                              {question.text}
+                            </span>
                           </button>
                         </li>
                       );
