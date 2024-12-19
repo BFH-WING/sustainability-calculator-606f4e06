@@ -124,35 +124,37 @@ const Quiz = () => {
     );
   }
 
-  // Calculate total score when quiz is completed
-  const calculateResults = () => {
-    let totalScore = 0;
-    let totalWeight = 0;
-
-    sections.forEach(section => {
-      section.questions.forEach(question => {
-        const answer = answers[question.id];
-        if (answer !== undefined) {
-          totalScore += answer * question.weight;
-          totalWeight += question.weight;
-        }
-      });
-    });
-
-    // Calculate the weighted average as the total score
-    const total = totalWeight > 0 ? Math.round((totalScore / totalWeight)) : 0;
-
-    return {
-      ...answers,
-      total
-    };
-  };
+  // Add Results section to sections array when completed
+  const sectionsWithResults = completed 
+    ? [...sections, { 
+        id: 'results',
+        title: 'Results',
+        questions: []
+      }]
+    : sections;
 
   if (completed) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
-        <QuizResults results={calculateResults()} onRestart={handleRestart} />
-      </div>
+      <QuizLayout
+        sections={sectionsWithResults}
+        currentSectionIndex={sectionsWithResults.length - 1}
+        currentQuestionIndex={0}
+        answers={answers}
+        onQuestionSelect={() => {}}
+        canNavigateToSection={() => true}
+        onPrevious={() => {
+          setCompleted(false);
+          setCurrentSectionIndex(sections.length - 1);
+          setCurrentQuestionIndex(sections[sections.length - 1].questions.length - 1);
+        }}
+        onNext={() => {}}
+        canGoNext={false}
+      >
+        <QuizResults 
+          results={answers} 
+          onRestart={handleRestart} 
+        />
+      </QuizLayout>
     );
   }
 
@@ -161,7 +163,7 @@ const Quiz = () => {
 
   return (
     <QuizLayout
-      sections={sections}
+      sections={sectionsWithResults}
       currentSectionIndex={currentSectionIndex}
       currentQuestionIndex={currentQuestionIndex}
       answers={answers}
