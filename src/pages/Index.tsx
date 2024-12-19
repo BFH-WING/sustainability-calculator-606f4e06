@@ -151,6 +151,7 @@ const Index = () => {
                 <QuizProgress
                   sections={sections}
                   currentSectionIndex={currentSectionIndex}
+                  currentQuestionIndex={currentQuestionIndex}
                 />
                 <QuizQuestion 
                   question={currentQuestion}

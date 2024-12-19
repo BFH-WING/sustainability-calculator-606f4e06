@@ -3,12 +3,16 @@ import { QuizSection } from "../types/quiz";
 interface QuizProgressProps {
   sections: QuizSection[];
   currentSectionIndex: number;
+  currentQuestionIndex: number;
 }
 
-const QuizProgress = ({ sections, currentSectionIndex }: QuizProgressProps) => {
+const QuizProgress = ({ 
+  sections, 
+  currentSectionIndex,
+  currentQuestionIndex 
+}: QuizProgressProps) => {
   const currentSection = sections[currentSectionIndex];
   const totalQuestions = currentSection.questions.length;
-  const currentQuestionIndex = 0; // This should be passed as a prop in a future update
 
   return (
     <div className="w-full mb-8">
