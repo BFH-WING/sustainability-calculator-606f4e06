@@ -20,7 +20,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex items-center justify-center">
         <div className="text-center">
-          <Leaf className="h-12 w-12 text-eco-primary animate-bounce mx-auto" />
+          <CircleArrowUp className="h-12 w-12 text-eco-primary animate-bounce mx-auto" />
           <p className="mt-4 text-eco-primary">Loading quiz...</p>
         </div>
       </div>
