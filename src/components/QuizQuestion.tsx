@@ -36,20 +36,17 @@ const QuizQuestion = ({ question, onAnswer, selectedValue, onError }: QuizQuesti
     
     if (question.type === 'percentage') {
       const newPercentages = { ...percentages };
+      newPercentages[optionId] = newValue;
+
+      // Calculate total excluding current option
       const otherOptionIds = Object.keys(percentages).filter(id => id !== optionId);
-      
-      // Calculate how much we can allocate to this slider
-      const otherTotal = otherOptionIds.reduce((sum, id) => sum + percentages[id], 0);
-      const maxAllowed = 100 - otherTotal;
-      
-      // Set the new value, capped at the maximum allowed
-      newPercentages[optionId] = Math.min(newValue, maxAllowed);
-      
-      // If we need to adjust other values to maintain 100% total
-      if (totalPercentage > 100) {
-        const excess = totalPercentage - 100;
-        const totalOtherValues = otherOptionIds.reduce((sum, id) => sum + newPercentages[id], 0);
-        
+      const otherTotal = otherOptionIds.reduce((sum, id) => sum + newPercentages[id], 0);
+
+      // If total exceeds 100%, adjust other values proportionally
+      if (otherTotal + newValue > 100) {
+        const excess = (otherTotal + newValue) - 100;
+        const totalOtherValues = otherTotal;
+
         if (totalOtherValues > 0) {
           otherOptionIds.forEach(id => {
             const proportion = newPercentages[id] / totalOtherValues;
@@ -57,9 +54,9 @@ const QuizQuestion = ({ question, onAnswer, selectedValue, onError }: QuizQuesti
           });
         }
       }
-      
+
       setPercentages(newPercentages);
-      onAnswer(newPercentages[optionId]);
+      onAnswer(newValue);
     } else {
       setPercentages(prev => ({
         ...prev,
