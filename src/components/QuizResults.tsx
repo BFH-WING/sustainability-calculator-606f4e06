@@ -9,12 +9,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Award, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-} from "recharts";
+import CircularityGauge from "./CircularityGauge";
+import SectionScores from "./SectionScores";
 
 interface QuizResultsProps {
   results: QuizResultsType;
@@ -72,27 +68,6 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
   const circularityInfo = getCircularityLevel(score);
 
-  // Create gauge chart data
-  const createGaugeData = () => {
-    const gaugeData = [];
-    const totalSections = 5;
-    const sectionSize = 100 / totalSections;
-    
-    // Create background sections
-    for (let i = 0; i < totalSections; i++) {
-      gaugeData.push({
-        name: `section-${i}`,
-        value: sectionSize,
-        color: GAUGE_COLORS[i],
-      });
-    }
-    
-    return gaugeData;
-  };
-
-  const gaugeData = createGaugeData();
-  const normalizedScore = (score / 5) * 100; // Convert score to percentage
-
   return (
     <Card className="w-full max-w-2xl mx-auto animate-fadeIn relative overflow-hidden">
       {showConfetti && (
@@ -113,81 +88,13 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                <Pie
-                  data={gaugeData}
-                  dataKey="value"
-                  cx="50%"
-                  cy="80%"
-                  startAngle={180}
-                  endAngle={0}
-                  innerRadius={100}
-                  outerRadius={140}
-                  paddingAngle={0}
-                >
-                  {gaugeData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                {/* Score display */}
-                <text
-                  x="50%"
-                  y="70%"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  className="fill-current text-4xl font-bold"
-                >
-                  {score.toFixed(2)}
-                </text>
-                <text
-                  x="50%"
-                  y="80%"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  className="fill-current text-sm"
-                >
-                  out of 5
-                </text>
-                {/* Indicator needle */}
-                <Pie
-                  data={[{ value: 1 }]}
-                  dataKey="value"
-                  cx="50%"
-                  cy="80%"
-                  startAngle={180 - (normalizedScore * 180) / 100}
-                  endAngle={180 - (normalizedScore * 180) / 100}
-                  innerRadius={0}
-                  outerRadius={160}
-                  stroke="none"
-                >
-                  <Cell fill="#000000" />
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="space-y-4">
-            {Object.entries(results).map(([key, value]) => {
-              if (key === "total" || !SECTION_WEIGHTS[key]) return null;
-              const { weight, label } = SECTION_WEIGHTS[key];
-              return (
-                <div key={key} className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="flex-1">{label}</span>
-                    <span className="text-gray-500 mr-4">Weight: {weight}</span>
-                  </div>
-                  <div 
-                    className="h-1.5 bg-gray-100 rounded-full overflow-hidden"
-                    style={{
-                      background: `linear-gradient(to right, ${circularityInfo.color} ${(value / 5) * 100}%, #e5e7eb 0%)`
-                    }}
-                  />
-                </div>
-              );
-            })}
-          </div>
+          <CircularityGauge score={score} colors={GAUGE_COLORS} />
+          
+          <SectionScores 
+            results={results}
+            sectionWeights={SECTION_WEIGHTS}
+            gaugeColor={circularityInfo.color}
+          />
 
           <Button
             onClick={onRestart}
