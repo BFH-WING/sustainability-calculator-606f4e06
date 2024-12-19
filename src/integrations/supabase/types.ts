@@ -9,7 +9,94 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      question_options: {
+        Row: {
+          display_order: number
+          id: number
+          question_id: number | null
+          text: string
+          value: number
+        }
+        Insert: {
+          display_order: number
+          id?: number
+          question_id?: number | null
+          text: string
+          value: number
+        }
+        Update: {
+          display_order?: number
+          id?: number
+          question_id?: number | null
+          text?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          description: string | null
+          display_order: number
+          id: number
+          section_id: number | null
+          text: string
+          type: Database["public"]["Enums"]["question_type"]
+        }
+        Insert: {
+          description?: string | null
+          display_order: number
+          id?: number
+          section_id?: number | null
+          text: string
+          type: Database["public"]["Enums"]["question_type"]
+        }
+        Update: {
+          description?: string | null
+          display_order?: number
+          id?: number
+          section_id?: number | null
+          text?: string
+          type?: Database["public"]["Enums"]["question_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sections: {
+        Row: {
+          description: string | null
+          display_order: number
+          id: number
+          title: string
+        }
+        Insert: {
+          description?: string | null
+          display_order: number
+          id?: number
+          title: string
+        }
+        Update: {
+          description?: string | null
+          display_order?: number
+          id?: number
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +105,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      question_type: "single_choice" | "multiple_choice" | "range"
+      question_type: "single_choice" | "percentage" | "range"
     }
     CompositeTypes: {
       [_ in never]: never
