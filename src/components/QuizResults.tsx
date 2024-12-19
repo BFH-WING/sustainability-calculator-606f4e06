@@ -7,9 +7,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Award, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Label,
+} from "recharts";
 
 interface QuizResultsProps {
   results: QuizResultsType;
@@ -22,6 +28,14 @@ const SECTION_WEIGHTS = {
   "production": { weight: 8, label: "Circular production" },
   "end-of-life": { weight: 7, label: "Circular use and end-of-life" },
 };
+
+const GAUGE_COLORS = [
+  "#ef4444", // red-500 - Low
+  "#f97316", // orange-500 - Emerging
+  "#eab308", // yellow-500 - Developing
+  "#3b82f6", // blue-500 - Advanced
+  "#22c55e", // green-500 - Leader
+];
 
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
@@ -50,14 +64,35 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const score = calculateWeightedScore();
 
   const getCircularityLevel = (score: number) => {
-    if (score <= 1) return { level: "Low Circularity", color: "bg-red-500" };
-    if (score <= 2) return { level: "Emerging Circularity", color: "bg-orange-500" };
-    if (score <= 3) return { level: "Developing Circularity", color: "bg-yellow-500" };
-    if (score <= 4) return { level: "Advanced Circularity", color: "bg-blue-500" };
-    return { level: "Circular Leader", color: "bg-eco-primary" };
+    if (score <= 1) return { level: "Low Circularity", color: GAUGE_COLORS[0] };
+    if (score <= 2) return { level: "Emerging Circularity", color: GAUGE_COLORS[1] };
+    if (score <= 3) return { level: "Developing Circularity", color: GAUGE_COLORS[2] };
+    if (score <= 4) return { level: "Advanced Circularity", color: GAUGE_COLORS[3] };
+    return { level: "Circular Leader", color: GAUGE_COLORS[4] };
   };
 
   const circularityInfo = getCircularityLevel(score);
+
+  // Create gauge chart data
+  const createGaugeData = () => {
+    const gaugeData = [];
+    const totalSections = 5;
+    const sectionSize = 100 / totalSections;
+    
+    // Create background sections
+    for (let i = 0; i < totalSections; i++) {
+      gaugeData.push({
+        name: `section-${i}`,
+        value: sectionSize,
+        color: GAUGE_COLORS[i],
+      });
+    }
+    
+    return gaugeData;
+  };
+
+  const gaugeData = createGaugeData();
+  const normalizedScore = (score / 5) * 100; // Convert score to percentage
 
   return (
     <Card className="w-full max-w-2xl mx-auto animate-fadeIn relative overflow-hidden">
@@ -79,34 +114,66 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
-          <div className="text-center mb-8">
-            <div className="text-4xl font-bold text-eco-primary mb-2">
-              {score.toFixed(2)}
-            </div>
-          </div>
-
-          <div className="bg-gray-50 p-6 rounded-lg mb-6">
-            <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden mb-2">
-              <div className="absolute inset-0 flex">
-                <div className="w-1/5 bg-red-500" />
-                <div className="w-1/5 bg-orange-500" />
-                <div className="w-1/5 bg-yellow-500" />
-                <div className="w-1/5 bg-blue-500" />
-                <div className="w-1/5 bg-eco-primary" />
-              </div>
-              <div 
-                className="absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[12px] border-l-transparent border-r-transparent border-b-black top-0 transform -translate-x-1/2"
-                style={{ left: `${(score / 5) * 100}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-xs mt-1 px-1 text-gray-600">
-              <span>0</span>
-              <span>1</span>
-              <span>2</span>
-              <span>3</span>
-              <span>4</span>
-              <span>5</span>
-            </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={gaugeData}
+                  cx="50%"
+                  cy="100%"
+                  startAngle={180}
+                  endAngle={0}
+                  innerRadius={100}
+                  outerRadius={140}
+                  paddingAngle={0}
+                  dataKey="value"
+                >
+                  {gaugeData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                  <Label
+                    content={({ viewBox }) => {
+                      const { cx, cy } = viewBox;
+                      return (
+                        <>
+                          <text
+                            x={cx}
+                            y={cy - 20}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            className="fill-current text-4xl font-bold"
+                          >
+                            {score.toFixed(2)}
+                          </text>
+                          <text
+                            x={cx}
+                            y={cy + 10}
+                            textAnchor="middle"
+                            dominantBaseline="middle"
+                            className="fill-current text-sm"
+                          >
+                            out of 5
+                          </text>
+                        </>
+                      );
+                    }}
+                  />
+                </Pie>
+                {/* Indicator needle */}
+                <Pie
+                  data={[{ value: 1 }]}
+                  cx="50%"
+                  cy="100%"
+                  startAngle={180 - (normalizedScore * 180) / 100}
+                  endAngle={180 - (normalizedScore * 180) / 100}
+                  innerRadius={0}
+                  outerRadius={160}
+                  stroke="none"
+                >
+                  <Cell fill="#000000" />
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
 
           <div className="space-y-4">
@@ -119,9 +186,11 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
                     <span className="flex-1">{label}</span>
                     <span className="text-gray-500 mr-4">Weight: {weight}</span>
                   </div>
-                  <Progress
-                    value={(value / 5) * 100}
-                    className="h-1.5 bg-eco-light"
+                  <div 
+                    className="h-1.5 bg-gray-100 rounded-full overflow-hidden"
+                    style={{
+                      background: `linear-gradient(to right, ${circularityInfo.color} ${(value / 5) * 100}%, #e5e7eb 0%)`
+                    }}
                   />
                 </div>
               );
