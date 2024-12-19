@@ -1,4 +1,4 @@
-import { CircleArrowUp, RefreshCw } from "lucide-react";
+import { CircleArrowUp } from "lucide-react";
 import { QuizSection } from "@/types/quiz";
 
 interface QuizIntroProps {
@@ -11,10 +11,7 @@ const QuizIntro = ({ sections, onStart }: QuizIntroProps) => {
     <div className="pt-24 px-6">
       <div className="max-w-4xl mx-auto text-center mb-8">
         <div className="flex justify-center mb-6">
-          <div className="relative">
-            <CircleArrowUp className="h-16 w-16 text-eco-primary" />
-            <RefreshCw className="h-8 w-8 text-eco-accent absolute -right-2 -bottom-2 animate-spin-slow" />
-          </div>
+          <CircleArrowUp className="h-16 w-16 text-eco-primary" />
         </div>
         <h1 className="text-4xl font-bold text-eco-dark mb-4">
           BFH Circularity Diagnostics Tool
