@@ -37,6 +37,9 @@ const TreeNav = ({
   // Helper function to check if a question is answered
   const isQuestionAnswered = (questionId: string) => answers[questionId] !== undefined;
 
+  // Create defaultValue array with the current section
+  const defaultExpandedSections = [`section-${currentSectionIndex}`];
+
   return (
     <div className="w-64 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 flex flex-col">
       {/* Overall Progress */}
@@ -57,7 +60,12 @@ const TreeNav = ({
 
       {/* Tree Navigation */}
       <div className="flex-1 overflow-y-auto p-2">
-        <Accordion type="multiple" className="w-full">
+        <Accordion 
+          type="multiple" 
+          className="w-full"
+          defaultValue={defaultExpandedSections}
+          value={defaultExpandedSections}
+        >
           {sections.map((section, sectionIndex) => {
             const isCurrentSection = currentSectionIndex === sectionIndex;
             const canNavigate = canNavigateToSection(sectionIndex);
