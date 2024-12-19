@@ -1,4 +1,3 @@
-import * as React from "react";
 import { QuizSection } from "@/types/quiz";
 import QuestionList from "./TreeNav/QuestionList";
 
@@ -22,7 +21,7 @@ const TreeNav = ({
   questionErrors,
 }: TreeNavProps) => {
   return (
-    <div className="fixed left-0 top-0 w-[40%] h-full bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
+    <div className="fixed left-0 top-16 w-[40%] h-[calc(100vh-4rem)] bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
       <div className="flex flex-col h-full">
         <div className="flex-1 p-6">
           <QuestionList
@@ -35,17 +34,15 @@ const TreeNav = ({
             questionErrors={questionErrors}
           />
         </div>
-        
-        {/* Footer content */}
         <div className="p-6 border-t border-eco-light bg-white/80">
           <div className="text-sm text-gray-600 space-y-4">
             <p className="font-medium">
               Disclaimer: The results of this diagnostic tool are not intended to provide a measure of environmental sustainability impact derived from the degree of circularity attained by the organization.
             </p>
             <div className="flex items-center space-x-4 pt-4">
-              <img 
-                src="/lovable-uploads/7455dfcd-9f33-41c8-b39e-3c6eef31dbac.png" 
-                alt="BFH Logo" 
+              <img
+                src="/lovable-uploads/7455dfcd-9f33-41c8-b39e-3c6eef31dbac.png"
+                alt="BFH Logo"
                 className="h-12 object-contain"
               />
               <p>

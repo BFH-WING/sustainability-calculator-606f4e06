@@ -33,7 +33,7 @@ const QuizLayout = ({
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
-      <div className="flex-1 flex">
+      <div className="flex-1 flex pt-16"> {/* Added pt-16 to account for TopNav height */}
         <TreeNav
           sections={sections}
           currentSectionIndex={currentSectionIndex}
@@ -43,7 +43,7 @@ const QuizLayout = ({
           canNavigateToSection={canNavigateToSection}
           questionErrors={questionErrors}
         />
-        <div className="ml-[40%] pt-16 flex-1">
+        <div className="ml-[40%] flex-1">
           <div className="max-w-4xl mx-auto pt-24 px-6">
             <div className="max-w-3xl mx-auto">
               <QuizProgress
