@@ -7,7 +7,7 @@ import QuizResultsComponent from "../components/QuizResults";
 import QuizIntro from "../components/QuizIntro";
 import TopNav from "../components/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf } from "lucide-react";
+import { CircleArrowUp } from "lucide-react";
 
 const Index = () => {
   const { data: sections, isLoading, error } = useQuizData();
@@ -107,16 +107,16 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
       <TopNav />
       <div className="flex pt-16">
-        <div className="w-64 bg-white/80 min-h-screen p-4 border-r border-eco-light fixed left-0 top-16 overflow-y-auto">
-          <h2 className="text-xl font-bold text-eco-dark mb-4 flex items-center gap-2">
-            <Leaf className="h-5 w-5" />
-            Sections
+        <div className="w-80 bg-white/80 min-h-screen p-6 border-r border-eco-light fixed left-0 top-16 overflow-y-auto">
+          <h2 className="text-xl font-bold text-eco-dark mb-6 flex items-center gap-2">
+            <CircleArrowUp className="h-6 w-6" />
+            Diagnostic Sections
           </h2>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {sections.map((section, index) => (
               <button
                 key={section.id}
-                className={`w-full text-left p-3 rounded-lg transition-colors ${
+                className={`w-full text-left p-4 rounded-lg transition-colors ${
                   index === currentSectionIndex
                     ? "bg-eco-primary text-white"
                     : "hover:bg-eco-light"
@@ -128,7 +128,7 @@ const Index = () => {
                 disabled={results !== null}
               >
                 <div className="flex items-center">
-                  <span className="w-6 h-6 rounded-full border flex items-center justify-center mr-2">
+                  <span className="w-7 h-7 rounded-full border flex items-center justify-center mr-3 text-sm">
                     {index + 1}
                   </span>
                   {section.title}
@@ -138,12 +138,12 @@ const Index = () => {
           </div>
         </div>
 
-        <div className="flex-1 pl-64">
+        <div className="flex-1 pl-80">
           <div className="p-6">
             <Card className="max-w-2xl mx-auto">
               <CardHeader>
                 <CardTitle className="text-center text-eco-dark flex items-center justify-center gap-2">
-                  <Leaf className="h-5 w-5" />
+                  <CircleArrowUp className="h-5 w-5" />
                   {currentSection.title}
                 </CardTitle>
               </CardHeader>
