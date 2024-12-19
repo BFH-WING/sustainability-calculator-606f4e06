@@ -9,7 +9,144 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      options: {
+        Row: {
+          created_at: string
+          id: number
+          option_text: string
+          order_index: number
+          question_id: number | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          option_text: string
+          order_index: number
+          question_id?: number | null
+          value: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          option_text?: string
+          order_index?: number
+          question_id?: number | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          order_index: number
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"] | null
+          source_url: string | null
+          subcategory_id: number | null
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          order_index: number
+          question_text: string
+          question_type?: Database["public"]["Enums"]["question_type"] | null
+          source_url?: string | null
+          subcategory_id?: number | null
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          order_index?: number
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"] | null
+          source_url?: string | null
+          subcategory_id?: number | null
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questions_subcategory_id_fkey"
+            columns: ["subcategory_id"]
+            isOneToOne: false
+            referencedRelation: "subcategories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sections: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          order_index: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          order_index: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          order_index?: number
+          title?: string
+        }
+        Relationships: []
+      }
+      subcategories: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: number
+          order_index: number
+          section_id: number | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          order_index: number
+          section_id?: number | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: number
+          order_index?: number
+          section_id?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subcategories_section_id_fkey"
+            columns: ["section_id"]
+            isOneToOne: false
+            referencedRelation: "sections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -18,7 +155,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      question_type: "single_choice" | "multiple_choice" | "range"
     }
     CompositeTypes: {
       [_ in never]: never
