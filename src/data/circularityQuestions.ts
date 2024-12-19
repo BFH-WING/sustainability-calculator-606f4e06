@@ -11,6 +11,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "How many materials (or material groups) does the product(s) contain?",
         description: "Products generally consist of different materials that are distributed throughout the product, e.g. in different components",
         subcategory: "Complexity of product architecture",
+        type: "single_choice",
         options: [
           { id: "d1-1", text: "2-5", value: 5 },
           { id: "d1-2", text: "6-9", value: 4 },
@@ -25,6 +26,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "What is the product(s)' relative weight relative to comparable products in the market?",
         description: "Circular design demand less materials for the same performance and quality",
         subcategory: "Material efficiency",
+        type: "single_choice",
         options: [
           { id: "d2-1", text: "50% less", value: 5 },
           { id: "d2-2", text: "25% less", value: 4 },
@@ -40,6 +42,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "How modular is the product(s)' design so that it facilitates rapid disassembly and assembly of its parts?",
         description: "100% separable joints and full accessibility",
         subcategory: "Design for disassembly and modularity",
+        type: "single_choice",
         options: [
           { id: "d3-1", text: "Excellent (75-95% separable joints and accessibility)", value: 5 },
           { id: "d3-2", text: "Good (50-75% separable joints)", value: 4 },
@@ -62,6 +65,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "What are the primary geographical locations where the organization sources its materials from?",
         description: "Applied to virgin, reused/upcycled, recycled, and biodegradable materials",
         subcategory: "Geographical proximity of sourcing",
+        type: "percentage",
         options: [
           { id: "s1-1", text: "Countries outside of Europe (0-100%)", value: 1 },
           { id: "s1-2", text: "Other european countries (0-100%)", value: 2 },
@@ -75,6 +79,7 @@ export const circularityQuestions: QuizSection[] = [
         id: "sourcing-2",
         text: "What modes of transportation are used for the different sourcing locations?",
         subcategory: "Modes of transport",
+        type: "percentage",
         options: [
           { id: "s2-1", text: "Air (0-100%)", value: 1 },
           { id: "s2-2", text: "Maritime (0-100%)", value: 2 },
@@ -95,6 +100,7 @@ export const circularityQuestions: QuizSection[] = [
         id: "prod-1",
         text: "What percentage of the organization's consumed energy comes from renewable sources?",
         subcategory: "Energy",
+        type: "percentage",
         options: [
           { id: "p1-1", text: "Solar (0-100%)", value: 5 },
           { id: "p1-2", text: "Wind (0-100%)", value: 5 },
@@ -108,6 +114,7 @@ export const circularityQuestions: QuizSection[] = [
         id: "prod-2",
         text: "What percentage of the organization's consumed water is recirculated internally?",
         subcategory: "Water",
+        type: "percentage",
         options: [
           { id: "p2-1", text: "0-100%", value: 5 },
           { id: "p2-2", text: "I don't know", value: 0 },
@@ -126,6 +133,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "Do any of these circular business models target specific customer segments in your organization?",
         description: "What percentage of total sales are eligible under the mentioned business models?",
         subcategory: "Business models (current)",
+        type: "percentage",
         options: [
           { id: "e1-1", text: "Sharing (0-100%)", value: 5 },
           { id: "e1-2", text: "Rental/Leasing (0-100%)", value: 4 },
@@ -140,6 +148,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "What is the commercial availability of spare parts?",
         description: "Full spare-parts stock available from the manufacturer or its dealers",
         subcategory: "Lifetime extension through repair",
+        type: "single_choice",
         options: [
           { id: "e2-1", text: "Excellent", value: 5 },
           { id: "e2-2", text: "Good", value: 4 },
