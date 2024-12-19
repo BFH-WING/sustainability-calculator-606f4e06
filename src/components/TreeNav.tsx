@@ -2,6 +2,7 @@ import { QuizSection } from "@/types/quiz";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface TreeNavProps {
   sections: QuizSection[];
@@ -24,6 +25,16 @@ const TreeNav = ({
 }: TreeNavProps) => {
   // This would typically come from an admin settings context
   const isDebugMode = true;
+
+  // State to track open accordion items
+  const [openSections, setOpenSections] = useState<string[]>([`section-${currentSectionIndex}`]);
+
+  // Update open sections when current section changes
+  useEffect(() => {
+    if (!openSections.includes(`section-${currentSectionIndex}`)) {
+      setOpenSections(prev => [...prev, `section-${currentSectionIndex}`]);
+    }
+  }, [currentSectionIndex]);
 
   // Calculate total progress
   const totalQuestions = sections.reduce(
@@ -73,8 +84,13 @@ const TreeNav = ({
     };
   };
 
-  // Create defaultValue array with the current section
-  const defaultExpandedSections = [`section-${currentSectionIndex}`];
+  const handleAccordionChange = (value: string[]) => {
+    // Ensure current section stays open
+    if (!value.includes(`section-${currentSectionIndex}`)) {
+      value.push(`section-${currentSectionIndex}`);
+    }
+    setOpenSections(value);
+  };
 
   return (
     <div className="fixed top-16 left-0 w-1/3 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto">
@@ -97,7 +113,8 @@ const TreeNav = ({
 
         <Accordion
           type="multiple"
-          defaultValue={defaultExpandedSections}
+          value={openSections}
+          onValueChange={handleAccordionChange}
           className="w-full"
         >
           {sections.map((section, sectionIndex) => {
