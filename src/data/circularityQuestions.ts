@@ -15,9 +15,9 @@ export const circularityQuestions: QuizSection[] = [
         weight: 0.4,
         options: [
           { id: "d1-1", text: "2-5", value: 5 },
-          { id: "d1-2", text: "6-9", value: 4 },
-          { id: "d1-3", text: "10-13", value: 3 },
-          { id: "d1-4", text: "More than 13", value: 2 },
+          { id: "d1-2", text: "6-9", value: 3 },
+          { id: "d1-3", text: "10-13", value: 2 },
+          { id: "d1-4", text: "More than 13", value: 1 },
           { id: "d1-5", text: "I don't know", value: 0 }
         ],
         source_url: "https://www.sciencedirect.com/science/article/pii/S0959652621041408"
@@ -49,9 +49,9 @@ export const circularityQuestions: QuizSection[] = [
         options: [
           { id: "d3-1", text: "Excellent (75-95% separable joints and accessibility)", value: 5 },
           { id: "d3-2", text: "Good (50-75% separable joints)", value: 4 },
-          { id: "d3-3", text: "Fair (Less than 49% of separable joints)", value: 3 },
-          { id: "d3-4", text: "Poor (0% separable joints)", value: 2 },
-          { id: "d3-5", text: "Null", value: 1 },
+          { id: "d3-3", text: "Fair (Less than 49% of separable joints)", value: 2 },
+          { id: "d3-4", text: "Poor (0% separable joints)", value: 1 },
+          { id: "d3-5", text: "Null", value: 0 },
           { id: "d3-6", text: "I don't know", value: 0 }
         ],
         source_url: "https://www.sciencedirect.com/science/article/pii/S0959652623005029"
