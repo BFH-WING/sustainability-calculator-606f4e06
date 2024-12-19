@@ -42,7 +42,6 @@ export const circularityQuestions: QuizSection[] = [
       {
         id: "design-3",
         text: "How modular is the product(s)' design so that it facilitates rapid disassembly and assembly of its parts?",
-        description: "100% separable joints and full accessibility",
         subcategory: "Design for disassembly and modularity",
         type: "single_choice",
         weight: 0.3,
