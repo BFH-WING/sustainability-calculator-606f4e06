@@ -38,38 +38,37 @@ const QuizQuestion = ({ question, onAnswer, selectedValue, onError }: QuizQuesti
       // Get all other option IDs
       const otherOptionIds = Object.keys(percentages).filter(id => id !== optionId);
       
-      // Calculate how much we need to adjust other sliders
-      const currentTotal = Object.entries(percentages)
-        .filter(([id]) => id !== optionId)
-        .reduce((sum, [, value]) => sum + value, 0) + newValue;
+      // Calculate remaining percentage available
+      const otherTotal = otherOptionIds.reduce((sum, id) => sum + percentages[id], 0);
+      const maxAllowed = 100 - otherTotal;
       
-      const difference = currentTotal - 100;
+      // Ensure new value doesn't exceed what's available
+      const adjustedValue = Math.min(newValue, maxAllowed);
       
-      if (difference > 0) {
-        // Need to decrease other values proportionally
+      if (adjustedValue !== newValue) {
+        // If we had to adjust the value, distribute the excess among other options
+        const excess = newValue - adjustedValue;
         const newPercentages = { ...percentages };
-        newPercentages[optionId] = newValue;
+        newPercentages[optionId] = adjustedValue;
         
-        // Adjust other values proportionally
-        let remainingDifference = difference;
-        otherOptionIds.forEach((id) => {
-          const currentValue = percentages[id];
-          const proportion = currentValue / (currentTotal - newValue);
-          const adjustment = Math.round(difference * proportion);
-          
-          newPercentages[id] = Math.max(0, currentValue - adjustment);
-          remainingDifference -= (currentValue - newPercentages[id]);
+        // Distribute excess proportionally among other options
+        const totalOtherValues = otherOptionIds.reduce((sum, id) => sum + percentages[id], 0);
+        otherOptionIds.forEach(id => {
+          if (totalOtherValues > 0) {
+            const proportion = percentages[id] / totalOtherValues;
+            newPercentages[id] = Math.round(percentages[id] + (excess * proportion));
+          }
         });
         
         setPercentages(newPercentages);
-        onAnswer(newValue);
+        onAnswer(adjustedValue);
       } else {
-        // If we're under 100%, just update the current slider
+        // If we don't need to adjust, just update normally
         setPercentages(prev => ({
           ...prev,
-          [optionId]: newValue
+          [optionId]: adjustedValue
         }));
-        onAnswer(newValue);
+        onAnswer(adjustedValue);
       }
     } else {
       // For non-percentage questions, just update normally
