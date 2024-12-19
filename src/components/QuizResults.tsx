@@ -1,6 +1,6 @@
-import { CircularityGauge } from "./CircularityGauge";
-import { SectionScores } from "./SectionScores";
-import { RadarChart } from "./RadarChart";
+import CircularityGauge from "./CircularityGauge";
+import SectionScores from "./SectionScores";
+import RadarChart from "./RadarChart";
 import { QuizResults as QuizResultsType } from "@/types/quiz";
 import { circularityQuestions } from "@/data/circularityQuestions";
 
@@ -10,13 +10,22 @@ interface QuizResultsProps {
 }
 
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
+  console.log('Rendering QuizResults with results:', results);
+  
   // Transform the results into the format needed for the radar chart
   const radarData = circularityQuestions.map((section) => ({
-    id: section.id,
-    weight: 1,
-    title: section.title,
+    subject: section.title,
     value: results[section.id] || 0,
   }));
+
+  // Get section weights from circularityQuestions
+  const sectionWeights = circularityQuestions.reduce((acc, section) => {
+    acc[section.id] = {
+      weight: 1, // Default weight if not specified
+      label: section.title
+    };
+    return acc;
+  }, {} as { [key: string]: { weight: number; label: string } });
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -25,13 +34,23 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
         <div>
-          <CircularityGauge score={results.total} />
+          <CircularityGauge 
+            score={results.total} 
+            colors={['#FF4D4D', '#FFA64D', '#FFE14D', '#4DFF4D', '#4DFFB3']}
+          />
         </div>
         <div>
-          <RadarChart data={radarData} />
+          <RadarChart 
+            data={radarData} 
+            color="#4DFF4D"
+          />
         </div>
       </div>
-      <SectionScores sections={radarData} />
+      <SectionScores 
+        results={results}
+        sectionWeights={sectionWeights}
+        gaugeColor="#4DFF4D"
+      />
       <div className="text-center mt-8">
         <button
           onClick={onRestart}
