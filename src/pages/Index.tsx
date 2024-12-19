@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { quizSections } from "../data/quizData";
-import { QuizResults } from "../types/quiz";
+import { QuizResults as QuizResultsType } from "../types/quiz";
 import QuizProgress from "../components/QuizProgress";
 import QuizQuestion from "../components/QuizQuestion";
-import QuizResults from "../components/QuizResults";
+import QuizResultsComponent from "../components/QuizResults";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [results, setResults] = useState<QuizResults | null>(null);
+  const [results, setResults] = useState<QuizResultsType | null>(null);
 
   const currentSection = quizSections[currentSectionIndex];
   const currentQuestion = currentSection?.questions[currentQuestionIndex];
@@ -37,9 +37,6 @@ const Index = () => {
     } else if (currentSectionIndex < quizSections.length - 1) {
       setCurrentSectionIndex(currentSectionIndex + 1);
       setCurrentQuestionIndex(0);
-    } else {
-      // Quiz completed
-      console.log("Quiz completed!");
     }
   };
 
@@ -52,7 +49,7 @@ const Index = () => {
   if (!currentSection || !currentQuestion) {
     return results ? (
       <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 p-6">
-        <QuizResults results={results} onRestart={handleRestart} />
+        <QuizResultsComponent results={results} onRestart={handleRestart} />
       </div>
     ) : null;
   }
