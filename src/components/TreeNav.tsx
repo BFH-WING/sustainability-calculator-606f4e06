@@ -3,7 +3,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import ProgressBar from "./TreeNav/ProgressBar";
-import SectionDebugInfo from "./TreeNav/SectionDebugInfo";
 import QuestionList from "./TreeNav/QuestionList";
 
 interface TreeNavProps {
@@ -119,9 +118,6 @@ const TreeNav = ({
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="pt-1">
-                  {isDebugMode && (
-                    <SectionDebugInfo sectionScore={sectionScore} />
-                  )}
                   <QuestionList
                     questions={section.questions}
                     sectionIndex={sectionIndex}
