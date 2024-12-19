@@ -13,6 +13,7 @@ const Index = () => {
   const [started, setStarted] = useState(false);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentSubcategory, setCurrentSubcategory] = useState<string>("");
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
 
@@ -27,10 +28,17 @@ const Index = () => {
   }
 
   const currentSection = sections[currentSectionIndex];
-  const currentQuestion = currentSection?.questions[currentQuestionIndex];
+  
+  const filteredQuestions = currentSection.questions.filter(
+    (q) => !currentSubcategory || q.subcategory === currentSubcategory
+  );
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
 
   const handleStart = () => {
     setStarted(true);
+    if (currentSection.questions[0]?.subcategory) {
+      setCurrentSubcategory(currentSection.questions[0].subcategory);
+    }
   };
 
   const handleAnswer = (value: number) => {
@@ -44,16 +52,24 @@ const Index = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     } else if (currentSectionIndex > 0) {
+      const prevSection = sections[currentSectionIndex - 1];
       setCurrentSectionIndex(currentSectionIndex - 1);
-      setCurrentQuestionIndex(sections[currentSectionIndex - 1].questions.length - 1);
+      if (prevSection.questions[0]?.subcategory) {
+        setCurrentSubcategory(prevSection.questions[0].subcategory);
+      }
+      setCurrentQuestionIndex(prevSection.questions.length - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < currentSection.questions.length - 1) {
+    if (currentQuestionIndex < filteredQuestions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else if (currentSectionIndex < sections.length - 1) {
+      const nextSection = sections[currentSectionIndex + 1];
       setCurrentSectionIndex(currentSectionIndex + 1);
+      if (nextSection.questions[0]?.subcategory) {
+        setCurrentSubcategory(nextSection.questions[0].subcategory);
+      }
       setCurrentQuestionIndex(0);
     } else {
       setCompleted(true);
@@ -62,6 +78,15 @@ const Index = () => {
 
   const handleSectionChange = (index: number) => {
     setCurrentSectionIndex(index);
+    setCurrentQuestionIndex(0);
+    const newSection = sections[index];
+    if (newSection.questions[0]?.subcategory) {
+      setCurrentSubcategory(newSection.questions[0].subcategory);
+    }
+  };
+
+  const handleSubcategoryChange = (subcategory: string) => {
+    setCurrentSubcategory(subcategory);
     setCurrentQuestionIndex(0);
   };
 
@@ -109,20 +134,6 @@ const Index = () => {
     );
   }
 
-  // Check if all questions in previous sections are answered
-  const canNavigateToSection = (targetIndex: number) => {
-    if (targetIndex === 0) return true;
-    
-    for (let i = 0; i < targetIndex; i++) {
-      const sectionQuestions = sections[i].questions;
-      const allQuestionsAnswered = sectionQuestions.every(
-        (q) => answers[q.id] !== undefined
-      );
-      if (!allQuestionsAnswered) return false;
-    }
-    return true;
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
       <TopNav />
@@ -130,7 +141,9 @@ const Index = () => {
         <SectionNav
           sections={sections}
           currentSectionIndex={currentSectionIndex}
+          currentSubcategory={currentSubcategory}
           onSectionChange={handleSectionChange}
+          onSubcategoryChange={handleSubcategoryChange}
           isEnabled={canNavigateToSection(currentSectionIndex)}
         />
         <div className="max-w-3xl mx-auto">
