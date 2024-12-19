@@ -5,7 +5,7 @@ import QuizQuestion from "@/components/QuizQuestion";
 import QuizProgress from "@/components/QuizProgress";
 import QuizResults from "@/components/QuizResults";
 import TopNav from "@/components/TopNav";
-import SectionNav from "@/components/SectionNav";
+import TreeNav from "@/components/TreeNav";
 
 const Index = () => {
   const { data: sections, isLoading } = useQuizData();
@@ -15,6 +15,51 @@ const Index = () => {
   const [currentSubcategory, setCurrentSubcategory] = useState<string>("");
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
+
+  const calculateResults = () => {
+    if (!sections) return { total: 0 };
+    
+    const results: { [key: string]: number } = {};
+    let total = 0;
+    
+    sections.forEach(section => {
+      let sectionTotal = 0;
+      let answeredQuestions = 0;
+      
+      section.questions.forEach(question => {
+        if (answers[question.id] !== undefined) {
+          sectionTotal += answers[question.id];
+          answeredQuestions++;
+        }
+      });
+      
+      if (answeredQuestions > 0) {
+        results[section.id] = sectionTotal / answeredQuestions;
+        total += results[section.id];
+      }
+    });
+    
+    results.total = total / sections.length;
+    return results;
+  };
+
+  const handleStart = () => {
+    setStarted(true);
+    if (sections?.[0].questions[0]?.subcategory) {
+      setCurrentSubcategory(sections[0].questions[0].subcategory);
+    }
+  };
+
+  const handleRestart = () => {
+    setStarted(true);
+    setCompleted(false);
+    setCurrentSectionIndex(0);
+    setCurrentQuestionIndex(0);
+    setAnswers({});
+    if (sections?.[0].questions[0]?.subcategory) {
+      setCurrentSubcategory(sections[0].questions[0].subcategory);
+    }
+  };
 
   const canNavigateToSection = (sectionIndex: number) => {
     if (sectionIndex === 0) return true;
@@ -47,12 +92,23 @@ const Index = () => {
   );
   const currentQuestion = filteredQuestions[currentQuestionIndex];
 
-  const handleStart = () => {
-    setStarted(true);
-    if (currentSection.questions[0]?.subcategory) {
-      setCurrentSubcategory(currentSection.questions[0].subcategory);
-    }
-  };
+  if (!started) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
+        <TopNav />
+        <QuizIntro sections={sections} onStart={handleStart} />
+      </div>
+    );
+  }
+
+  if (completed) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
+        <TopNav />
+        <QuizResults results={calculateResults()} onRestart={handleRestart} />
+      </div>
+    );
+  }
 
   const handleAnswer = (value: number) => {
     setAnswers((prev) => ({
@@ -89,79 +145,48 @@ const Index = () => {
     }
   };
 
-  const handleSectionChange = (index: number) => {
-    if (canNavigateToSection(index)) {
-      setCurrentSectionIndex(index);
-      setCurrentQuestionIndex(0);
-      const newSection = sections[index];
-      if (newSection.questions[0]?.subcategory) {
-        setCurrentSubcategory(newSection.questions[0].subcategory);
+  const handleQuestionSelect = (sectionIndex: number, questionIndex: number) => {
+    if (canNavigateToSection(sectionIndex)) {
+      setCurrentSectionIndex(sectionIndex);
+      setCurrentQuestionIndex(questionIndex);
+      const newSection = sections[sectionIndex];
+      if (newSection.questions[questionIndex]?.subcategory) {
+        setCurrentSubcategory(newSection.questions[questionIndex].subcategory || "");
       }
     }
   };
 
-  const handleSubcategoryChange = (subcategory: string) => {
-    setCurrentSubcategory(subcategory);
-    setCurrentQuestionIndex(0);
-  };
-
-  const handleQuestionChange = (sectionIndex: number, questionIndex: number) => {
-    if (canNavigateToSection(sectionIndex)) {
-      setCurrentSectionIndex(sectionIndex);
-      setCurrentQuestionIndex(questionIndex);
-    }
-  };
-
-  if (!started) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
-        <TopNav />
-        <QuizIntro sections={sections} onStart={handleStart} />
-      </div>
-    );
-  }
-
-  if (completed) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
-        <TopNav />
-        <QuizResults results={calculateResults()} onRestart={handleRestart} />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
       <TopNav />
-      <div className="max-w-4xl mx-auto pt-24 px-6">
-        <SectionNav
-          sections={sections}
-          currentSectionIndex={currentSectionIndex}
-          currentQuestionIndex={currentQuestionIndex}
-          currentSubcategory={currentSubcategory}
-          onSectionChange={handleSectionChange}
-          onSubcategoryChange={handleSubcategoryChange}
-          onQuestionChange={handleQuestionChange}
-          isEnabled={canNavigateToSection(currentSectionIndex)}
-          answers={answers}
-        />
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-semibold text-eco-dark mb-6">
-            {currentSection.title}
-          </h2>
-          <QuizProgress
-            sections={sections}
-            currentSectionIndex={currentSectionIndex}
-            currentQuestionIndex={currentQuestionIndex}
-            onPrevious={handlePrevious}
-            onNext={handleNext}
-            canGoNext={answers[currentQuestion.id] !== undefined}
-          />
-          <QuizQuestion
-            question={currentQuestion}
-            onAnswer={handleAnswer}
-            selectedValue={answers[currentQuestion.id]}
-          />
+      <TreeNav
+        sections={sections}
+        currentSectionIndex={currentSectionIndex}
+        currentQuestionIndex={currentQuestionIndex}
+        answers={answers}
+        onQuestionSelect={handleQuestionSelect}
+        canNavigateToSection={canNavigateToSection}
+      />
+      <div className="ml-64">
+        <div className="max-w-4xl mx-auto pt-24 px-6">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-2xl font-semibold text-eco-dark mb-6">
+              {currentSection.title}
+            </h2>
+            <QuizProgress
+              sections={sections}
+              currentSectionIndex={currentSectionIndex}
+              currentQuestionIndex={currentQuestionIndex}
+              onPrevious={handlePrevious}
+              onNext={handleNext}
+              canGoNext={answers[currentQuestion.id] !== undefined}
+            />
+            <QuizQuestion
+              question={currentQuestion}
+              onAnswer={handleAnswer}
+              selectedValue={answers[currentQuestion.id]}
+            />
+          </div>
         </div>
       </div>
     </div>
