@@ -1,20 +1,23 @@
-export type QuizSection = {
+export type QuizOption = {
   id: string;
-  title: string;
-  description: string;
-  questions: Question[];
+  text: string;
+  value: number;
 };
 
 export type Question = {
   id: string;
   text: string;
   options: QuizOption[];
+  description?: string;
+  weight?: number;
+  source_url?: string;
 };
 
-export type QuizOption = {
+export type QuizSection = {
   id: string;
-  text: string;
-  value: number;
+  title: string;
+  description: string;
+  questions: Question[];
 };
 
 export type QuizResults = {

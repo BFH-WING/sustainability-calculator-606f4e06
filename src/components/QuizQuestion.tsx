@@ -1,6 +1,5 @@
-import { Question, QuizOption } from "../types/quiz";
+import { Question } from "../types/quiz";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 
 interface QuizQuestionProps {
   question: Question;
@@ -13,6 +12,9 @@ const QuizQuestion = ({ question, onAnswer }: QuizQuestionProps) => {
       <h3 className="text-xl font-semibold mb-6 text-eco-dark">
         {question.text}
       </h3>
+      {question.description && (
+        <p className="text-gray-600 mb-4">{question.description}</p>
+      )}
       <div className="grid gap-4">
         {question.options.map((option) => (
           <Button
@@ -25,6 +27,18 @@ const QuizQuestion = ({ question, onAnswer }: QuizQuestionProps) => {
           </Button>
         ))}
       </div>
+      {question.source_url && (
+        <div className="mt-4 text-sm text-gray-500">
+          <a 
+            href={question.source_url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="hover:underline"
+          >
+            Source
+          </a>
+        </div>
+      )}
     </div>
   );
 };

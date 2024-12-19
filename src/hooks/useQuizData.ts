@@ -1,40 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { QuizSection } from "@/types/quiz";
 
-export interface QuizOption {
-  id: number;
-  option_text: string;
-  value: number;
-  order_index: number;
-}
-
-export interface Question {
-  id: number;
-  question_text: string;
-  description: string | null;
-  weight: number;
-  source_url: string | null;
-  options: QuizOption[];
-}
-
-export interface Subcategory {
-  id: number;
-  title: string;
-  description: string | null;
-  questions: Question[];
-}
-
-export interface Section {
-  id: number;
-  title: string;
-  description: string | null;
-  subcategories: Subcategory[];
-}
-
-const fetchQuizData = async () => {
+const fetchQuizData = async (): Promise<QuizSection[]> => {
   console.log("Fetching quiz data from Supabase...");
   
-  // Fetch sections with their relationships
   const { data: sections, error: sectionsError } = await supabase
     .from("sections")
     .select(`
@@ -70,24 +40,35 @@ const fetchQuizData = async () => {
     throw sectionsError;
   }
 
-  // Sort subcategories and their questions by order_index
-  const sortedSections = sections?.map(section => ({
-    ...section,
-    subcategories: section.subcategories
-      .sort((a, b) => a.order_index - b.order_index)
-      .map(subcategory => ({
-        ...subcategory,
-        questions: subcategory.questions
+  // Transform the data to match our frontend types
+  const transformedSections: QuizSection[] = sections?.map(section => ({
+    id: section.id.toString(),
+    title: section.title,
+    description: section.description || "",
+    questions: section.subcategories.flatMap(subcategory => 
+      subcategory.questions.map(question => ({
+        id: question.id.toString(),
+        text: question.question_text,
+        description: question.description || undefined,
+        weight: question.weight || undefined,
+        source_url: question.source_url || undefined,
+        options: question.options
           .sort((a, b) => a.order_index - b.order_index)
-          .map(question => ({
-            ...question,
-            options: question.options.sort((a, b) => a.order_index - b.order_index)
+          .map(option => ({
+            id: option.id.toString(),
+            text: option.option_text,
+            value: Number(option.value)
           }))
       }))
-  }));
+    ).sort((a, b) => {
+      const aId = parseInt(a.id);
+      const bId = parseInt(b.id);
+      return aId - bId;
+    })
+  })) || [];
 
-  console.log("Quiz data fetched successfully:", sortedSections);
-  return sortedSections;
+  console.log("Transformed quiz data:", transformedSections);
+  return transformedSections;
 };
 
 export const useQuizData = () => {
