@@ -1,6 +1,4 @@
-import { Leaf } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CircleDot, RefreshCw } from "lucide-react";
 import { QuizSection } from "@/types/quiz";
 
 interface QuizIntroProps {
@@ -13,7 +11,10 @@ const QuizIntro = ({ sections, onStart }: QuizIntroProps) => {
     <div className="pt-24 px-6">
       <div className="max-w-4xl mx-auto text-center mb-8">
         <div className="flex justify-center mb-6">
-          <Leaf className="h-16 w-16 text-eco-primary animate-bounce" />
+          <div className="relative">
+            <CircleDot className="h-16 w-16 text-eco-primary" />
+            <RefreshCw className="h-8 w-8 text-eco-accent absolute -right-2 -bottom-2 animate-spin-slow" />
+          </div>
         </div>
         <h1 className="text-4xl font-bold text-eco-dark mb-4">
           BFH Circularity Diagnostics Tool
@@ -33,26 +34,25 @@ const QuizIntro = ({ sections, onStart }: QuizIntroProps) => {
       <div className="max-w-4xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {sections.map((section) => (
-            <Card key={section.id} className="bg-white/50 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="text-eco-primary flex items-center gap-2">
-                  <Leaf className="h-5 w-5" />
-                  {section.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">{section.description}</p>
-              </CardContent>
-            </Card>
+            <div
+              key={section.id}
+              className="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow"
+            >
+              <h3 className="text-xl font-semibold text-eco-dark mb-2">
+                {section.title}
+              </h3>
+              <p className="text-gray-600">{section.description}</p>
+            </div>
           ))}
         </div>
-        <Button 
-          onClick={onStart}
-          className="w-full max-w-md mx-auto bg-eco-primary hover:bg-eco-dark text-white py-6 text-lg flex items-center justify-center gap-2"
-        >
-          <Leaf className="h-5 w-5" />
-          Start Assessment
-        </Button>
+        <div className="text-center">
+          <button
+            onClick={onStart}
+            className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
+          >
+            Start Assessment
+          </button>
+        </div>
       </div>
     </div>
   );
