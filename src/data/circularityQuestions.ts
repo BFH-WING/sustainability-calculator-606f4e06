@@ -12,6 +12,7 @@ export const circularityQuestions: QuizSection[] = [
         description: "Products generally consist of different materials that are distributed throughout the product, e.g. in different components",
         subcategory: "Complexity of product architecture",
         type: "single_choice",
+        weight: 0.4,
         options: [
           { id: "d1-1", text: "2-5", value: 5 },
           { id: "d1-2", text: "6-9", value: 4 },
@@ -27,6 +28,7 @@ export const circularityQuestions: QuizSection[] = [
         description: "Circular design demand less materials for the same performance and quality",
         subcategory: "Material efficiency",
         type: "single_choice",
+        weight: 0.3,
         options: [
           { id: "d2-1", text: "50% less", value: 5 },
           { id: "d2-2", text: "25% less", value: 4 },
@@ -43,6 +45,7 @@ export const circularityQuestions: QuizSection[] = [
         description: "100% separable joints and full accessibility",
         subcategory: "Design for disassembly and modularity",
         type: "single_choice",
+        weight: 0.3,
         options: [
           { id: "d3-1", text: "Excellent (75-95% separable joints and accessibility)", value: 5 },
           { id: "d3-2", text: "Good (50-75% separable joints)", value: 4 },
@@ -66,6 +69,7 @@ export const circularityQuestions: QuizSection[] = [
         description: "Applied to virgin, reused/upcycled, recycled, and biodegradable materials",
         subcategory: "Geographical proximity of sourcing",
         type: "percentage",
+        weight: 0.6,
         options: [
           { id: "s1-1", text: "Countries outside of Europe (0-100%)", value: 1 },
           { id: "s1-2", text: "Other european countries (0-100%)", value: 2 },
@@ -80,6 +84,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "What modes of transportation are used for the different sourcing locations?",
         subcategory: "Modes of transport",
         type: "percentage",
+        weight: 0.4,
         options: [
           { id: "s2-1", text: "Air (0%)", value: 1 },
           { id: "s2-2", text: "Maritime (0%)", value: 2 },
@@ -101,6 +106,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "What percentage of the organization's consumed energy comes from renewable sources?",
         subcategory: "Energy",
         type: "percentage",
+        weight: 0.7,
         options: [
           { id: "p1-1", text: "Solar (0-100%)", value: 5 },
           { id: "p1-2", text: "Wind (0-100%)", value: 5 },
@@ -115,6 +121,7 @@ export const circularityQuestions: QuizSection[] = [
         text: "What percentage of the organization's consumed water is recirculated internally?",
         subcategory: "Water",
         type: "percentage",
+        weight: 0.3,
         options: [
           { id: "p2-1", text: "0-100%", value: 5 },
           { id: "p2-2", text: "I don't know", value: 0 },
@@ -134,6 +141,7 @@ export const circularityQuestions: QuizSection[] = [
         description: "What percentage of total sales are eligible under the mentioned business models?",
         subcategory: "Business models (current)",
         type: "percentage",
+        weight: 0.6,
         options: [
           { id: "e1-1", text: "Sharing (0-100%)", value: 5 },
           { id: "e1-2", text: "Rental/Leasing (0-100%)", value: 4 },
@@ -149,6 +157,7 @@ export const circularityQuestions: QuizSection[] = [
         description: "Full spare-parts stock available from the manufacturer or its dealers",
         subcategory: "Lifetime extension through repair",
         type: "single_choice",
+        weight: 0.4,
         options: [
           { id: "e2-1", text: "Excellent", value: 5 },
           { id: "e2-2", text: "Good", value: 4 },

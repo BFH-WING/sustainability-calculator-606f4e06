@@ -9,7 +9,7 @@ export type Question = {
   text: string;
   options: QuizOption[];
   description?: string;
-  weight?: number;
+  weight: number;
   source_url?: string;
   subcategory?: string;
   type: 'percentage' | 'single_choice';
