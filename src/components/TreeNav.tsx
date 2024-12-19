@@ -24,12 +24,37 @@ const TreeNav = ({
   onQuestionSelect,
   canNavigateToSection,
 }: TreeNavProps) => {
+  // Calculate total progress
+  const totalQuestions = sections.reduce(
+    (acc, section) => acc + section.questions.length,
+    0
+  );
+  const answeredQuestions = Object.keys(answers).length;
+  const progressPercentage = (answeredQuestions / totalQuestions) * 100;
+
   // Helper function to check if a question is answered
   const isQuestionAnswered = (questionId: string) => answers[questionId] !== undefined;
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] overflow-y-auto fixed left-0 top-16">
-      <div className="p-2">
+    <div className="w-64 bg-white border-r border-gray-200 h-[calc(100vh-4rem)] fixed left-0 top-16 flex flex-col">
+      {/* Overall Progress */}
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm text-gray-600">Overall Progress</span>
+          <span className="text-sm font-medium text-eco-primary">
+            {answeredQuestions}/{totalQuestions}
+          </span>
+        </div>
+        <div className="h-2 bg-eco-light rounded-full overflow-hidden">
+          <div
+            className="h-full bg-eco-primary transition-all duration-300"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Tree Navigation */}
+      <div className="flex-1 overflow-y-auto p-2">
         <Accordion type="multiple" className="w-full">
           {sections.map((section, sectionIndex) => {
             const isCurrentSection = currentSectionIndex === sectionIndex;

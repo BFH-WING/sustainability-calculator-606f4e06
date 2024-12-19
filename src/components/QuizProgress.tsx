@@ -26,23 +26,7 @@ const QuizProgress = ({
   const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
 
   return (
-    <div className="w-full mb-8 space-y-4">
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-gray-600">
-          Question {currentQuestionIndex + 1} of {totalQuestions}
-        </span>
-        <span className="text-sm text-eco-primary font-medium">
-          Section {currentSectionIndex + 1} of {sections.length}
-        </span>
-      </div>
-      <div className="h-2 bg-eco-light rounded-full overflow-hidden">
-        <div
-          className="h-full bg-eco-primary transition-all duration-300"
-          style={{
-            width: `${((currentQuestionIndex + 1) / totalQuestions) * 100}%`,
-          }}
-        />
-      </div>
+    <div className="w-full mb-8">
       <div className="flex justify-between items-center pt-2">
         <Button
           variant="outline"
