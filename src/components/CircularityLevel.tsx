@@ -16,7 +16,7 @@ const CircularityLevel = ({ score }: CircularityLevelProps) => {
   const level = getLevel(score);
 
   return (
-    <div className="flex items-center gap-2 mb-6">
+    <div className="flex items-center justify-center gap-2 mb-6">
       <BadgePercent className="h-6 w-6" />
       <span className="text-lg font-medium">{score}% - </span>
       <span className={`text-lg font-semibold ${level.color}`}>{level.text}</span>
