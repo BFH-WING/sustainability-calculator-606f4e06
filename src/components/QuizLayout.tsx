@@ -6,7 +6,7 @@ interface QuizLayoutProps {
   sections: QuizSection[];
   currentSectionIndex: number;
   currentQuestionIndex: number;
-  answers: { [key: string]: number }>
+  answers: { [key: string]: number };
   onQuestionSelect: (sectionIndex: number, questionIndex: number) => void;
   canNavigateToSection: (sectionIndex: number) => boolean;
   onPrevious: () => void;
