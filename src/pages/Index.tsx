@@ -6,7 +6,6 @@ import QuizProgress from "@/components/QuizProgress";
 import QuizResults from "@/components/QuizResults";
 import TopNav from "@/components/TopNav";
 import SectionNav from "@/components/SectionNav";
-import { QuizResults as QuizResultsType } from "@/types/quiz";
 
 const Index = () => {
   const { data: sections, isLoading } = useQuizData();
@@ -17,7 +16,6 @@ const Index = () => {
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
 
-  // Add the canNavigateToSection function
   const canNavigateToSection = (sectionIndex: number) => {
     if (sectionIndex === 0) return true;
     if (sectionIndex > currentSectionIndex + 1) return false;
@@ -44,7 +42,6 @@ const Index = () => {
   }
 
   const currentSection = sections[currentSectionIndex];
-  
   const filteredQuestions = currentSection.questions.filter(
     (q) => !currentSubcategory || q.subcategory === currentSubcategory
   );
@@ -93,11 +90,13 @@ const Index = () => {
   };
 
   const handleSectionChange = (index: number) => {
-    setCurrentSectionIndex(index);
-    setCurrentQuestionIndex(0);
-    const newSection = sections[index];
-    if (newSection.questions[0]?.subcategory) {
-      setCurrentSubcategory(newSection.questions[0].subcategory);
+    if (canNavigateToSection(index)) {
+      setCurrentSectionIndex(index);
+      setCurrentQuestionIndex(0);
+      const newSection = sections[index];
+      if (newSection.questions[0]?.subcategory) {
+        setCurrentSubcategory(newSection.questions[0].subcategory);
+      }
     }
   };
 
@@ -106,30 +105,11 @@ const Index = () => {
     setCurrentQuestionIndex(0);
   };
 
-  const calculateResults = (): QuizResultsType => {
-    const results: QuizResultsType = {
-      total: 0,
-    };
-
-    sections.forEach((section) => {
-      let sectionTotal = 0;
-      section.questions.forEach((question) => {
-        const answer = answers[question.id] || 0;
-        sectionTotal += answer;
-      });
-      results[section.id] = sectionTotal;
-      results.total += sectionTotal;
-    });
-
-    return results;
-  };
-
-  const handleRestart = () => {
-    setStarted(false);
-    setCompleted(false);
-    setCurrentSectionIndex(0);
-    setCurrentQuestionIndex(0);
-    setAnswers({});
+  const handleQuestionChange = (sectionIndex: number, questionIndex: number) => {
+    if (canNavigateToSection(sectionIndex)) {
+      setCurrentSectionIndex(sectionIndex);
+      setCurrentQuestionIndex(questionIndex);
+    }
   };
 
   if (!started) {
@@ -157,10 +137,13 @@ const Index = () => {
         <SectionNav
           sections={sections}
           currentSectionIndex={currentSectionIndex}
+          currentQuestionIndex={currentQuestionIndex}
           currentSubcategory={currentSubcategory}
           onSectionChange={handleSectionChange}
           onSubcategoryChange={handleSubcategoryChange}
+          onQuestionChange={handleQuestionChange}
           isEnabled={canNavigateToSection(currentSectionIndex)}
+          answers={answers}
         />
         <div className="max-w-3xl mx-auto">
           <h2 className="text-2xl font-semibold text-eco-dark mb-6">
