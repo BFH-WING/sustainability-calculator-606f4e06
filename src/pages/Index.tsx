@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useQuizData } from "../hooks/useQuizData";
 import { QuizResults as QuizResultsType } from "../types/quiz";
 import QuizProgress from "../components/QuizProgress";
 import QuizQuestion from "../components/QuizQuestion";
@@ -8,49 +7,18 @@ import QuizIntro from "../components/QuizIntro";
 import TopNav from "../components/TopNav";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CircleArrowUp } from "lucide-react";
+import { quizSections } from "../data/quizData";
 
 const Index = () => {
-  const { data: sections, isLoading, error } = useQuizData();
   const [isStarted, setIsStarted] = useState(false);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [results, setResults] = useState<QuizResultsType | null>(null);
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex items-center justify-center">
-        <div className="text-center">
-          <CircleArrowUp className="h-12 w-12 text-eco-primary animate-bounce mx-auto" />
-          <p className="mt-4 text-eco-primary">Loading quiz...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex items-center justify-center">
-        <div className="text-center text-red-500">
-          <p>Error loading quiz data. Please try again later.</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!sections || sections.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex items-center justify-center">
-        <div className="text-center text-eco-primary">
-          <p>No quiz data available.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const currentSection = sections[currentSectionIndex];
+  const currentSection = quizSections[currentSectionIndex];
   const currentQuestion = currentSection?.questions[currentQuestionIndex];
-  const questionKey = `${currentSection.id}-${currentQuestion?.id}`;
+  const questionKey = `${currentSection?.id}-${currentQuestion?.id}`;
 
   const handleAnswer = (value: number) => {
     setAnswers(prev => ({
@@ -81,7 +49,7 @@ const Index = () => {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     } else if (currentSectionIndex > 0) {
       setCurrentSectionIndex(currentSectionIndex - 1);
-      const prevSection = sections[currentSectionIndex - 1];
+      const prevSection = quizSections[currentSectionIndex - 1];
       setCurrentQuestionIndex(prevSection.questions.length - 1);
     }
   };
@@ -89,7 +57,7 @@ const Index = () => {
   const handleNext = () => {
     if (currentQuestionIndex < currentSection.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else if (currentSectionIndex < sections.length - 1) {
+    } else if (currentSectionIndex < quizSections.length - 1) {
       setCurrentSectionIndex(currentSectionIndex + 1);
       setCurrentQuestionIndex(0);
     }
@@ -107,7 +75,7 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
         <TopNav />
-        <QuizIntro sections={sections} onStart={() => setIsStarted(true)} />
+        <QuizIntro sections={quizSections} onStart={() => setIsStarted(true)} />
       </div>
     );
   }
@@ -133,7 +101,7 @@ const Index = () => {
             Sections
           </h2>
           <div className="space-y-3">
-            {sections.map((section, index) => (
+            {quizSections.map((section, index) => (
               <button
                 key={section.id}
                 onClick={() => setCurrentSectionIndex(index)}
@@ -174,7 +142,7 @@ const Index = () => {
               </CardHeader>
               <CardContent>
                 <QuizProgress
-                  sections={sections}
+                  sections={quizSections}
                   currentSectionIndex={currentSectionIndex}
                   currentQuestionIndex={currentQuestionIndex}
                   onPrevious={handlePrevious}

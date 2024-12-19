@@ -2,6 +2,35 @@ import { QuizSection } from "../types/quiz";
 
 export const quizSections: QuizSection[] = [
   {
+    id: "materials",
+    title: "Materials & Resources",
+    description: "Let's evaluate your material usage and sourcing practices",
+    questions: [
+      {
+        id: "materials-1",
+        text: "What percentage of your materials are recycled?",
+        options: [
+          { id: "m1-1", text: "0-20%", value: 1 },
+          { id: "m1-2", text: "21-40%", value: 2 },
+          { id: "m1-3", text: "41-60%", value: 3 },
+          { id: "m1-4", text: "61-80%", value: 4 },
+          { id: "m1-5", text: "81-100%", value: 5 },
+          { id: "m1-6", text: "I don't know", value: 0 }
+        ],
+      },
+      {
+        id: "materials-2",
+        text: "Do you use sustainable packaging?",
+        options: [
+          { id: "m2-1", text: "Yes, all packaging is sustainable", value: 0 },
+          { id: "m2-2", text: "Most packaging is sustainable", value: 2 },
+          { id: "m2-3", text: "Some packaging is sustainable", value: 3 },
+          { id: "m2-4", text: "No sustainable packaging", value: 5 },
+        ],
+      }
+    ],
+  },
+  {
     id: "transportation",
     title: "Transportation",
     description: "Let's evaluate your transportation habits",
