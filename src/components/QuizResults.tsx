@@ -16,17 +16,38 @@ interface QuizResultsProps {
   onRestart: () => void;
 }
 
+const SECTION_WEIGHTS = {
+  "circular-design": { weight: 10, label: "Circular product development" },
+  "material-sourcing": { weight: 8, label: "Circular sourcing" },
+  "production": { weight: 8, label: "Circular production" },
+  "end-of-life": { weight: 7, label: "Circular use and end-of-life" },
+};
+
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
-  const maxScore = 50;
-  const score = results.total;
-  const percentage = (score / maxScore) * 100;
-
+  
   useEffect(() => {
     setShowConfetti(true);
     const timer = setTimeout(() => setShowConfetti(false), 3000);
     return () => clearTimeout(timer);
   }, []);
+
+  const calculateWeightedScore = () => {
+    let totalWeight = 0;
+    let weightedSum = 0;
+
+    Object.entries(results).forEach(([key, value]) => {
+      if (key !== "total" && SECTION_WEIGHTS[key]) {
+        const weight = SECTION_WEIGHTS[key].weight;
+        weightedSum += value * weight;
+        totalWeight += weight;
+      }
+    });
+
+    return totalWeight > 0 ? weightedSum / totalWeight : 0;
+  };
+
+  const score = calculateWeightedScore();
 
   const getCircularityLevel = (score: number) => {
     if (score <= 1) return { level: "Low Circularity", color: "bg-red-500" };
@@ -37,12 +58,6 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   };
 
   const circularityInfo = getCircularityLevel(score);
-
-  const getFeedback = () => {
-    if (percentage <= 30) return "Excellent! You're living very sustainably!";
-    if (percentage <= 60) return "Good job! There's room for improvement.";
-    return "Consider making some changes to live more sustainably.";
-  };
 
   return (
     <Card className="w-full max-w-2xl mx-auto animate-fadeIn relative overflow-hidden">
@@ -56,30 +71,22 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       <CardHeader>
         <CardTitle className="text-2xl text-center text-eco-dark flex items-center justify-center gap-2">
           <Award className="w-8 h-8 text-eco-primary" />
-          Your Sustainability Score
+          Your B2B Circularity Score
         </CardTitle>
-        <CardDescription className="text-center">
-          {getFeedback()}
+        <CardDescription className="text-center text-lg">
+          {circularityInfo.level}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
           <div className="text-center mb-8">
             <div className="text-4xl font-bold text-eco-primary mb-2">
-              {score.toFixed(1)} / {maxScore}
+              {score.toFixed(2)}
             </div>
-            <Progress value={percentage} className="h-2 bg-eco-light" />
           </div>
 
-          <div className="bg-gray-50 p-4 rounded-lg mb-6">
-            <div className="text-center mb-4">
-              <div className="text-lg font-semibold mb-1">You are in a state of</div>
-              <div className={`text-2xl font-bold ${circularityInfo.color.replace('bg-', 'text-')}`}>
-                {circularityInfo.level}
-              </div>
-            </div>
-            
-            <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+          <div className="bg-gray-50 p-6 rounded-lg mb-6">
+            <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden mb-2">
               <div className="absolute inset-0 flex">
                 <div className="w-1/5 bg-red-500" />
                 <div className="w-1/5 bg-orange-500" />
@@ -88,12 +95,11 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
                 <div className="w-1/5 bg-eco-primary" />
               </div>
               <div 
-                className="absolute w-3 h-6 bg-black top-1/2 -translate-y-1/2 transform -translate-x-1/2"
+                className="absolute w-0 h-0 border-l-[8px] border-r-[8px] border-b-[12px] border-l-transparent border-r-transparent border-b-black top-0 transform -translate-x-1/2"
                 style={{ left: `${(score / 5) * 100}%` }}
               />
             </div>
-            
-            <div className="flex justify-between text-xs mt-1 px-1">
+            <div className="flex justify-between text-xs mt-1 px-1 text-gray-600">
               <span>0</span>
               <span>1</span>
               <span>2</span>
@@ -105,17 +111,16 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
           <div className="space-y-4">
             {Object.entries(results).map(([key, value]) => {
-              if (key === "total") return null;
+              if (key === "total" || !SECTION_WEIGHTS[key]) return null;
+              const { weight, label } = SECTION_WEIGHTS[key];
               return (
                 <div key={key} className="space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="capitalize">{key.replace("-", " ")}</span>
-                    <span className="text-eco-primary font-semibold">
-                      {value.toFixed(1)} points
-                    </span>
+                    <span className="flex-1">{label}</span>
+                    <span className="text-gray-500 mr-4">Weight: {weight}</span>
                   </div>
                   <Progress
-                    value={(value / 10) * 100}
+                    value={(value / 5) * 100}
                     className="h-1.5 bg-eco-light"
                   />
                 </div>
