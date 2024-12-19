@@ -16,6 +16,10 @@ const Footer = () => {
               Developed by: Dr. Maria A. Franco / Bern University of Applied Sciences
               <br />
               Technical implementation by Moritz Maier
+              <br />
+              <span className="text-gray-500">
+                Industrial Engineering and Management Science (WING)
+              </span>
             </p>
           </div>
         </div>
