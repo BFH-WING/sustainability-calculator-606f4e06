@@ -51,8 +51,7 @@ export const circularityQuestions: QuizSection[] = [
           { id: "d3-2", text: "Good (50-75% separable joints)", value: 4 },
           { id: "d3-3", text: "Fair (Less than 49% of separable joints)", value: 2 },
           { id: "d3-4", text: "Poor (0% separable joints)", value: 1 },
-          { id: "d3-5", text: "Null", value: 0 },
-          { id: "d3-6", text: "I don't know", value: 0 }
+          { id: "d3-5", text: "I don't know", value: 0 }
         ],
         source_url: "https://www.sciencedirect.com/science/article/pii/S0959652623005029"
       }
