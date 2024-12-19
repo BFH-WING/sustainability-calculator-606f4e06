@@ -1,6 +1,7 @@
 import RadarChart from "./RadarChart";
 import { QuizResults as QuizResultsType } from "@/types/quiz";
 import { circularityQuestions } from "@/data/circularityQuestions";
+import CircularityLevel from "./CircularityLevel";
 
 interface QuizResultsProps {
   results: QuizResultsType;
@@ -18,13 +19,11 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     section.questions.forEach(question => {
       const answer = results[question.id];
       if (answer !== undefined) {
-        // Answer is already in percentage (0-100)
         totalScore += (answer * question.weight);
         answeredQuestions += question.weight;
       }
     });
 
-    // Calculate weighted average percentage
     const percentage = answeredQuestions > 0 ? (totalScore / answeredQuestions) : 0;
     
     acc[section.id] = {
@@ -38,17 +37,18 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
   console.log('Section scores:', sectionScores);
 
-  // Transform the results into the format needed for the radar chart
   const radarData = Object.entries(sectionScores).map(([id, data]) => ({
     subject: data.label,
     value: data.percentage,
   }));
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto overflow-y-auto max-h-[calc(100vh-16rem)] pr-4">
       <h1 className="text-3xl font-bold text-center mb-8 text-eco-dark">
         Your Circularity Assessment Results
       </h1>
+
+      <CircularityLevel score={results.total} />
       
       <div className="mb-12">
         <div className="h-[400px]">
@@ -79,7 +79,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         ))}
       </div>
 
-      <div className="text-center mt-8">
+      <div className="text-center mt-8 mb-8">
         <button
           onClick={onRestart}
           className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
