@@ -1,8 +1,10 @@
 import { QuizSection } from "@/types/quiz";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import ProgressBar from "./TreeNav/ProgressBar";
+import SectionDebugInfo from "./TreeNav/SectionDebugInfo";
+import QuestionList from "./TreeNav/QuestionList";
 
 interface TreeNavProps {
   sections: QuizSection[];
@@ -23,13 +25,9 @@ const TreeNav = ({
   canNavigateToSection,
   questionErrors,
 }: TreeNavProps) => {
-  // This would typically come from an admin settings context
   const isDebugMode = true;
-
-  // State to track open accordion items
   const [openSections, setOpenSections] = useState<string[]>([`section-${currentSectionIndex}`]);
 
-  // Update open sections when current section changes
   useEffect(() => {
     if (!openSections.includes(`section-${currentSectionIndex}`)) {
       setOpenSections(prev => [...prev, `section-${currentSectionIndex}`]);
@@ -44,48 +42,30 @@ const TreeNav = ({
   const answeredQuestions = Object.keys(answers).length;
   const progressPercentage = (answeredQuestions / totalQuestions) * 100;
 
-  // Calculate section scores
+  // Calculate section scores using normalized percentages (0-100%)
   const calculateSectionScore = (section: QuizSection) => {
     const sectionQuestions = section.questions;
     let totalScore = 0;
-    let maxPossibleScore = 0;
     let answeredCount = 0;
 
     sectionQuestions.forEach(question => {
       const answer = answers[question.id];
-      
-      // Skip "I don't know" answers (value of 0)
-      if (answer !== undefined && answer !== 0) {
-        if (question.type === 'single_choice') {
-          totalScore += answer * question.weight;
-          maxPossibleScore += 5 * question.weight; // 5 is max score for single choice
-          answeredCount++;
-        } else if (question.type === 'percentage') {
-          const optionValues = question.options.reduce((sum, option) => {
-            return sum + (option.value * (answer / 100));
-          }, 0);
-          totalScore += optionValues * question.weight;
-          maxPossibleScore += 5 * question.weight; // 5 is max score for percentage
-          answeredCount++;
-        }
-      }
-      // Add to max possible score only if question is not answered or answer is not "I don't know"
-      if (answer === undefined) {
-        maxPossibleScore += 5 * question.weight;
+      if (answer !== undefined && answer !== 0) { // Skip "I don't know" answers
+        totalScore += answer; // Answer is already normalized to 0-100%
+        answeredCount++;
       }
     });
 
     return {
-      score: Math.round(totalScore * 10) / 10,
-      maxScore: Math.round(maxPossibleScore * 10) / 10,
+      score: totalScore,
+      maxScore: answeredCount * 100, // Max score is now 100% per question
       answeredCount,
       totalQuestions: sectionQuestions.length,
-      percentage: maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0
+      percentage: answeredCount > 0 ? totalScore / answeredCount : 0
     };
   };
 
   const handleAccordionChange = (value: string[]) => {
-    // Ensure current section stays open
     if (!value.includes(`section-${currentSectionIndex}`)) {
       value.push(`section-${currentSectionIndex}`);
     }
@@ -95,21 +75,11 @@ const TreeNav = ({
   return (
     <div className="fixed top-16 left-0 w-1/3 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto">
       <div className="p-6">
-        <div className="mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-2">
-            Progress Overview
-          </h2>
-          <div className="bg-gray-200 h-2 rounded-full overflow-hidden">
-            <div
-              className="bg-eco-primary h-full rounded-full transition-all duration-500"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-          <div className="text-sm text-gray-600 mt-2">
-            {answeredQuestions} of {totalQuestions} questions answered (
-            {Math.round(progressPercentage)}%)
-          </div>
-        </div>
+        <ProgressBar
+          progressPercentage={progressPercentage}
+          answeredQuestions={answeredQuestions}
+          totalQuestions={totalQuestions}
+        />
 
         <Accordion
           type="multiple"
@@ -145,50 +115,18 @@ const TreeNav = ({
                 </AccordionTrigger>
                 <AccordionContent className="pt-1">
                   {isDebugMode && (
-                    <Alert className="mb-2 bg-gray-50">
-                      <AlertDescription className="font-mono text-xs space-y-1">
-                        <div>Questions answered: {sectionScore.answeredCount}/{sectionScore.totalQuestions}</div>
-                        <div>Current score: {sectionScore.score}/{sectionScore.maxScore}</div>
-                        <div>Section completion: {Math.round(sectionScore.percentage)}%</div>
-                      </AlertDescription>
-                    </Alert>
+                    <SectionDebugInfo sectionScore={sectionScore} />
                   )}
-                  <ul className="space-y-1 pl-4">
-                    {section.questions.map((question, qIndex) => {
-                      const isAnswered = answers[question.id] !== undefined;
-                      const isCurrent =
-                        isCurrentSection &&
-                        currentQuestionIndex === qIndex;
-                      const hasError = questionErrors?.[question.id];
-
-                      return (
-                        <li key={question.id}>
-                          <button
-                            onClick={() =>
-                              canNavigate &&
-                              onQuestionSelect(sectionIndex, qIndex)
-                            }
-                            className={cn(
-                              "text-left w-full px-2 py-1 rounded text-sm",
-                              isCurrent &&
-                                "bg-eco-light text-eco-dark font-medium",
-                              !isCurrent && canNavigate && "hover:bg-gray-50",
-                              hasError && "text-red-500",
-                              !canNavigate && "cursor-not-allowed"
-                            )}
-                            disabled={!canNavigate}
-                          >
-                            <span className="flex items-center">
-                              <span className="mr-2">
-                                {isAnswered ? "✓" : "○"}
-                              </span>
-                              {question.text}
-                            </span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  <QuestionList
+                    questions={section.questions}
+                    sectionIndex={sectionIndex}
+                    currentSectionIndex={currentSectionIndex}
+                    currentQuestionIndex={currentQuestionIndex}
+                    answers={answers}
+                    onQuestionSelect={onQuestionSelect}
+                    canNavigate={canNavigate}
+                    questionErrors={questionErrors}
+                  />
                 </AccordionContent>
               </AccordionItem>
             );
