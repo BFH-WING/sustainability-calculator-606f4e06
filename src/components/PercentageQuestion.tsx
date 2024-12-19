@@ -11,12 +11,18 @@ interface PercentageQuestionProps {
 }
 
 const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: PercentageQuestionProps) => {
-  const [percentages, setPercentages] = useState<{ [key: string]: number }>(
-    question.options.reduce((acc, option) => ({
+  // Initialize percentages state with the current question's options
+  const [percentages, setPercentages] = useState<{ [key: string]: number }>({});
+
+  // Reset percentages when question changes
+  useEffect(() => {
+    console.log('Question changed, resetting percentages');
+    const initialPercentages = question.options.reduce((acc, option) => ({
       ...acc,
-      [option.id]: 0  // Initialize all options to 0%
-    }), {})
-  );
+      [option.id]: 0
+    }), {});
+    setPercentages(initialPercentages);
+  }, [question.id]); // Reset when question.id changes
 
   const [error, setError] = useState<string | null>(null);
 
