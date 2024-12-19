@@ -40,7 +40,7 @@ const QuizLayout = ({
         canNavigateToSection={canNavigateToSection}
         questionErrors={questionErrors}
       />
-      <div className="ml-[33.33%] pt-16">
+      <div className="ml-[40%] pt-16">
         <div className="max-w-4xl mx-auto pt-24 px-6">
           <div className="max-w-3xl mx-auto">
             <QuizProgress

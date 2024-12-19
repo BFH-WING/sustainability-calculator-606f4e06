@@ -42,13 +42,13 @@ const QuestionList = ({
             )}
             disabled={!canNavigate}
           >
-            <div className="flex items-center justify-between">
-              <span className="flex items-center">
-                <span className="mr-2">{isAnswered ? "✓" : "○"}</span>
-                <span className="truncate max-w-[70%]">{question.text}</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex items-center min-w-0">
+                <span className="mr-2 flex-shrink-0">{isAnswered ? "✓" : "○"}</span>
+                <span className="truncate max-w-[180px]">{question.text}</span>
               </span>
               {isAnswered && (
-                <span className="text-xs font-medium bg-gray-100 px-2 py-0.5 rounded">
+                <span className="text-xs font-medium bg-gray-100 px-2 py-0.5 rounded whitespace-nowrap flex-shrink-0">
                   {score.toFixed(1)}% (w: {question.weight})
                 </span>
               )}
