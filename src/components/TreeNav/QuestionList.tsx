@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
+import { Check, AlertCircle } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface QuestionListProps {
   sections: QuizSection[];
@@ -24,39 +25,46 @@ const QuestionList = ({
     <div className="space-y-6">
       {sections.map((section, sectionIndex) => (
         <div key={section.id} className="space-y-2">
-          <h3 className="font-medium text-gray-900">{section.title}</h3>
-          <ul className="space-y-1 pl-4">
+          <h3 className="font-medium text-gray-900 pl-2">{section.title}</h3>
+          <ul className="space-y-1">
             {section.questions.map((question, qIndex) => {
               const isAnswered = answers[question.id] !== undefined;
-              const isCurrent = currentSectionIndex === sectionIndex && currentQuestionIndex === qIndex;
+              const isCurrent =
+                sectionIndex === currentSectionIndex &&
+                qIndex === currentQuestionIndex;
               const hasError = questionErrors?.[question.id];
-              const score = answers[question.id];
-              const canNavigate = canNavigateToSection(sectionIndex);
+              const isClickable = canNavigateToSection(sectionIndex);
 
               return (
-                <li key={question.id} className="text-sm">
+                <li key={question.id}>
                   <button
-                    onClick={() => canNavigate && onQuestionSelect(sectionIndex, qIndex)}
+                    onClick={() => onQuestionSelect(sectionIndex, qIndex)}
+                    disabled={!isClickable}
                     className={cn(
-                      "text-left w-full px-2 py-1 rounded",
-                      isCurrent && "bg-eco-light text-eco-dark font-medium",
-                      !isCurrent && canNavigate && "hover:bg-gray-50",
-                      hasError && "text-red-500",
-                      !canNavigate && "cursor-not-allowed opacity-50"
+                      "w-full text-left px-2 py-1 rounded flex items-center text-sm",
+                      isCurrent && "bg-eco-light text-eco-primary font-medium",
+                      !isClickable && "opacity-50 cursor-not-allowed",
+                      isClickable &&
+                        !isCurrent &&
+                        "hover:bg-eco-light/50 transition-colors"
                     )}
-                    disabled={!canNavigate}
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="flex items-center min-w-0 flex-1">
-                        <span className="mr-2 flex-shrink-0">{isAnswered ? "✓" : "○"}</span>
-                        <span className="truncate max-w-[calc(100%-80px)]">{question.text}</span>
-                      </span>
-                      {isAnswered && (
-                        <span className="text-xs font-medium bg-gray-100 px-2 py-0.5 rounded whitespace-nowrap flex-shrink-0">
-                          {score.toFixed(1)}% (w: {question.weight})
-                        </span>
-                      )}
+                    <div className="w-5 h-5 mr-2 flex-shrink-0">
+                      {hasError ? (
+                        <AlertCircle className="w-5 h-5 text-red-500" />
+                      ) : isAnswered ? (
+                        <Check className="w-5 h-5 text-eco-primary" />
+                      ) : null}
                     </div>
+                    <span
+                      className={cn(
+                        "flex-1",
+                        hasError && "text-red-500",
+                        isAnswered && !isCurrent && "text-eco-primary"
+                      )}
+                    >
+                      {question.title}
+                    </span>
                   </button>
                 </li>
               );
