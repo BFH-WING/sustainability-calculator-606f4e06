@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Award, Confetti } from "lucide-react";
+import { Award, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface QuizResultsProps {
@@ -48,9 +48,9 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     <Card className="w-full max-w-2xl mx-auto animate-fadeIn relative overflow-hidden">
       {showConfetti && (
         <div className="absolute inset-0 pointer-events-none">
-          <Confetti className="w-8 h-8 text-eco-primary absolute animate-bounce top-4 left-1/4" />
-          <Confetti className="w-8 h-8 text-eco-accent absolute animate-bounce top-8 right-1/4" />
-          <Confetti className="w-8 h-8 text-eco-secondary absolute animate-bounce top-6 left-3/4" />
+          <Sparkles className="w-8 h-8 text-eco-primary absolute animate-bounce top-4 left-1/4" />
+          <Sparkles className="w-8 h-8 text-eco-accent absolute animate-bounce top-8 right-1/4" />
+          <Sparkles className="w-8 h-8 text-eco-secondary absolute animate-bounce top-6 left-3/4" />
         </div>
       )}
       <CardHeader>
