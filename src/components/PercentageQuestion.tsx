@@ -13,19 +13,35 @@ interface PercentageQuestionProps {
 const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: PercentageQuestionProps) => {
   const [percentages, setPercentages] = useState<{ [key: string]: number }>({});
 
-  // Reset percentages when question changes
+  // Load initial percentages from localStorage or question
   useEffect(() => {
-    console.log('Question changed, resetting percentages');
-    const initialPercentages = question.options.reduce((acc, option) => ({
-      ...acc,
-      [option.id]: 0
-    }), {});
-    setPercentages(initialPercentages);
+    console.log('Loading percentages for question:', question.id);
+    const savedPercentages = localStorage.getItem(`percentages-${question.id}`);
+    
+    if (savedPercentages) {
+      console.log('Found saved percentages:', savedPercentages);
+      setPercentages(JSON.parse(savedPercentages));
+    } else {
+      console.log('No saved percentages found, initializing with zeros');
+      const initialPercentages = question.options.reduce((acc, option) => ({
+        ...acc,
+        [option.id]: 0
+      }), {});
+      setPercentages(initialPercentages);
+    }
   }, [question.id]);
 
   const [error, setError] = useState<string | null>(null);
 
   const totalPercentage = calculateTotalPercentage(percentages);
+
+  // Save percentages to localStorage whenever they change
+  useEffect(() => {
+    if (Object.keys(percentages).length > 0) {
+      console.log('Saving percentages for question:', question.id, percentages);
+      localStorage.setItem(`percentages-${question.id}`, JSON.stringify(percentages));
+    }
+  }, [percentages, question.id]);
 
   useEffect(() => {
     const hasError = totalPercentage !== 100;
