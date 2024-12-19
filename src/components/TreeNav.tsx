@@ -77,7 +77,7 @@ const TreeNav = ({
   const defaultExpandedSections = [`section-${currentSectionIndex}`];
 
   return (
-    <div className="fixed top-0 left-0 w-1/3 h-screen bg-white border-r border-gray-200 overflow-y-auto">
+    <div className="fixed top-16 left-0 w-1/3 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto">
       <div className="p-6">
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-2">

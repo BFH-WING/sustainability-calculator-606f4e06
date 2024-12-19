@@ -6,7 +6,7 @@ interface QuizLayoutProps {
   sections: QuizSection[];
   currentSectionIndex: number;
   currentQuestionIndex: number;
-  answers: { [key: string]: number };
+  answers: { [key: string]: number }>
   onQuestionSelect: (sectionIndex: number, questionIndex: number) => void;
   canNavigateToSection: (sectionIndex: number) => boolean;
   onPrevious: () => void;
@@ -40,7 +40,7 @@ const QuizLayout = ({
         canNavigateToSection={canNavigateToSection}
         questionErrors={questionErrors}
       />
-      <div className="ml-[33.33%]">
+      <div className="ml-[33.33%] pt-16">
         <div className="max-w-4xl mx-auto pt-24 px-6">
           <div className="max-w-3xl mx-auto">
             <QuizProgress
