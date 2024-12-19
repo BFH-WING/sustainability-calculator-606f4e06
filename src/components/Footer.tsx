@@ -13,9 +13,11 @@ const Footer = () => {
               className="h-12 object-contain"
             />
             <p>
-              Developed by: Dr. Maria A. Franco / Bern University of Applied Sciences
+              Developed by: Dr. Maria A. Franco
               <br />
-              Technical implementation by Moritz Maier
+              Implemented by: Moritz Maier
+              <br />
+              Bern University of Applied Sciences
               <br />
               <span className="text-gray-500">
                 Industrial Engineering and Management Science (WING)
