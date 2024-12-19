@@ -14,7 +14,6 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
-  Label,
 } from "recharts";
 
 interface QuizResultsProps {
@@ -106,7 +105,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       <CardHeader>
         <CardTitle className="text-2xl text-center text-eco-dark flex items-center justify-center gap-2">
           <Award className="w-8 h-8 text-eco-primary" />
-          Your B2B Circularity Score
+          Your Circularity Score
         </CardTitle>
         <CardDescription className="text-center text-lg">
           {circularityInfo.level}
@@ -116,54 +115,47 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         <div className="space-y-6">
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                 <Pie
                   data={gaugeData}
+                  dataKey="value"
                   cx="50%"
-                  cy="100%"
+                  cy="80%"
                   startAngle={180}
                   endAngle={0}
                   innerRadius={100}
                   outerRadius={140}
                   paddingAngle={0}
-                  dataKey="value"
                 >
                   {gaugeData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                  <Label
-                    content={({ viewBox }) => {
-                      const { cx, cy } = viewBox;
-                      return (
-                        <>
-                          <text
-                            x={cx}
-                            y={cy - 20}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="fill-current text-4xl font-bold"
-                          >
-                            {score.toFixed(2)}
-                          </text>
-                          <text
-                            x={cx}
-                            y={cy + 10}
-                            textAnchor="middle"
-                            dominantBaseline="middle"
-                            className="fill-current text-sm"
-                          >
-                            out of 5
-                          </text>
-                        </>
-                      );
-                    }}
-                  />
                 </Pie>
+                {/* Score display */}
+                <text
+                  x="50%"
+                  y="70%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="fill-current text-4xl font-bold"
+                >
+                  {score.toFixed(2)}
+                </text>
+                <text
+                  x="50%"
+                  y="80%"
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  className="fill-current text-sm"
+                >
+                  out of 5
+                </text>
                 {/* Indicator needle */}
                 <Pie
                   data={[{ value: 1 }]}
+                  dataKey="value"
                   cx="50%"
-                  cy="100%"
+                  cy="80%"
                   startAngle={180 - (normalizedScore * 180) / 100}
                   endAngle={180 - (normalizedScore * 180) / 100}
                   innerRadius={0}
