@@ -11,7 +11,6 @@ interface PercentageQuestionProps {
 }
 
 const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: PercentageQuestionProps) => {
-  // Initialize percentages state with the current question's options
   const [percentages, setPercentages] = useState<{ [key: string]: number }>({});
 
   // Reset percentages when question changes
@@ -22,7 +21,7 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
       [option.id]: 0
     }), {});
     setPercentages(initialPercentages);
-  }, [question.id]); // Reset when question.id changes
+  }, [question.id]);
 
   const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +31,24 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
     const hasError = totalPercentage !== 100;
     setError(hasError ? `Total must equal 100% (currently ${totalPercentage}%)` : null);
     onError?.(hasError);
-  }, [totalPercentage, onError]);
+
+    // Calculate weighted score based on percentages
+    if (!hasError) {
+      const weightedScore = Object.entries(percentages).reduce((score, [optionId, percentage]) => {
+        const option = question.options.find(opt => opt.id === optionId);
+        if (!option || option.text.includes("I don't know")) return score;
+        
+        // Convert percentage to decimal (e.g., 75% -> 0.75)
+        const decimalPercentage = percentage / 100;
+        
+        // Multiply the option's value by its percentage
+        return score + (option.value * decimalPercentage);
+      }, 0);
+
+      console.log('Calculated weighted score:', weightedScore);
+      onAnswer(weightedScore);
+    }
+  }, [totalPercentage, percentages, question.options, onError, onAnswer]);
 
   const handleSliderChange = (value: number[], optionId: string) => {
     const newValue = Math.round(value[0] / 5) * 5; // Round to nearest 5%
@@ -42,7 +58,6 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
       ...prev,
       [optionId]: newValue
     }));
-    onAnswer(newValue);
   };
 
   return (
