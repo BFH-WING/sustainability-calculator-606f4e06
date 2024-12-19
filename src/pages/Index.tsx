@@ -6,6 +6,7 @@ import QuizProgress from "@/components/QuizProgress";
 import QuizResults from "@/components/QuizResults";
 import TopNav from "@/components/TopNav";
 import TreeNav from "@/components/TreeNav";
+import { QuizResults as QuizResultsType } from "@/types/quiz";
 
 const Index = () => {
   const { data: sections, isLoading } = useQuizData();
@@ -16,11 +17,12 @@ const Index = () => {
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
 
-  const calculateResults = () => {
+  const calculateResults = (): QuizResultsType => {
     if (!sections) return { total: 0 };
     
     const results: { [key: string]: number } = {};
     let total = 0;
+    let sectionCount = 0;
     
     sections.forEach(section => {
       let sectionTotal = 0;
@@ -36,29 +38,14 @@ const Index = () => {
       if (answeredQuestions > 0) {
         results[section.id] = sectionTotal / answeredQuestions;
         total += results[section.id];
+        sectionCount++;
       }
     });
     
-    results.total = total / sections.length;
-    return results;
-  };
-
-  const handleStart = () => {
-    setStarted(true);
-    if (sections?.[0].questions[0]?.subcategory) {
-      setCurrentSubcategory(sections[0].questions[0].subcategory);
-    }
-  };
-
-  const handleRestart = () => {
-    setStarted(true);
-    setCompleted(false);
-    setCurrentSectionIndex(0);
-    setCurrentQuestionIndex(0);
-    setAnswers({});
-    if (sections?.[0].questions[0]?.subcategory) {
-      setCurrentSubcategory(sections[0].questions[0].subcategory);
-    }
+    return {
+      ...results,
+      total: sectionCount > 0 ? total / sectionCount : 0
+    };
   };
 
   const canNavigateToSection = (sectionIndex: number) => {
@@ -76,6 +63,24 @@ const Index = () => {
     return true;
   };
 
+  const handleStart = () => {
+    setStarted(true);
+    if (sections?.[0]?.questions[0]?.subcategory) {
+      setCurrentSubcategory(sections[0].questions[0].subcategory);
+    }
+  };
+
+  const handleRestart = () => {
+    setStarted(true);
+    setCompleted(false);
+    setCurrentSectionIndex(0);
+    setCurrentQuestionIndex(0);
+    setAnswers({});
+    if (sections?.[0]?.questions[0]?.subcategory) {
+      setCurrentSubcategory(sections[0].questions[0].subcategory);
+    }
+  };
+
   if (isLoading || !sections) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -85,12 +90,6 @@ const Index = () => {
       </div>
     );
   }
-
-  const currentSection = sections[currentSectionIndex];
-  const filteredQuestions = currentSection.questions.filter(
-    (q) => !currentSubcategory || q.subcategory === currentSubcategory
-  );
-  const currentQuestion = filteredQuestions[currentQuestionIndex];
 
   if (!started) {
     return (
@@ -106,6 +105,26 @@ const Index = () => {
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
         <TopNav />
         <QuizResults results={calculateResults()} onRestart={handleRestart} />
+      </div>
+    );
+  }
+
+  const currentSection = sections[currentSectionIndex];
+  const filteredQuestions = currentSection?.questions.filter(
+    (q) => !currentSubcategory || q.subcategory === currentSubcategory
+  ) || [];
+  const currentQuestion = filteredQuestions[currentQuestionIndex];
+
+  // Guard against undefined currentQuestion
+  if (!currentQuestion) {
+    console.error("Current question is undefined", {
+      currentSectionIndex,
+      currentQuestionIndex,
+      filteredQuestions
+    });
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-red-500">Error loading question</div>
       </div>
     );
   }
