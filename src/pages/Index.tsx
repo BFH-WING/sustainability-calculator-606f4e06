@@ -15,6 +15,7 @@ const Index = () => {
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [results, setResults] = useState<QuizResultsType | null>(null);
+  const [answers, setAnswers] = useState<{ [key: string]: number }>({});
 
   if (isLoading) {
     return (
@@ -49,8 +50,14 @@ const Index = () => {
 
   const currentSection = sections[currentSectionIndex];
   const currentQuestion = currentSection?.questions[currentQuestionIndex];
+  const questionKey = `${currentSection.id}-${currentQuestion?.id}`;
 
   const handleAnswer = (value: number) => {
+    setAnswers(prev => ({
+      ...prev,
+      [questionKey]: value
+    }));
+
     if (!results) {
       setResults({
         [currentSection.id]: value,
@@ -67,7 +74,19 @@ const Index = () => {
         };
       });
     }
+  };
 
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    } else if (currentSectionIndex > 0) {
+      setCurrentSectionIndex(currentSectionIndex - 1);
+      const prevSection = sections[currentSectionIndex - 1];
+      setCurrentQuestionIndex(prevSection.questions.length - 1);
+    }
+  };
+
+  const handleNext = () => {
     if (currentQuestionIndex < currentSection.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else if (currentSectionIndex < sections.length - 1) {
@@ -81,6 +100,7 @@ const Index = () => {
     setCurrentSectionIndex(0);
     setCurrentQuestionIndex(0);
     setResults(null);
+    setAnswers({});
   };
 
   if (!isStarted) {
@@ -152,10 +172,14 @@ const Index = () => {
                   sections={sections}
                   currentSectionIndex={currentSectionIndex}
                   currentQuestionIndex={currentQuestionIndex}
+                  onPrevious={handlePrevious}
+                  onNext={handleNext}
+                  canGoNext={!!answers[questionKey]}
                 />
                 <QuizQuestion 
                   question={currentQuestion}
-                  onAnswer={handleAnswer} 
+                  onAnswer={handleAnswer}
+                  selectedValue={answers[questionKey]} 
                 />
               </CardContent>
             </Card>

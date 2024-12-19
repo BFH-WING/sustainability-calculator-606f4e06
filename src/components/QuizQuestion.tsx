@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 interface QuizQuestionProps {
   question: Question;
   onAnswer: (value: number) => void;
+  selectedValue?: number;
 }
 
-const QuizQuestion = ({ question, onAnswer }: QuizQuestionProps) => {
+const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) => {
   return (
     <div className="animate-fadeIn">
       <h3 className="text-xl font-semibold mb-6 text-eco-dark">
@@ -19,8 +20,12 @@ const QuizQuestion = ({ question, onAnswer }: QuizQuestionProps) => {
         {question.options.map((option) => (
           <Button
             key={option.id}
-            variant="outline"
-            className="p-6 text-left hover:bg-eco-light hover:text-eco-dark transition-all"
+            variant={selectedValue === option.value ? "default" : "outline"}
+            className={`p-6 text-left transition-all ${
+              selectedValue === option.value
+                ? "bg-eco-primary text-white hover:bg-eco-dark"
+                : "hover:bg-eco-light hover:text-eco-dark"
+            }`}
             onClick={() => onAnswer(option.value)}
           >
             {option.text}
