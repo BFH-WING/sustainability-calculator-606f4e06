@@ -63,7 +63,7 @@ const QuestionList = ({
                         isAnswered && !isCurrent && "text-eco-primary"
                       )}
                     >
-                      {question.title}
+                      {question.text}
                     </span>
                   </button>
                 </li>
