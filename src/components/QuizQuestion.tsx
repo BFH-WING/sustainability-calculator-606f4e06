@@ -14,7 +14,10 @@ const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) 
         {question.text}
       </h3>
       {question.description && (
-        <p className="text-gray-600 mb-4">{question.description}</p>
+        <p 
+          className="text-gray-600 mb-4"
+          dangerouslySetInnerHTML={{ __html: question.description }}
+        />
       )}
       <div className="grid gap-4">
         {question.options.map((option) => (
