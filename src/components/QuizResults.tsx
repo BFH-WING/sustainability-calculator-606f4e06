@@ -10,48 +10,34 @@ interface QuizResultsProps {
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   console.log('Rendering QuizResults with results:', results);
   
-  // Calculate max possible scores per section
-  const sectionMaxScores = circularityQuestions.reduce((acc, section) => {
-    const maxScore = section.questions.reduce((sum, question) => {
-      if (question.type === 'single_choice') {
-        // For single choice, find the highest value option
-        const maxOptionValue = Math.max(...question.options.map(opt => opt.value));
-        return sum + maxOptionValue;
-      } else if (question.type === 'percentage') {
-        // For percentage questions, max score is 100
-        return sum + 100;
-      }
-      return sum;
-    }, 0);
-    acc[section.id] = maxScore;
-    return acc;
-  }, {} as { [key: string]: number });
-
-  // Calculate actual scores and percentages for each section
+  // Calculate scores per section
   const sectionScores = circularityQuestions.reduce((acc, section) => {
-    let actualScore = 0;
-    let maxScore = sectionMaxScores[section.id];
+    let weightedScore = 0;
+    let totalWeight = 0;
 
     section.questions.forEach(question => {
       const answer = results[question.id];
       if (answer !== undefined) {
         if (question.type === 'single_choice') {
-          actualScore += answer;
+          weightedScore += (answer * question.weight);
+          totalWeight += question.weight;
         } else if (question.type === 'percentage') {
           // For percentage questions, calculate weighted average based on option values
           const optionValues = question.options.reduce((sum, option) => {
             return sum + (option.value * (answer / 100));
           }, 0);
-          actualScore += optionValues;
+          weightedScore += (optionValues * question.weight);
+          totalWeight += question.weight;
         }
       }
     });
 
-    const percentage = maxScore > 0 ? (actualScore / maxScore) * 100 : 0;
+    // Calculate final percentage (normalize to 0-100 scale)
+    const percentage = totalWeight > 0 ? (weightedScore / totalWeight) * 20 : 0; // Multiply by 20 since max score is 5
     
     acc[section.id] = {
-      actual: Math.round(actualScore * 10) / 10,
-      max: maxScore,
+      actual: Math.round(weightedScore * 10) / 10,
+      max: totalWeight * 5, // Max score is 5 per question
       percentage: Math.round(percentage),
       label: section.title
     };
