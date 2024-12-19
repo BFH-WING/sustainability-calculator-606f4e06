@@ -6,7 +6,7 @@ const TopNav = () => (
       <div className="flex justify-between items-center h-16">
         <div className="flex items-center space-x-2">
           <CircleArrowUp className="h-8 w-8 text-eco-primary" />
-          <span className="text-xl font-bold text-eco-primary">BFH Circularity</span>
+          <span className="text-xl font-bold text-eco-primary">BFH Circularity Assessment</span>
         </div>
       </div>
     </div>
