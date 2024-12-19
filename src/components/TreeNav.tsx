@@ -1,6 +1,6 @@
 import * as React from "react";
 import { QuizSection } from "@/types/quiz";
-import QuestionList from "./QuestionList";
+import QuestionList from "./TreeNav/QuestionList";
 
 interface TreeNavProps {
   sections: QuizSection[];
