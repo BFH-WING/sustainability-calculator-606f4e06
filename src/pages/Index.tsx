@@ -5,6 +5,7 @@ import QuizQuestion from "@/components/QuizQuestion";
 import QuizProgress from "@/components/QuizProgress";
 import QuizResults from "@/components/QuizResults";
 import TopNav from "@/components/TopNav";
+import SectionNav from "@/components/SectionNav";
 import { QuizResults as QuizResultsType } from "@/types/quiz";
 
 const Index = () => {
@@ -59,6 +60,11 @@ const Index = () => {
     }
   };
 
+  const handleSectionChange = (index: number) => {
+    setCurrentSectionIndex(index);
+    setCurrentQuestionIndex(0);
+  };
+
   const calculateResults = (): QuizResultsType => {
     const results: QuizResultsType = {
       total: 0,
@@ -103,26 +109,48 @@ const Index = () => {
     );
   }
 
+  // Check if all questions in previous sections are answered
+  const canNavigateToSection = (targetIndex: number) => {
+    if (targetIndex === 0) return true;
+    
+    for (let i = 0; i < targetIndex; i++) {
+      const sectionQuestions = sections[i].questions;
+      const allQuestionsAnswered = sectionQuestions.every(
+        (q) => answers[q.id] !== undefined
+      );
+      if (!allQuestionsAnswered) return false;
+    }
+    return true;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
       <TopNav />
-      <div className="max-w-3xl mx-auto pt-24 px-6">
-        <h2 className="text-2xl font-semibold text-eco-dark mb-6">
-          {currentSection.title}
-        </h2>
-        <QuizProgress
+      <div className="max-w-4xl mx-auto pt-24 px-6">
+        <SectionNav
           sections={sections}
           currentSectionIndex={currentSectionIndex}
-          currentQuestionIndex={currentQuestionIndex}
-          onPrevious={handlePrevious}
-          onNext={handleNext}
-          canGoNext={answers[currentQuestion.id] !== undefined}
+          onSectionChange={handleSectionChange}
+          isEnabled={canNavigateToSection(currentSectionIndex)}
         />
-        <QuizQuestion
-          question={currentQuestion}
-          onAnswer={handleAnswer}
-          selectedValue={answers[currentQuestion.id]}
-        />
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-2xl font-semibold text-eco-dark mb-6">
+            {currentSection.title}
+          </h2>
+          <QuizProgress
+            sections={sections}
+            currentSectionIndex={currentSectionIndex}
+            currentQuestionIndex={currentQuestionIndex}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            canGoNext={answers[currentQuestion.id] !== undefined}
+          />
+          <QuizQuestion
+            question={currentQuestion}
+            onAnswer={handleAnswer}
+            selectedValue={answers[currentQuestion.id]}
+          />
+        </div>
       </div>
     </div>
   );
