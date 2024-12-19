@@ -114,7 +114,7 @@ const TreeNav = ({
                               <FileText className="h-4 w-4 text-gray-400 shrink-0" />
                             )}
                             <span className="truncate">
-                              Question {qIndex + 1}
+                              {question.text}
                             </span>
                           </button>
                         </li>
