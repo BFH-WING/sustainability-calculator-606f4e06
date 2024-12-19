@@ -34,19 +34,46 @@ const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) 
 
   const handleSliderChange = (value: number[], optionId: string) => {
     const newValue = value[0];
-    const otherOptionsTotal = Object.entries(percentages)
-      .filter(([id]) => id !== optionId)
-      .reduce((sum, [, value]) => sum + value, 0);
-
-    // If the new total would exceed 100%, adjust the value
-    if (otherOptionsTotal + newValue > 100) {
-      const adjustedValue = 100 - otherOptionsTotal;
-      setPercentages(prev => ({
-        ...prev,
-        [optionId]: adjustedValue
-      }));
-      onAnswer(adjustedValue);
+    
+    if (question.type === 'percentage') {
+      // Get all other option IDs
+      const otherOptionIds = Object.keys(percentages).filter(id => id !== optionId);
+      
+      // Calculate how much we need to adjust other sliders
+      const currentTotal = Object.entries(percentages)
+        .filter(([id]) => id !== optionId)
+        .reduce((sum, [, value]) => sum + value, 0) + newValue;
+      
+      const difference = currentTotal - 100;
+      
+      if (difference > 0) {
+        // Need to decrease other values proportionally
+        const newPercentages = { ...percentages };
+        newPercentages[optionId] = newValue;
+        
+        // Adjust other values proportionally
+        let remainingDifference = difference;
+        otherOptionIds.forEach((id) => {
+          const currentValue = percentages[id];
+          const proportion = currentValue / (currentTotal - newValue);
+          const adjustment = Math.round(difference * proportion);
+          
+          newPercentages[id] = Math.max(0, currentValue - adjustment);
+          remainingDifference -= (currentValue - newPercentages[id]);
+        });
+        
+        setPercentages(newPercentages);
+        onAnswer(newValue);
+      } else {
+        // If we're under 100%, just update the current slider
+        setPercentages(prev => ({
+          ...prev,
+          [optionId]: newValue
+        }));
+        onAnswer(newValue);
+      }
     } else {
+      // For non-percentage questions, just update normally
       setPercentages(prev => ({
         ...prev,
         [optionId]: newValue
