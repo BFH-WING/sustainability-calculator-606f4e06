@@ -23,6 +23,6 @@ export type QuizSection = {
 };
 
 export type QuizResults = {
-  [sectionId: string]: number;
+  [key: string]: number;
   total: number;
 };

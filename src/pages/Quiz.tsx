@@ -3,9 +3,6 @@ import { useQuizData } from "@/hooks/useQuizData";
 import QuizQuestion from "@/components/QuizQuestion";
 import QuizResults from "@/components/QuizResults";
 import QuizLayout from "@/components/QuizLayout";
-import TopNav from "@/components/TopNav";
-import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 const STORAGE_KEY = 'circularity-quiz-answers';
@@ -46,40 +43,26 @@ const Quiz = () => {
     toast.success('Assessment reset successfully');
   };
 
-  const handleReset = () => {
-    handleRestart();
-  };
-
-  if (isLoading || !sections) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin-slow">
-          <div className="w-16 h-16 border-4 border-eco-primary border-t-transparent rounded-full" />
-        </div>
-      </div>
-    );
-  }
-
-  if (completed) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
-        <TopNav />
-        <QuizResults results={answers} onRestart={handleRestart} />
-      </div>
-    );
-  }
-
-  const currentSection = sections[currentSectionIndex];
-  const currentQuestion = currentSection?.questions[currentQuestionIndex];
-
   const handleAnswer = (value: number) => {
+    if (!sections) return;
+    
+    const currentQuestion = sections[currentSectionIndex].questions[currentQuestionIndex];
     setAnswers((prev) => ({
       ...prev,
       [currentQuestion.id]: value,
     }));
+
+    // Clear any error state for this question
+    setQuestionErrors(prev => ({
+      ...prev,
+      [currentQuestion.id]: false
+    }));
   };
 
   const handleError = (hasError: boolean) => {
+    if (!sections) return;
+    
+    const currentQuestion = sections[currentSectionIndex].questions[currentQuestionIndex];
     setQuestionErrors(prev => ({
       ...prev,
       [currentQuestion.id]: hasError
@@ -90,14 +73,16 @@ const Quiz = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
     } else if (currentSectionIndex > 0) {
-      const prevSection = sections[currentSectionIndex - 1];
+      const prevSection = sections![currentSectionIndex - 1];
       setCurrentSectionIndex(currentSectionIndex - 1);
       setCurrentQuestionIndex(prevSection.questions.length - 1);
     }
   };
 
   const handleNext = () => {
-    if (currentQuestionIndex < currentSection.questions.length - 1) {
+    if (!sections) return;
+
+    if (currentQuestionIndex < sections[currentSectionIndex].questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else if (currentSectionIndex < sections.length - 1) {
       setCurrentSectionIndex(currentSectionIndex + 1);
@@ -115,6 +100,7 @@ const Quiz = () => {
   };
 
   const canNavigateToSection = (sectionIndex: number) => {
+    if (!sections) return false;
     if (sectionIndex === 0) return true;
     if (sectionIndex > currentSectionIndex + 1) return false;
     
@@ -128,45 +114,71 @@ const Quiz = () => {
     return true;
   };
 
-  return (
-    <>
-      <TopNav />
-      <QuizLayout
-        sections={sections}
-        currentSectionIndex={currentSectionIndex}
-        currentQuestionIndex={currentQuestionIndex}
-        answers={answers}
-        onQuestionSelect={handleQuestionSelect}
-        canNavigateToSection={canNavigateToSection}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-        canGoNext={answers[currentQuestion.id] !== undefined}
-        questionErrors={questionErrors}
-      >
-        <div className="space-y-6">
-          <h2 className="text-2xl font-semibold text-eco-dark">
-            {currentSection.title}
-          </h2>
-          <QuizQuestion
-            question={currentQuestion}
-            onAnswer={handleAnswer}
-            selectedValue={answers[currentQuestion.id]}
-            onError={handleError}
-          />
-          <div className="fixed bottom-4 left-4 p-4">
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleReset}
-              className="flex items-center gap-2"
-            >
-              <Trash2 className="h-4 w-4" />
-              Reset Assessment
-            </Button>
-          </div>
+  if (isLoading || !sections) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin-slow">
+          <div className="w-16 h-16 border-4 border-eco-primary border-t-transparent rounded-full" />
         </div>
-      </QuizLayout>
-    </>
+      </div>
+    );
+  }
+
+  // Calculate total score when quiz is completed
+  const calculateResults = () => {
+    let totalScore = 0;
+    let totalWeight = 0;
+
+    sections.forEach(section => {
+      section.questions.forEach(question => {
+        const answer = answers[question.id];
+        if (answer !== undefined) {
+          totalScore += answer * question.weight;
+          totalWeight += question.weight;
+        }
+      });
+    });
+
+    // Calculate the weighted average as the total score
+    const total = totalWeight > 0 ? Math.round((totalScore / totalWeight)) : 0;
+
+    return {
+      ...answers,
+      total
+    };
+  };
+
+  if (completed) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
+        <QuizResults results={calculateResults()} onRestart={handleRestart} />
+      </div>
+    );
+  }
+
+  const currentQuestion = sections[currentSectionIndex].questions[currentQuestionIndex];
+  const canGoNext = answers[currentQuestion.id] !== undefined && !questionErrors[currentQuestion.id];
+
+  return (
+    <QuizLayout
+      sections={sections}
+      currentSectionIndex={currentSectionIndex}
+      currentQuestionIndex={currentQuestionIndex}
+      answers={answers}
+      onQuestionSelect={handleQuestionSelect}
+      canNavigateToSection={canNavigateToSection}
+      onPrevious={handlePrevious}
+      onNext={handleNext}
+      canGoNext={canGoNext}
+      questionErrors={questionErrors}
+    >
+      <QuizQuestion
+        question={currentQuestion}
+        onAnswer={handleAnswer}
+        selectedValue={answers[currentQuestion.id]}
+        onError={handleError}
+      />
+    </QuizLayout>
   );
 };
 
