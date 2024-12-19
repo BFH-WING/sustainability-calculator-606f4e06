@@ -1,77 +1,53 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuizData } from "@/hooks/useQuizData";
-import QuizIntro from "@/components/QuizIntro";
 import QuizQuestion from "@/components/QuizQuestion";
 import QuizResults from "@/components/QuizResults";
-import TopNav from "@/components/TopNav";
 import QuizLayout from "@/components/QuizLayout";
-import { QuizResults as QuizResultsType } from "@/types/quiz";
+import TopNav from "@/components/TopNav";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
-const Index = () => {
+const STORAGE_KEY = 'circularity-quiz-answers';
+
+const Quiz = () => {
   const { data: sections, isLoading } = useQuizData();
-  const [started, setStarted] = useState(false);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
   const [questionErrors, setQuestionErrors] = useState<{ [key: string]: boolean }>({});
 
-  const calculateResults = (): QuizResultsType => {
-    if (!sections) return { total: 0 };
-    
-    const results: { [key: string]: number } = {};
-    let total = 0;
-    let sectionCount = 0;
-    
-    sections.forEach(section => {
-      let sectionTotal = 0;
-      let answeredQuestions = 0;
-      
-      section.questions.forEach(question => {
-        if (answers[question.id] !== undefined) {
-          sectionTotal += answers[question.id];
-          answeredQuestions++;
-        }
-      });
-      
-      if (answeredQuestions > 0) {
-        results[section.id] = sectionTotal / answeredQuestions;
-        total += results[section.id];
-        sectionCount++;
-      }
-    });
-    
-    return {
-      ...results,
-      total: sectionCount > 0 ? total / sectionCount : 0
-    };
-  };
-
-  const canNavigateToSection = (sectionIndex: number) => {
-    if (sectionIndex === 0) return true;
-    if (sectionIndex > currentSectionIndex + 1) return false;
-    
-    for (let i = 0; i < sectionIndex; i++) {
-      const sectionQuestions = sections?.[i].questions || [];
-      const allQuestionsAnswered = sectionQuestions.every(
-        (question) => answers[question.id] !== undefined
-      );
-      if (!allQuestionsAnswered) return false;
+  // Load answers from local storage on mount
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem(STORAGE_KEY);
+    if (savedAnswers) {
+      const parsedAnswers = JSON.parse(savedAnswers);
+      setAnswers(parsedAnswers);
+      console.log('Loaded answers from storage:', parsedAnswers);
     }
-    return true;
-  };
+  }, []);
 
-  const handleStart = () => {
-    setStarted(true);
-  };
+  // Save answers to local storage whenever they change
+  useEffect(() => {
+    if (Object.keys(answers).length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+      console.log('Saved answers to storage:', answers);
+    }
+  }, [answers]);
 
   const handleRestart = () => {
-    setStarted(true);
     setCompleted(false);
     setCurrentSectionIndex(0);
     setCurrentQuestionIndex(0);
     setAnswers({});
     setQuestionErrors({});
+    localStorage.removeItem(STORAGE_KEY);
+    toast.success('Assessment reset successfully');
+  };
+
+  const handleReset = () => {
+    handleRestart();
   };
 
   if (isLoading || !sections) {
@@ -84,39 +60,17 @@ const Index = () => {
     );
   }
 
-  if (!started) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
-        <TopNav />
-        <QuizIntro sections={sections} onStart={handleStart} />
-      </div>
-    );
-  }
-
   if (completed) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] pt-24 px-6">
         <TopNav />
-        <QuizResults results={calculateResults()} onRestart={handleRestart} />
+        <QuizResults results={answers} onRestart={handleRestart} />
       </div>
     );
   }
 
   const currentSection = sections[currentSectionIndex];
   const currentQuestion = currentSection?.questions[currentQuestionIndex];
-
-  if (!currentQuestion) {
-    console.error("Current question is undefined", {
-      currentSectionIndex,
-      currentQuestionIndex,
-      sections
-    });
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-red-500">Error loading question</div>
-      </div>
-    );
-  }
 
   const handleAnswer = (value: number) => {
     setAnswers((prev) => ({
@@ -160,6 +114,20 @@ const Index = () => {
     }
   };
 
+  const canNavigateToSection = (sectionIndex: number) => {
+    if (sectionIndex === 0) return true;
+    if (sectionIndex > currentSectionIndex + 1) return false;
+    
+    for (let i = 0; i < sectionIndex; i++) {
+      const sectionQuestions = sections[i].questions;
+      const allQuestionsAnswered = sectionQuestions.every(
+        (question) => answers[question.id] !== undefined
+      );
+      if (!allQuestionsAnswered) return false;
+    }
+    return true;
+  };
+
   return (
     <>
       <TopNav />
@@ -175,18 +143,31 @@ const Index = () => {
         canGoNext={answers[currentQuestion.id] !== undefined}
         questionErrors={questionErrors}
       >
-        <h2 className="text-2xl font-semibold text-eco-dark mb-6">
-          {currentSection.title}
-        </h2>
-        <QuizQuestion
-          question={currentQuestion}
-          onAnswer={handleAnswer}
-          selectedValue={answers[currentQuestion.id]}
-          onError={handleError}
-        />
+        <div className="space-y-6">
+          <h2 className="text-2xl font-semibold text-eco-dark">
+            {currentSection.title}
+          </h2>
+          <QuizQuestion
+            question={currentQuestion}
+            onAnswer={handleAnswer}
+            selectedValue={answers[currentQuestion.id]}
+            onError={handleError}
+          />
+          <div className="fixed bottom-4 left-4 p-4">
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleReset}
+              className="flex items-center gap-2"
+            >
+              <Trash2 className="h-4 w-4" />
+              Reset Assessment
+            </Button>
+          </div>
+        </div>
       </QuizLayout>
     </>
   );
 };
 
-export default Index;
+export default Quiz;
