@@ -45,10 +45,10 @@ const QuestionList = ({
             <div className="flex items-center justify-between">
               <span className="flex items-center">
                 <span className="mr-2">{isAnswered ? "✓" : "○"}</span>
-                <span className="truncate">{question.text}</span>
+                <span className="truncate max-w-[70%]">{question.text}</span>
               </span>
               {isAnswered && (
-                <span className="ml-2 text-xs text-gray-500">
+                <span className="text-xs font-medium bg-gray-100 px-2 py-0.5 rounded">
                   {score.toFixed(1)}% (w: {question.weight})
                 </span>
               )}
