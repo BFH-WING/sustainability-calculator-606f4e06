@@ -24,6 +24,7 @@ const QuestionList = ({
     <div className="space-y-6">
       {sections.map((section, sectionIndex) => (
         <div key={section.id} className="space-y-2">
+          <h3 className="font-medium text-gray-900">{section.title}</h3>
           <ul className="space-y-1 pl-4">
             {section.questions.map((question, qIndex) => {
               const isAnswered = answers[question.id] !== undefined;
@@ -61,7 +62,6 @@ const QuestionList = ({
               );
             })}
           </ul>
-          <h3 className="font-medium text-gray-900">{section.title}</h3>
         </div>
       ))}
     </div>
