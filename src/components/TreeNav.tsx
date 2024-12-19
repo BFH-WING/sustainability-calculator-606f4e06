@@ -72,7 +72,7 @@ const TreeNav = ({
   };
 
   return (
-    <div className="fixed top-16 left-0 w-1/3 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto">
+    <div className="fixed top-16 left-0 w-1/3 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto z-50">
       <div className="p-6">
         <ProgressBar
           progressPercentage={progressPercentage}
