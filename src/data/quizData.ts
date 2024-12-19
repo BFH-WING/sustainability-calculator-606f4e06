@@ -10,6 +10,7 @@ export const quizSections: QuizSection[] = [
         id: "materials-1",
         text: "What percentage of your materials are recycled?",
         type: "single_choice",
+        weight: 0.6,
         options: [
           { id: "m1-1", text: "0-20%", value: 1 },
           { id: "m1-2", text: "21-40%", value: 2 },
@@ -23,6 +24,7 @@ export const quizSections: QuizSection[] = [
         id: "materials-2",
         text: "Do you use sustainable packaging?",
         type: "single_choice",
+        weight: 0.4,
         options: [
           { id: "m2-1", text: "Yes, all packaging is sustainable", value: 0 },
           { id: "m2-2", text: "Most packaging is sustainable", value: 2 },
@@ -41,6 +43,7 @@ export const quizSections: QuizSection[] = [
         id: "transport-1",
         text: "What's your primary mode of transportation?",
         type: "single_choice",
+        weight: 0.7,
         options: [
           { id: "t1-1", text: "Walk or bicycle", value: 0 },
           { id: "t1-2", text: "Public transportation", value: 2 },
@@ -52,6 +55,7 @@ export const quizSections: QuizSection[] = [
         id: "transport-2",
         text: "How many miles do you travel per week?",
         type: "single_choice",
+        weight: 0.3,
         options: [
           { id: "t2-1", text: "Less than 50", value: 1 },
           { id: "t2-2", text: "50-100", value: 2 },
@@ -70,6 +74,7 @@ export const quizSections: QuizSection[] = [
         id: "energy-1",
         text: "What type of energy powers your home?",
         type: "single_choice",
+        weight: 0.6,
         options: [
           { id: "e1-1", text: "Renewable energy", value: 0 },
           { id: "e1-2", text: "Mixed sources", value: 2 },
@@ -80,6 +85,7 @@ export const quizSections: QuizSection[] = [
         id: "energy-2",
         text: "How do you heat/cool your home?",
         type: "single_choice",
+        weight: 0.4,
         options: [
           { id: "e2-1", text: "Natural ventilation", value: 0 },
           { id: "e2-2", text: "Energy efficient system", value: 2 },
@@ -97,6 +103,7 @@ export const quizSections: QuizSection[] = [
         id: "food-1",
         text: "What best describes your diet?",
         type: "single_choice",
+        weight: 0.5,
         options: [
           { id: "f1-1", text: "Plant-based", value: 0 },
           { id: "f1-2", text: "Vegetarian", value: 2 },
@@ -108,6 +115,7 @@ export const quizSections: QuizSection[] = [
         id: "food-2",
         text: "How often do you eat locally sourced food?",
         type: "single_choice",
+        weight: 0.5,
         options: [
           { id: "f2-1", text: "Almost always", value: 0 },
           { id: "f2-2", text: "Often", value: 2 },
@@ -126,6 +134,7 @@ export const quizSections: QuizSection[] = [
         id: "waste-1",
         text: "How much do you recycle?",
         type: "single_choice",
+        weight: 0.6,
         options: [
           { id: "w1-1", text: "Everything possible", value: 0 },
           { id: "w1-2", text: "Most items", value: 2 },
@@ -137,6 +146,7 @@ export const quizSections: QuizSection[] = [
         id: "waste-2",
         text: "How do you handle food waste?",
         type: "single_choice",
+        weight: 0.4,
         options: [
           { id: "w2-1", text: "Compost everything", value: 0 },
           { id: "w2-2", text: "Some composting", value: 2 },
@@ -154,6 +164,7 @@ export const quizSections: QuizSection[] = [
         id: "cons-1",
         text: "How often do you buy new clothes?",
         type: "single_choice",
+        weight: 0.5,
         options: [
           { id: "c1-1", text: "Rarely/Second-hand", value: 0 },
           { id: "c1-2", text: "Few times a year", value: 2 },
@@ -165,6 +176,7 @@ export const quizSections: QuizSection[] = [
         id: "cons-2",
         text: "Do you consider eco-friendly packaging when shopping?",
         type: "single_choice",
+        weight: 0.5,
         options: [
           { id: "c2-1", text: "Always", value: 0 },
           { id: "c2-2", text: "Often", value: 2 },
