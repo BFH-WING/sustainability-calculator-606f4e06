@@ -1,4 +1,4 @@
-import { CircleDot, RefreshCw } from "lucide-react";
+import { CircleArrowUp, RefreshCw } from "lucide-react";
 import { QuizSection } from "@/types/quiz";
 
 interface QuizIntroProps {
@@ -12,7 +12,7 @@ const QuizIntro = ({ sections, onStart }: QuizIntroProps) => {
       <div className="max-w-4xl mx-auto text-center mb-8">
         <div className="flex justify-center mb-6">
           <div className="relative">
-            <CircleDot className="h-16 w-16 text-eco-primary" />
+            <CircleArrowUp className="h-16 w-16 text-eco-primary" />
             <RefreshCw className="h-8 w-8 text-eco-accent absolute -right-2 -bottom-2 animate-spin-slow" />
           </div>
         </div>
