@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ChevronRight, ChevronDown, FolderOpen, Folder, FileText, CheckCircle2 } from "lucide-react";
+import { ChevronRight, FolderOpen, Folder, FileText, CheckCircle2 } from "lucide-react";
 
 interface TreeNavProps {
   sections: QuizSection[];
