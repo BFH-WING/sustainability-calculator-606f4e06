@@ -1,7 +1,7 @@
 import { Question } from "../types/quiz";
 import { Slider } from "@/components/ui/slider";
 import { useState, useEffect } from "react";
-import { calculateNewPercentages, calculateTotalPercentage } from "@/utils/percentageCalculations";
+import { calculateTotalPercentage } from "@/utils/percentageCalculations";
 
 interface PercentageQuestionProps {
   question: Question;
@@ -29,13 +29,13 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
   }, [totalPercentage, onError]);
 
   const handleSliderChange = (value: number[], optionId: string) => {
-    const newValue = value[0];
-    const oldValue = percentages[optionId];
+    const newValue = Math.round(value[0] / 5) * 5; // Round to nearest 5%
+    console.log('Setting new value for', optionId, ':', newValue);
     
-    const newPercentages = calculateNewPercentages(percentages, optionId, newValue, oldValue);
-    console.log('Setting new percentages:', newPercentages, 'Total:', calculateTotalPercentage(newPercentages));
-    
-    setPercentages(newPercentages);
+    setPercentages(prev => ({
+      ...prev,
+      [optionId]: newValue
+    }));
     onAnswer(newValue);
   };
 
@@ -50,7 +50,7 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
           <Slider
             defaultValue={[percentages[option.id]]}
             max={100}
-            step={1}
+            step={5}
             value={[percentages[option.id]]}
             onValueChange={(value) => handleSliderChange(value, option.id)}
             className="w-full"
