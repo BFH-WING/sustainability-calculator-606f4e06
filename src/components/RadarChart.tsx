@@ -1,4 +1,4 @@
-import { ResponsiveContainer, RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
+import { ResponsiveContainer, RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, Radar, Legend } from 'recharts';
 
 interface RadarChartProps {
   data: Array<{
@@ -12,21 +12,22 @@ const RadarChart = ({ data, color }: RadarChartProps) => {
   console.log('Rendering RadarChart with data:', data);
   
   return (
-    <div className="w-full h-[300px]">
+    <div className="w-full h-full">
       <ResponsiveContainer width="100%" height="100%">
-        <RechartsRadar data={data} outerRadius={90}>
+        <RechartsRadar data={data} outerRadius="80%">
           <PolarGrid stroke="#e5e7eb" />
           <PolarAngleAxis
             dataKey="subject"
             tick={{ fill: '#6b7280', fontSize: 12 }}
           />
           <Radar
-            name="Score"
+            name="Score (%)"
             dataKey="value"
             stroke={color}
             fill={color}
             fillOpacity={0.5}
           />
+          <Legend />
         </RechartsRadar>
       </ResponsiveContainer>
     </div>
