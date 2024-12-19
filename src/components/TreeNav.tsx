@@ -49,26 +49,15 @@ const TreeNav = ({
             </button>
             
             {showDebug && (
-              <div className="bg-gray-100 p-4 rounded-md space-y-2 font-mono text-xs">
-                <div>
-                  <strong>Current Section:</strong> {currentSectionIndex}
-                </div>
-                <div>
-                  <strong>Current Question:</strong> {currentQuestionIndex}
-                </div>
-                <div>
-                  <strong>Answers:</strong>
-                  <pre className="mt-1 whitespace-pre-wrap break-all">
-                    {JSON.stringify(answers, null, 2)}
-                  </pre>
-                </div>
+              <div className="bg-gray-100 p-4 rounded-md font-mono text-xs">
+                Current Section: {currentSectionIndex} | Current Question: {currentQuestionIndex}
+                <br />
+                Answers: {JSON.stringify(answers)}
                 {questionErrors && Object.keys(questionErrors).length > 0 && (
-                  <div>
-                    <strong>Errors:</strong>
-                    <pre className="mt-1 whitespace-pre-wrap break-all">
-                      {JSON.stringify(questionErrors, null, 2)}
-                    </pre>
-                  </div>
+                  <>
+                    <br />
+                    Errors: {JSON.stringify(questionErrors)}
+                  </>
                 )}
               </div>
             )}
