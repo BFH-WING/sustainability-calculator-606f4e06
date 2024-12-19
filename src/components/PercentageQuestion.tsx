@@ -62,9 +62,6 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
           {error}
         </div>
       )}
-      <div className="text-sm text-gray-500 mt-2">
-        Total: {totalPercentage}%
-      </div>
     </div>
   );
 };
