@@ -51,10 +51,10 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       </h1>
       
       <div className="mb-12">
-        <div className="h-[400px]"> {/* Increased height for more prominence */}
+        <div className="h-[400px]">
           <RadarChart 
             data={radarData} 
-            color="#4DFF4D"
+            color="#4CAF50"
           />
         </div>
       </div>
@@ -72,7 +72,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
             <div 
               className="h-2 bg-gray-100 rounded-full overflow-hidden"
               style={{
-                background: `linear-gradient(to right, #4DFF4D ${data.percentage}%, #e5e7eb 0%)`
+                background: `linear-gradient(to right, #4CAF50 ${data.percentage}%, #e5e7eb 0%)`
               }}
             />
           </div>
