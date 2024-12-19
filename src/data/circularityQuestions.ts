@@ -107,11 +107,11 @@ export const circularityQuestions: QuizSection[] = [
         type: "percentage",
         weight: 0.7,
         options: [
-          { id: "p1-1", text: "Solar (0-100%)", value: 5 },
-          { id: "p1-2", text: "Wind (0-100%)", value: 5 },
-          { id: "p1-3", text: "Geothermal (0-100%)", value: 4 },
-          { id: "p1-4", text: "Biomass (0-100%)", value: 3 },
-          { id: "p1-5", text: "Other (0-100%)", value: 2 },
+          { id: "p1-1", text: "Solar (0-100%)", value: 100 },
+          { id: "p1-2", text: "Wind (0-100%)", value: 100 },
+          { id: "p1-3", text: "Geothermal (0-100%)", value: 80 },
+          { id: "p1-4", text: "Biomass (0-100%)", value: 60 },
+          { id: "p1-5", text: "Other (0-100%)", value: 40 },
           { id: "p1-6", text: "I don't know", value: 0 }
         ]
       },
@@ -122,7 +122,7 @@ export const circularityQuestions: QuizSection[] = [
         type: "percentage",
         weight: 0.3,
         options: [
-          { id: "p2-1", text: "0-100%", value: 5 },
+          { id: "p2-1", text: "0-100%", value: 100 },
           { id: "p2-2", text: "I don't know", value: 0 },
           { id: "p2-3", text: "Does not apply", value: 0 }
         ]
@@ -142,11 +142,11 @@ export const circularityQuestions: QuizSection[] = [
         type: "percentage",
         weight: 0.6,
         options: [
-          { id: "e1-1", text: "Sharing (0-100%)", value: 5 },
-          { id: "e1-2", text: "Rental/Leasing (0-100%)", value: 4 },
-          { id: "e1-3", text: "Repair (0-100%)", value: 3 },
-          { id: "e1-4", text: "Second hand market/Remanufacturing (0-100%)", value: 2 },
-          { id: "e1-5", text: "Traditional product sale (0-100%)", value: 1 },
+          { id: "e1-1", text: "Sharing (0-100%)", value: 100 },
+          { id: "e1-2", text: "Rental/Leasing (0-100%)", value: 80 },
+          { id: "e1-3", text: "Repair (0-100%)", value: 60 },
+          { id: "e1-4", text: "Second hand market/Remanufacturing (0-100%)", value: 40 },
+          { id: "e1-5", text: "Traditional product sale (0-100%)", value: 20 },
           { id: "e1-6", text: "I don't know", value: 0 }
         ]
       },
