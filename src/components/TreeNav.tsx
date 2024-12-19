@@ -1,9 +1,6 @@
+import * as React from "react";
 import { QuizSection } from "@/types/quiz";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
-import ProgressBar from "./TreeNav/ProgressBar";
-import QuestionList from "./TreeNav/QuestionList";
+import QuestionList from "./QuestionList";
 
 interface TreeNavProps {
   sections: QuizSection[];
@@ -24,115 +21,47 @@ const TreeNav = ({
   canNavigateToSection,
   questionErrors,
 }: TreeNavProps) => {
-  const isDebugMode = true;
-  const [openSections, setOpenSections] = useState<string[]>([`section-${currentSectionIndex}`]);
-
-  useEffect(() => {
-    if (!openSections.includes(`section-${currentSectionIndex}`)) {
-      setOpenSections(prev => [...prev, `section-${currentSectionIndex}`]);
-    }
-  }, [currentSectionIndex]);
-
-  // Calculate total progress
-  const totalQuestions = sections.reduce(
-    (total, section) => total + section.questions.length,
-    0
-  );
-  const answeredQuestions = Object.keys(answers).length;
-  const progressPercentage = (answeredQuestions / totalQuestions) * 100;
-
-  // Calculate section scores using normalized percentages (0-100%)
-  const calculateSectionScore = (section: QuizSection) => {
-    const sectionQuestions = section.questions;
-    let totalScore = 0;
-    let answeredCount = 0;
-
-    sectionQuestions.forEach(question => {
-      const answer = answers[question.id];
-      if (answer !== undefined) {
-        totalScore += answer;
-        answeredCount++;
-      }
-    });
-
-    return {
-      score: totalScore,
-      maxScore: answeredCount * 100,
-      answeredCount,
-      totalQuestions: sectionQuestions.length,
-      percentage: answeredCount > 0 ? totalScore / answeredCount : 0
-    };
-  };
-
-  const handleAccordionChange = (value: string[]) => {
-    if (!value.includes(`section-${currentSectionIndex}`)) {
-      value.push(`section-${currentSectionIndex}`);
-    }
-    setOpenSections(value);
-  };
-
   return (
-    <div className="fixed top-16 left-0 w-1/3 h-[calc(100vh-4rem)] bg-white border-r border-gray-200 overflow-y-auto z-50">
-      <div className="p-6">
-        <ProgressBar
-          progressPercentage={progressPercentage}
-          answeredQuestions={answeredQuestions}
-          totalQuestions={totalQuestions}
-        />
-
-        <Accordion
-          type="multiple"
-          value={openSections}
-          onValueChange={handleAccordionChange}
-          className="w-full"
-        >
-          {sections.map((section, sectionIndex) => {
-            const isCurrentSection = currentSectionIndex === sectionIndex;
-            const canNavigate = canNavigateToSection(sectionIndex);
-            const sectionScore = calculateSectionScore(section);
-
-            return (
-              <AccordionItem 
-                key={section.id}
-                value={`section-${sectionIndex}`}
-                className={cn(
-                  "border-b",
-                  !canNavigate && "opacity-50"
-                )}
-              >
-                <AccordionTrigger
-                  className={cn(
-                    "hover:no-underline",
-                    isCurrentSection && "text-eco-primary font-medium"
-                  )}
-                >
-                  <div className="flex items-center justify-between w-full">
-                    <span className="text-sm">
-                      {sectionIndex + 1}. {section.title}
-                    </span>
-                    {isDebugMode && sectionScore.answeredCount > 0 && (
-                      <span className="text-xs text-gray-500">
-                        {sectionScore.percentage.toFixed(1)}%
-                      </span>
-                    )}
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-1">
-                  <QuestionList
-                    questions={section.questions}
-                    sectionIndex={sectionIndex}
-                    currentSectionIndex={currentSectionIndex}
-                    currentQuestionIndex={currentQuestionIndex}
-                    answers={answers}
-                    onQuestionSelect={onQuestionSelect}
-                    canNavigate={canNavigate}
-                    questionErrors={questionErrors}
-                  />
-                </AccordionContent>
-              </AccordionItem>
-            );
-          })}
-        </Accordion>
+    <div className="fixed left-0 top-0 w-[40%] h-full bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
+      <div className="flex flex-col h-full">
+        <div className="flex-1 p-6">
+          <QuestionList
+            sections={sections}
+            currentSectionIndex={currentSectionIndex}
+            currentQuestionIndex={currentQuestionIndex}
+            answers={answers}
+            onQuestionSelect={onQuestionSelect}
+            canNavigateToSection={canNavigateToSection}
+            questionErrors={questionErrors}
+          />
+        </div>
+        
+        {/* Footer content */}
+        <div className="p-6 border-t border-eco-light bg-white/80">
+          <div className="text-sm text-gray-600 space-y-4">
+            <p className="font-medium">
+              Disclaimer: The results of this diagnostic tool are not intended to provide a measure of environmental sustainability impact derived from the degree of circularity attained by the organization.
+            </p>
+            <div className="flex items-center space-x-4 pt-4">
+              <img 
+                src="/lovable-uploads/7455dfcd-9f33-41c8-b39e-3c6eef31dbac.png" 
+                alt="BFH Logo" 
+                className="h-12 object-contain"
+              />
+              <p>
+                Developed by: Dr. Maria A. Franco
+                <br />
+                Implemented by: Moritz Maier
+                <br />
+                Bern University of Applied Sciences
+                <br />
+                <span className="text-gray-500">
+                  Industrial Engineering and Management Science (WING)
+                </span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
