@@ -1,5 +1,4 @@
 import RadarChart from "./RadarChart";
-import SectionScores from "./SectionScores";
 import { QuizResults as QuizResultsType } from "@/types/quiz";
 import { circularityQuestions } from "@/data/circularityQuestions";
 
@@ -14,8 +13,15 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   // Calculate max possible scores per section
   const sectionMaxScores = circularityQuestions.reduce((acc, section) => {
     const maxScore = section.questions.reduce((sum, question) => {
-      const maxOptionValue = Math.max(...question.options.map(opt => opt.value));
-      return sum + maxOptionValue;
+      if (question.type === 'single_choice') {
+        // For single choice, find the highest value option
+        const maxOptionValue = Math.max(...question.options.map(opt => opt.value));
+        return sum + maxOptionValue;
+      } else if (question.type === 'percentage') {
+        // For percentage questions, max score is 100
+        return sum + 100;
+      }
+      return sum;
     }, 0);
     acc[section.id] = maxScore;
     return acc;
@@ -23,20 +29,36 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
   // Calculate actual scores and percentages for each section
   const sectionScores = circularityQuestions.reduce((acc, section) => {
-    const actualScore = section.questions.reduce((sum, question) => {
-      return sum + (results[question.id] || 0);
-    }, 0);
-    const maxScore = sectionMaxScores[section.id];
-    const percentage = (actualScore / maxScore) * 100;
+    let actualScore = 0;
+    let maxScore = sectionMaxScores[section.id];
+
+    section.questions.forEach(question => {
+      const answer = results[question.id];
+      if (answer !== undefined) {
+        if (question.type === 'single_choice') {
+          actualScore += answer;
+        } else if (question.type === 'percentage') {
+          // For percentage questions, calculate weighted average based on option values
+          const optionValues = question.options.reduce((sum, option) => {
+            return sum + (option.value * (answer / 100));
+          }, 0);
+          actualScore += optionValues;
+        }
+      }
+    });
+
+    const percentage = maxScore > 0 ? (actualScore / maxScore) * 100 : 0;
     
     acc[section.id] = {
-      actual: actualScore,
+      actual: Math.round(actualScore * 10) / 10,
       max: maxScore,
       percentage: Math.round(percentage),
       label: section.title
     };
     return acc;
   }, {} as { [key: string]: { actual: number; max: number; percentage: number; label: string } });
+
+  console.log('Section scores:', sectionScores);
 
   // Transform the results into the format needed for the radar chart
   const radarData = Object.entries(sectionScores).map(([id, data]) => ({
