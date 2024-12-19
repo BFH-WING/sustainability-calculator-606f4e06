@@ -11,6 +11,7 @@ export type Question = {
   description?: string;
   weight?: number;
   source_url?: string;
+  subcategory?: string;
 };
 
 export type QuizSection = {

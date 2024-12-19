@@ -130,12 +130,13 @@ const Index = () => {
         <div className="w-80 bg-white/80 min-h-screen p-6 border-r border-eco-light fixed left-0 top-16 overflow-y-auto">
           <h2 className="text-xl font-bold text-eco-dark mb-6 flex items-center gap-2">
             <CircleArrowUp className="h-6 w-6" />
-            Diagnostic Sections
+            Sections
           </h2>
           <div className="space-y-3">
             {sections.map((section, index) => (
               <button
                 key={section.id}
+                onClick={() => setCurrentSectionIndex(index)}
                 className={`w-full text-left p-4 rounded-lg transition-colors ${
                   index === currentSectionIndex
                     ? "bg-eco-primary text-white"
@@ -145,7 +146,6 @@ const Index = () => {
                     ? "text-eco-primary"
                     : "text-gray-600"
                 }`}
-                disabled={results !== null}
               >
                 <div className="flex items-center">
                   <span className="w-7 h-7 rounded-full border flex items-center justify-center mr-3 text-sm">
@@ -166,6 +166,11 @@ const Index = () => {
                   <CircleArrowUp className="h-5 w-5" />
                   {currentSection.title}
                 </CardTitle>
+                {currentQuestion.subcategory && (
+                  <div className="text-center text-eco-primary font-medium">
+                    {currentQuestion.subcategory}
+                  </div>
+                )}
               </CardHeader>
               <CardContent>
                 <QuizProgress

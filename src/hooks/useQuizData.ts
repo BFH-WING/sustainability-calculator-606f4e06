@@ -52,6 +52,7 @@ const fetchQuizData = async (): Promise<QuizSection[]> => {
         description: question.description || undefined,
         weight: question.weight || undefined,
         source_url: question.source_url || undefined,
+        subcategory: subcategory.title, // Include subcategory title
         options: question.options
           .sort((a, b) => a.order_index - b.order_index)
           .map(option => ({
