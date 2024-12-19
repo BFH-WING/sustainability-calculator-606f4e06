@@ -17,6 +17,22 @@ const Index = () => {
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
 
+  // Add the canNavigateToSection function
+  const canNavigateToSection = (sectionIndex: number) => {
+    if (sectionIndex === 0) return true;
+    if (sectionIndex > currentSectionIndex + 1) return false;
+    
+    // Check if all questions in previous sections are answered
+    for (let i = 0; i < sectionIndex; i++) {
+      const sectionQuestions = sections?.[i].questions || [];
+      const allQuestionsAnswered = sectionQuestions.every(
+        (question) => answers[question.id] !== undefined
+      );
+      if (!allQuestionsAnswered) return false;
+    }
+    return true;
+  };
+
   if (isLoading || !sections) {
     return (
       <div className="min-h-screen flex items-center justify-center">
