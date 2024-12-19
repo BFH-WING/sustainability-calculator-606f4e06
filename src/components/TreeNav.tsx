@@ -39,9 +39,10 @@ const TreeNav = ({
   const progressPercentage = (answeredQuestions / totalQuestions) * 100;
 
   // Calculate section scores
-  const calculateSectionScore = (section: QuizSection): string => {
+  const calculateSectionScore = (section: QuizSection) => {
     const sectionQuestions = section.questions;
     let totalScore = 0;
+    let maxPossibleScore = 0;
     let answeredCount = 0;
 
     sectionQuestions.forEach(question => {
@@ -49,23 +50,31 @@ const TreeNav = ({
       if (answer !== undefined) {
         if (question.type === 'single_choice') {
           totalScore += answer * question.weight;
+          maxPossibleScore += 5 * question.weight; // 5 is max score for single choice
+          answeredCount++;
         } else if (question.type === 'percentage') {
           const optionValues = question.options.reduce((sum, option) => {
             return sum + (option.value * (answer / 100));
           }, 0);
           totalScore += optionValues * question.weight;
+          maxPossibleScore += 5 * question.weight; // 5 is max score for percentage
+          answeredCount++;
         }
-        answeredCount++;
+      }
+      // Add to max possible score even if not answered
+      if (answer === undefined) {
+        maxPossibleScore += 5 * question.weight;
       }
     });
 
-    if (answeredCount === 0) return "No questions answered";
-    const averageScore = totalScore / answeredCount;
-    return `Score: ${averageScore.toFixed(2)}`;
+    return {
+      score: Math.round(totalScore * 10) / 10,
+      maxScore: Math.round(maxPossibleScore * 10) / 10,
+      answeredCount,
+      totalQuestions: sectionQuestions.length,
+      percentage: maxPossibleScore > 0 ? (totalScore / maxPossibleScore) * 100 : 0
+    };
   };
-
-  // Helper function to check if a question is answered
-  const isQuestionAnswered = (questionId: string) => answers[questionId] !== undefined;
 
   // Create defaultValue array with the current section
   const defaultExpandedSections = [`section-${currentSectionIndex}`];
@@ -99,6 +108,7 @@ const TreeNav = ({
           {sections.map((section, sectionIndex) => {
             const isCurrentSection = currentSectionIndex === sectionIndex;
             const canNavigate = canNavigateToSection(sectionIndex);
+            const sectionScore = calculateSectionScore(section);
 
             return (
               <AccordionItem 
@@ -127,14 +137,16 @@ const TreeNav = ({
                 <AccordionContent className="pt-1">
                   {isDebugMode && (
                     <Alert className="mb-2 bg-gray-50">
-                      <AlertDescription className="font-mono text-xs">
-                        {calculateSectionScore(section)}
+                      <AlertDescription className="font-mono text-xs space-y-1">
+                        <div>Questions answered: {sectionScore.answeredCount}/{sectionScore.totalQuestions}</div>
+                        <div>Current score: {sectionScore.score}/{sectionScore.maxScore}</div>
+                        <div>Section completion: {Math.round(sectionScore.percentage)}%</div>
                       </AlertDescription>
                     </Alert>
                   )}
                   <ul className="space-y-1 pl-4">
                     {section.questions.map((question, qIndex) => {
-                      const isAnswered = isQuestionAnswered(question.id);
+                      const isAnswered = answers[question.id] !== undefined;
                       const isCurrent =
                         isCurrentSection &&
                         currentQuestionIndex === qIndex;
