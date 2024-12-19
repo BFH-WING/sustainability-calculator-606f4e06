@@ -7,9 +7,10 @@ interface QuizQuestionProps {
   question: Question;
   onAnswer: (value: number) => void;
   selectedValue?: number;
+  onError?: (hasError: boolean) => void;
 }
 
-const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) => {
+const QuizQuestion = ({ question, onAnswer, selectedValue, onError }: QuizQuestionProps) => {
   const [percentages, setPercentages] = useState<{ [key: string]: number }>(
     question.options.reduce((acc, option) => ({
       ...acc,
@@ -24,13 +25,11 @@ const QuizQuestion = ({ question, onAnswer, selectedValue }: QuizQuestionProps) 
 
   useEffect(() => {
     if (question.type === 'percentage') {
-      if (totalPercentage !== 100) {
-        setError(`Total must equal 100% (currently ${totalPercentage}%)`);
-      } else {
-        setError(null);
-      }
+      const hasError = totalPercentage !== 100;
+      setError(hasError ? `Total must equal 100% (currently ${totalPercentage}%)` : null);
+      onError?.(hasError);
     }
-  }, [totalPercentage, question.type]);
+  }, [totalPercentage, question.type, onError]);
 
   const handleSliderChange = (value: number[], optionId: string) => {
     const newValue = value[0];

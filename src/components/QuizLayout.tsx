@@ -13,6 +13,7 @@ interface QuizLayoutProps {
   onNext: () => void;
   canGoNext: boolean;
   children: React.ReactNode;
+  questionErrors?: { [key: string]: boolean };
 }
 
 const QuizLayout = ({
@@ -26,6 +27,7 @@ const QuizLayout = ({
   onNext,
   canGoNext,
   children,
+  questionErrors,
 }: QuizLayoutProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
@@ -36,6 +38,7 @@ const QuizLayout = ({
         answers={answers}
         onQuestionSelect={onQuestionSelect}
         canNavigateToSection={canNavigateToSection}
+        questionErrors={questionErrors}
       />
       <div className="ml-64">
         <div className="max-w-4xl mx-auto pt-24 px-6">

@@ -14,6 +14,7 @@ const Index = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
+  const [questionErrors, setQuestionErrors] = useState<{ [key: string]: boolean }>({});
 
   const calculateResults = (): QuizResultsType => {
     if (!sections) return { total: 0 };
@@ -70,6 +71,7 @@ const Index = () => {
     setCurrentSectionIndex(0);
     setCurrentQuestionIndex(0);
     setAnswers({});
+    setQuestionErrors({});
   };
 
   if (isLoading || !sections) {
@@ -123,6 +125,13 @@ const Index = () => {
     }));
   };
 
+  const handleError = (hasError: boolean) => {
+    setQuestionErrors(prev => ({
+      ...prev,
+      [currentQuestion.id]: hasError
+    }));
+  };
+
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(currentQuestionIndex - 1);
@@ -164,6 +173,7 @@ const Index = () => {
         onPrevious={handlePrevious}
         onNext={handleNext}
         canGoNext={answers[currentQuestion.id] !== undefined}
+        questionErrors={questionErrors}
       >
         <h2 className="text-2xl font-semibold text-eco-dark mb-6">
           {currentSection.title}
@@ -172,6 +182,7 @@ const Index = () => {
           question={currentQuestion}
           onAnswer={handleAnswer}
           selectedValue={answers[currentQuestion.id]}
+          onError={handleError}
         />
       </QuizLayout>
     </>

@@ -14,6 +14,7 @@ interface TreeNavProps {
   answers: { [key: string]: number };
   onQuestionSelect: (sectionIndex: number, questionIndex: number) => void;
   canNavigateToSection: (sectionIndex: number) => boolean;
+  questionErrors?: { [key: string]: boolean };
 }
 
 const TreeNav = ({
@@ -23,6 +24,7 @@ const TreeNav = ({
   answers,
   onQuestionSelect,
   canNavigateToSection,
+  questionErrors = {},
 }: TreeNavProps) => {
   // Calculate total progress
   const totalQuestions = sections.reduce(
@@ -91,6 +93,7 @@ const TreeNav = ({
                       const isCurrent =
                         isCurrentSection &&
                         currentQuestionIndex === qIndex;
+                      const hasError = questionErrors[question.id];
 
                       return (
                         <li key={question.id}>
@@ -101,7 +104,9 @@ const TreeNav = ({
                             }
                             disabled={!canNavigate}
                             className={`w-full text-left py-1 text-sm flex items-center gap-2 rounded transition-colors ${
-                              isCurrent
+                              hasError 
+                                ? "text-red-500"
+                                : isCurrent
                                 ? "text-eco-primary font-medium"
                                 : canNavigate
                                 ? "hover:text-eco-primary"
@@ -109,7 +114,7 @@ const TreeNav = ({
                             }`}
                           >
                             {isAnswered ? (
-                              <CheckCircle2 className="h-4 w-4 text-eco-primary shrink-0" />
+                              <CheckCircle2 className={`h-4 w-4 ${hasError ? 'text-red-500' : 'text-eco-primary'} shrink-0`} />
                             ) : (
                               <FileText className="h-4 w-4 text-gray-400 shrink-0" />
                             )}
