@@ -12,29 +12,29 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   
   // Calculate scores per section
   const sectionScores = circularityQuestions.reduce((acc, section) => {
-    let weightedScore = 0;
-    let totalWeight = 0;
+    let totalScore = 0;
+    let answeredQuestions = 0;
 
     section.questions.forEach(question => {
       const answer = results[question.id];
       if (answer !== undefined) {
-        // Now answer is already in percentage (0-100), just apply weight
-        weightedScore += (answer * question.weight);
-        totalWeight += question.weight;
+        // Answer is already in percentage (0-100)
+        totalScore += (answer * question.weight);
+        answeredQuestions += question.weight;
       }
     });
 
-    // Calculate final percentage
-    const percentage = totalWeight > 0 ? (weightedScore / totalWeight) : 0;
+    // Calculate weighted average percentage
+    const percentage = answeredQuestions > 0 ? (totalScore / answeredQuestions) : 0;
     
     acc[section.id] = {
-      actual: Math.round(weightedScore * 10) / 10,
-      max: totalWeight * 100, // Max is now 100% per question
+      score: Math.round(totalScore * 10) / 10,
+      maxScore: answeredQuestions * 100,
       percentage: Math.round(percentage),
       label: section.title
     };
     return acc;
-  }, {} as { [key: string]: { actual: number; max: number; percentage: number; label: string } });
+  }, {} as { [key: string]: { score: number; maxScore: number; percentage: number; label: string } });
 
   console.log('Section scores:', sectionScores);
 
@@ -66,7 +66,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
             <div className="flex justify-between text-sm">
               <span className="flex-1 font-medium">{data.label}</span>
               <span className="text-gray-500">
-                Score: {data.actual}/{data.max} ({data.percentage}%)
+                Score: {data.score}/{data.maxScore} ({data.percentage}%)
               </span>
             </div>
             <div 
