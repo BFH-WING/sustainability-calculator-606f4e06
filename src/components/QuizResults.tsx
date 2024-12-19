@@ -18,26 +18,18 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     section.questions.forEach(question => {
       const answer = results[question.id];
       if (answer !== undefined) {
-        if (question.type === 'single_choice') {
-          weightedScore += (answer * question.weight);
-          totalWeight += question.weight;
-        } else if (question.type === 'percentage') {
-          // For percentage questions, calculate weighted average based on option values
-          const optionValues = question.options.reduce((sum, option) => {
-            return sum + (option.value * (answer / 100));
-          }, 0);
-          weightedScore += (optionValues * question.weight);
-          totalWeight += question.weight;
-        }
+        // Now answer is already in percentage (0-100), just apply weight
+        weightedScore += (answer * question.weight);
+        totalWeight += question.weight;
       }
     });
 
-    // Calculate final percentage (normalize to 0-100 scale)
-    const percentage = totalWeight > 0 ? (weightedScore / totalWeight) * 20 : 0; // Multiply by 20 since max score is 5
+    // Calculate final percentage
+    const percentage = totalWeight > 0 ? (weightedScore / totalWeight) : 0;
     
     acc[section.id] = {
       actual: Math.round(weightedScore * 10) / 10,
-      max: totalWeight * 5, // Max score is 5 per question
+      max: totalWeight * 100, // Max is now 100% per question
       percentage: Math.round(percentage),
       label: section.title
     };

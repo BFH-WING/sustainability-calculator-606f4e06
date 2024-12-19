@@ -32,21 +32,21 @@ const PercentageQuestion = ({ question, onAnswer, selectedValue, onError }: Perc
     setError(hasError ? `Total must equal 100% (currently ${totalPercentage}%)` : null);
     onError?.(hasError);
 
-    // Calculate weighted score based on percentages
+    // Calculate normalized score (0-100%)
     if (!hasError) {
-      const weightedScore = Object.entries(percentages).reduce((score, [optionId, percentage]) => {
+      const normalizedScore = Object.entries(percentages).reduce((score, [optionId, percentage]) => {
         const option = question.options.find(opt => opt.id === optionId);
         if (!option || option.text.includes("I don't know")) return score;
         
         // Convert percentage to decimal (e.g., 75% -> 0.75)
         const decimalPercentage = percentage / 100;
         
-        // Multiply the option's value by its percentage
+        // Calculate score based on option value (now representing percentage 0-100)
         return score + (option.value * decimalPercentage);
       }, 0);
 
-      console.log('Calculated weighted score:', weightedScore);
-      onAnswer(weightedScore);
+      console.log('Calculated normalized score (0-100%):', normalizedScore);
+      onAnswer(normalizedScore);
     }
   }, [totalPercentage, percentages, question.options, onError, onAnswer]);
 
