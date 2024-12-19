@@ -82,18 +82,21 @@ export type Database = {
           display_order: number
           id: number
           title: string
+          weight: number
         }
         Insert: {
           description?: string | null
           display_order: number
           id?: number
           title: string
+          weight?: number
         }
         Update: {
           description?: string | null
           display_order?: number
           id?: number
           title?: string
+          weight?: number
         }
         Relationships: []
       }

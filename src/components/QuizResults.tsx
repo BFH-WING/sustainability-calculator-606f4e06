@@ -11,18 +11,13 @@ import { Award, Sparkles } from "lucide-react";
 import { useEffect, useState } from "react";
 import CircularityGauge from "./CircularityGauge";
 import SectionScores from "./SectionScores";
+import RadarChart from "./RadarChart";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QuizResultsProps {
   results: QuizResultsType;
   onRestart: () => void;
 }
-
-const SECTION_WEIGHTS = {
-  "circular-design": { weight: 10, label: "Circular product development" },
-  "material-sourcing": { weight: 8, label: "Circular sourcing" },
-  "production": { weight: 8, label: "Circular production" },
-  "end-of-life": { weight: 7, label: "Circular use and end-of-life" },
-};
 
 const GAUGE_COLORS = [
   "#ef4444", // red-500 - Low
@@ -34,6 +29,31 @@ const GAUGE_COLORS = [
 
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const [showConfetti, setShowConfetti] = useState(false);
+  const [sectionWeights, setSectionWeights] = useState<{
+    [key: string]: { weight: number; label: string };
+  }>({});
+  
+  useEffect(() => {
+    const fetchSectionWeights = async () => {
+      const { data, error } = await supabase
+        .from('sections')
+        .select('id, title, weight');
+      
+      if (error) {
+        console.error('Error fetching section weights:', error);
+        return;
+      }
+
+      const weights = data.reduce((acc, section) => ({
+        ...acc,
+        [section.id]: { weight: section.weight, label: section.title }
+      }), {});
+      
+      setSectionWeights(weights);
+    };
+
+    fetchSectionWeights();
+  }, []);
   
   useEffect(() => {
     setShowConfetti(true);
@@ -46,8 +66,8 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     let weightedSum = 0;
 
     Object.entries(results).forEach(([key, value]) => {
-      if (key !== "total" && SECTION_WEIGHTS[key]) {
-        const weight = SECTION_WEIGHTS[key].weight;
+      if (key !== "total" && sectionWeights[key]) {
+        const weight = sectionWeights[key].weight;
         weightedSum += value * weight;
         totalWeight += weight;
       }
@@ -67,6 +87,13 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   };
 
   const circularityInfo = getCircularityLevel(score);
+
+  const radarData = Object.entries(results)
+    .filter(([key]) => key !== "total" && sectionWeights[key])
+    .map(([key, value]) => ({
+      subject: sectionWeights[key]?.label || key,
+      value: value
+    }));
 
   return (
     <Card className="w-full max-w-2xl mx-auto animate-fadeIn relative overflow-hidden">
@@ -90,9 +117,11 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         <div className="space-y-6">
           <CircularityGauge score={score} colors={GAUGE_COLORS} />
           
+          <RadarChart data={radarData} color={circularityInfo.color} />
+          
           <SectionScores 
             results={results}
-            sectionWeights={SECTION_WEIGHTS}
+            sectionWeights={sectionWeights}
             gaugeColor={circularityInfo.color}
           />
 
