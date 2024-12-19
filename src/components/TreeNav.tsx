@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Folder, FolderOpen, FileText, CheckCircle2 } from "lucide-react";
+import { Folder, FolderOpen, FileText, CheckCircle2, AlertCircle } from "lucide-react";
 
 interface TreeNavProps {
   sections: QuizSection[];
@@ -121,14 +121,23 @@ const TreeNav = ({
                                 : "text-gray-400 cursor-not-allowed"
                             }`}
                           >
-                            {isAnswered ? (
-                              <CheckCircle2 className={`h-4 w-4 ${hasError ? 'text-red-500' : 'text-eco-primary'} shrink-0`} />
+                            {hasError ? (
+                              <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
+                            ) : isAnswered ? (
+                              <CheckCircle2 className="h-4 w-4 text-eco-primary shrink-0" />
                             ) : (
                               <FileText className="h-4 w-4 text-gray-400 shrink-0" />
                             )}
-                            <span className="truncate">
-                              {question.text}
-                            </span>
+                            <div className="flex flex-col">
+                              <span className="truncate">
+                                {question.text}
+                              </span>
+                              {hasError && (
+                                <span className="text-xs text-red-500">
+                                  Total must equal 100%
+                                </span>
+                              )}
+                            </div>
                           </button>
                         </li>
                       );
