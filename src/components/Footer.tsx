@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="bg-white/80 backdrop-blur-sm border-t border-eco-light py-6 mt-8">
+    <footer className="bg-white/80 backdrop-blur-sm border-t border-eco-light py-6 mt-8 ml-[40%]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-sm text-gray-600 space-y-4">
           <p className="font-medium">
@@ -8,7 +8,7 @@ const Footer = () => {
           </p>
           <div className="flex items-center space-x-4 pt-4">
             <img 
-              src="/lovable-uploads/31dd0615-2cb1-457e-8666-ab7e80dbcfe4.png" 
+              src="/lovable-uploads/7455dfcd-9f33-41c8-b39e-3c6eef31dbac.png" 
               alt="BFH Logo" 
               className="h-12 object-contain"
             />
