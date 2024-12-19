@@ -48,8 +48,7 @@ const Index = () => {
   }
 
   const currentSection = sections[currentSectionIndex];
-  const currentSubcategory = currentSection?.subcategories[0]; // For now, we'll use the first subcategory
-  const currentQuestion = currentSubcategory?.questions[currentQuestionIndex];
+  const currentQuestion = currentSection?.questions[currentQuestionIndex];
 
   const handleAnswer = (value: number) => {
     if (!results) {
@@ -69,7 +68,7 @@ const Index = () => {
       });
     }
 
-    if (currentQuestionIndex < currentSubcategory.questions.length - 1) {
+    if (currentQuestionIndex < currentSection.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else if (currentSectionIndex < sections.length - 1) {
       setCurrentSectionIndex(currentSectionIndex + 1);
@@ -153,19 +152,8 @@ const Index = () => {
                   sections={sections}
                   currentSectionIndex={currentSectionIndex}
                 />
-                <div className="mb-6">
-                  <p className="text-gray-600">{currentSubcategory.description}</p>
-                </div>
                 <QuizQuestion 
-                  question={{
-                    id: currentQuestion.id.toString(),
-                    text: currentQuestion.question_text,
-                    options: currentQuestion.options.map(opt => ({
-                      id: opt.id.toString(),
-                      text: opt.option_text,
-                      value: opt.value
-                    }))
-                  }} 
+                  question={currentQuestion}
                   onAnswer={handleAnswer} 
                 />
               </CardContent>

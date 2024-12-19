@@ -1,10 +1,10 @@
 import { Leaf } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Section } from "@/hooks/useQuizData";
+import { QuizSection } from "@/types/quiz";
 
 interface QuizIntroProps {
-  sections: Section[];
+  sections: QuizSection[];
   onStart: () => void;
 }
 
