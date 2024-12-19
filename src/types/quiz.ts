@@ -12,6 +12,7 @@ export type Question = {
   weight?: number;
   source_url?: string;
   subcategory?: string;
+  type: 'percentage' | 'single_choice';
 };
 
 export type QuizSection = {
