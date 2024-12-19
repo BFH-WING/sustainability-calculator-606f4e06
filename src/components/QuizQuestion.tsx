@@ -19,6 +19,7 @@ const QuizQuestion = ({ question, onAnswer, selectedValue, onError }: QuizQuesti
   );
 
   const [error, setError] = useState<string | null>(null);
+  const [lastUpdatedOption, setLastUpdatedOption] = useState<string | null>(null);
 
   // Calculate total percentage
   const totalPercentage = Object.values(percentages).reduce((sum, value) => sum + value, 0);
@@ -33,28 +34,34 @@ const QuizQuestion = ({ question, onAnswer, selectedValue, onError }: QuizQuesti
 
   const handleSliderChange = (value: number[], optionId: string) => {
     const newValue = value[0];
+    setLastUpdatedOption(optionId);
     
     if (question.type === 'percentage') {
       const newPercentages = { ...percentages };
+      const oldValue = newPercentages[optionId];
       newPercentages[optionId] = newValue;
 
-      // Calculate total excluding current option
-      const otherOptionIds = Object.keys(percentages).filter(id => id !== optionId);
-      const otherTotal = otherOptionIds.reduce((sum, id) => sum + newPercentages[id], 0);
-
-      // If total exceeds 100%, adjust other values proportionally
-      if (otherTotal + newValue > 100) {
-        const excess = (otherTotal + newValue) - 100;
-        const totalOtherValues = otherTotal;
-
+      // Calculate the change in value
+      const valueDiff = newValue - oldValue;
+      
+      // Calculate remaining percentage that can be distributed
+      const remainingPercentage = 100 - (totalPercentage + valueDiff);
+      
+      if (remainingPercentage < 0) {
+        // If we need to reduce other values
+        const otherOptionIds = Object.keys(percentages).filter(id => id !== optionId);
+        const totalOtherValues = otherOptionIds.reduce((sum, id) => sum + newPercentages[id], 0);
+        
         if (totalOtherValues > 0) {
+          // Distribute the excess proportionally among other options
           otherOptionIds.forEach(id => {
             const proportion = newPercentages[id] / totalOtherValues;
-            newPercentages[id] = Math.max(0, Math.round(newPercentages[id] - (excess * proportion)));
+            newPercentages[id] = Math.max(0, Math.round(newPercentages[id] + (remainingPercentage * proportion)));
           });
         }
       }
 
+      console.log('Setting new percentages:', newPercentages, 'Total:', Object.values(newPercentages).reduce((sum, val) => sum + val, 0));
       setPercentages(newPercentages);
       onAnswer(newValue);
     } else {
