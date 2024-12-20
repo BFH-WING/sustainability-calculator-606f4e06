@@ -16,12 +16,17 @@ interface QuizResultsProps {
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const [session, setSession] = useState<any>(null);
   const [showAuth, setShowAuth] = useState(false);
+  const [isStoringResults, setIsStoringResults] = useState(false);
+  const [resultsStored, setResultsStored] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      if (session) {
+        checkAndSaveResults(session);
+      }
     });
 
     // Listen for auth changes
@@ -30,28 +35,49 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) {
-        saveResults();
+        checkAndSaveResults(session);
       }
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
-  const saveResults = async () => {
-    if (!session) return;
+  const checkAndSaveResults = async (currentSession: any) => {
+    if (!currentSession || resultsStored || isStoringResults) return;
 
     try {
+      setIsStoringResults(true);
+      
+      // Check if results for this session already exist
+      const { data: existingResults } = await supabase
+        .from("quiz_results")
+        .select("id")
+        .eq("user_id", currentSession.user.id)
+        .eq("total_score", results.total)
+        .maybeSingle();
+
+      if (existingResults) {
+        console.log("Results already stored for this session");
+        setResultsStored(true);
+        return;
+      }
+
+      // Save new results
       const { error } = await supabase.from("quiz_results").insert({
-        user_id: session.user.id,
-        total_score: results.total,
+        user_id: currentSession.user.id,
+        total_score: Math.round(results.total),
         section_scores: sectionScores,
       });
 
       if (error) throw error;
+      
+      setResultsStored(true);
       toast.success("Results saved successfully!");
     } catch (error: any) {
       console.error("Error saving results:", error);
       toast.error("Failed to save results. Please try again.");
+    } finally {
+      setIsStoringResults(false);
     }
   };
 
@@ -86,7 +112,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
   const handleSaveResults = () => {
     if (session) {
-      saveResults();
+      checkAndSaveResults(session);
     } else {
       setShowAuth(true);
     }
@@ -144,7 +170,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         >
           Retake Assessment
         </button>
-        {!session && (
+        {!session && !resultsStored && (
           <button
             onClick={handleSaveResults}
             className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
