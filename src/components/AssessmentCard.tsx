@@ -2,6 +2,7 @@ import { format } from "date-fns";
 import { Button } from "./ui/button";
 import { Trash2Icon } from "lucide-react";
 import RadarChart from "./RadarChart";
+import CircularityLevel from "./CircularityLevel";
 import {
   HoverCard,
   HoverCardContent,
@@ -65,6 +66,9 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
           <Trash2Icon className="h-4 w-4" />
         </Button>
       </div>
+
+      <CircularityLevel score={attempt.total_score} />
+      
       <div className="h-[200px]">
         <RadarChart data={radarData} color="#4CAF50" />
       </div>
