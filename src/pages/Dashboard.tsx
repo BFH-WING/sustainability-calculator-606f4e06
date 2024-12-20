@@ -6,11 +6,19 @@ import { format } from "date-fns";
 import TopNav from "@/components/TopNav";
 import { toast } from "sonner";
 
+interface SectionScore {
+  score: number;
+  maxScore: number;
+  percentage: number;
+  label: string;
+}
+
 interface QuizAttempt {
   id: string;
   total_score: number;
-  section_scores: Record<string, any>;
+  section_scores: Record<string, SectionScore>;
   created_at: string;
+  user_id: string;
 }
 
 const Dashboard = () => {
@@ -28,7 +36,8 @@ const Dashboard = () => {
 
         if (error) throw error;
 
-        setAttempts(data || []);
+        // Type assertion to ensure the data matches our QuizAttempt interface
+        setAttempts(data as QuizAttempt[]);
       } catch (error: any) {
         console.error('Error fetching attempts:', error);
         toast.error('Failed to load your previous attempts');
@@ -118,7 +127,7 @@ const Dashboard = () => {
                     </span>
                   </div>
                   <div className="grid gap-4">
-                    {Object.entries(attempt.section_scores).map(([key, data]: [string, any]) => (
+                    {Object.entries(attempt.section_scores).map(([key, data]) => (
                       <div key={key} className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span className="text-gray-600">{data.label}</span>
