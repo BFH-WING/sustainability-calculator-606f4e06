@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import Quiz from "./pages/Quiz";
 import Dashboard from "./pages/Dashboard";
+import Auth from "./components/Auth";
+import SignUp from "./components/SignUp";
 import { supabase } from "@/integrations/supabase/client";
 
 const queryClient = new QueryClient();
@@ -20,6 +22,8 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Quiz />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/signin" element={<Auth />} />
+            <Route path="/signup" element={<SignUp />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

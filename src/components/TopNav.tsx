@@ -39,9 +39,16 @@ const TopNav = () => {
               </Button>
             </>
           ) : (
-            <Link to="/">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
+            <>
+              <Link to="/signin">
+                <Button variant="ghost">Sign In</Button>
+              </Link>
+              <Link to="/signup">
+                <Button variant="default" className="bg-eco-primary hover:bg-eco-dark">
+                  Sign Up
+                </Button>
+              </Link>
+            </>
           )}
         </div>
       </div>
