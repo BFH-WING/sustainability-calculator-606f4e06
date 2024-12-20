@@ -8,6 +8,17 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "./ui/hover-card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 import { QuizAttempt } from "@/types/dashboard";
 
 interface AssessmentCardProps {
@@ -55,14 +66,34 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
             </HoverCardContent>
           </HoverCard>
         </div>
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => onDelete(attempt.id)}
-          disabled={isDeletingId === attempt.id}
-        >
-          <Trash2Icon className="h-4 w-4" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="destructive"
+              size="sm"
+              disabled={isDeletingId === attempt.id}
+            >
+              <Trash2Icon className="h-4 w-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Assessment</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this assessment? This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction 
+                onClick={() => onDelete(attempt.id)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       
       <div className="h-[200px]">
