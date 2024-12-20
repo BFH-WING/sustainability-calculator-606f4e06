@@ -11,7 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
+import { useToast } from "@/components/ui/use-toast";
 
 interface LCARequest {
   id: string;
@@ -24,9 +27,11 @@ interface LCARequest {
 const AdminDashboard = () => {
   const session = useSession();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [isAdmin, setIsAdmin] = useState(false);
   const [requests, setRequests] = useState<LCARequest[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [debugMode, setDebugMode] = useState(false);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
@@ -48,6 +53,7 @@ const AdminDashboard = () => {
 
       setIsAdmin(true);
       fetchRequests();
+      fetchDebugMode();
     };
 
     checkAdminStatus();
@@ -69,6 +75,46 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchDebugMode = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("global_settings")
+        .select("value")
+        .eq("key", "debug_mode")
+        .single();
+
+      if (error) throw error;
+      setDebugMode(data.value === true);
+    } catch (error) {
+      console.error("Error fetching debug mode:", error);
+    }
+  };
+
+  const toggleDebugMode = async () => {
+    try {
+      const newValue = !debugMode;
+      const { error } = await supabase
+        .from("global_settings")
+        .update({ value: newValue })
+        .eq("key", "debug_mode");
+
+      if (error) throw error;
+      
+      setDebugMode(newValue);
+      toast({
+        title: "Debug Mode Updated",
+        description: `Debug mode has been ${newValue ? "enabled" : "disabled"}.`,
+      });
+    } catch (error) {
+      console.error("Error updating debug mode:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update debug mode.",
+        variant: "destructive",
+      });
+    }
+  };
+
   if (!isAdmin || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
@@ -86,6 +132,22 @@ const AdminDashboard = () => {
       <div className="max-w-6xl mx-auto pt-24 px-6">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
         
+        <div className="bg-white rounded-lg shadow p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="debug-mode"
+                checked={debugMode}
+                onCheckedChange={toggleDebugMode}
+              />
+              <Label htmlFor="debug-mode">Debug Mode</Label>
+            </div>
+            <div className="text-sm text-gray-500">
+              {debugMode ? "Enabled" : "Disabled"}
+            </div>
+          </div>
+        </div>
+
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">LCA Requests</h2>
           <Table>
