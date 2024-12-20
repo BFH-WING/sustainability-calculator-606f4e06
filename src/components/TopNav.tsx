@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { CircleFadingArrowUp, UserCog } from "lucide-react";
+import { CircleFadingArrowUp, UserCog, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -48,9 +48,10 @@ const TopNav = () => {
             <>
               <Link 
                 to="/dashboard" 
-                className="text-gray-600 hover:text-eco-primary transition-colors"
+                className="flex items-center gap-1.5 text-gray-600 hover:text-eco-primary transition-colors"
               >
-                Dashboard
+                <LayoutDashboard className="h-4 w-4" />
+                <span>Dashboard</span>
               </Link>
               {isAdmin && (
                 <Link 
