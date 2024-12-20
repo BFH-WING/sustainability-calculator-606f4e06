@@ -2,6 +2,7 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import TopNav from "./TopNav";
+import Footer from "./Footer";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSession } from "@supabase/auth-helpers-react";
@@ -44,6 +45,9 @@ const Auth = () => {
             redirectTo={`${window.location.origin}/dashboard`}
           />
         </div>
+      </div>
+      <div className="relative z-10">
+        <Footer />
       </div>
     </div>
   );
