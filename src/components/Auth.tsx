@@ -10,10 +10,10 @@ const Auth = () => {
       <div className="flex-1 flex items-center justify-center pt-16">
         <div className="max-w-md w-full mx-auto p-6 bg-white rounded-lg shadow-md">
           <h2 className="text-2xl font-bold text-center mb-6 text-eco-dark">
-            Save Your Results
+            Sign In to Your Account
           </h2>
           <p className="text-gray-600 text-center mb-6">
-            Sign in or create an account to save your assessment results and track your progress over time.
+            Sign in to save your assessment results and track your progress over time.
           </p>
           <SupabaseAuth
             supabaseClient={supabase}
