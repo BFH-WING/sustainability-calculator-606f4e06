@@ -9,7 +9,7 @@ import { PlayIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AssessmentCard from "@/components/AssessmentCard";
 import ScoreTimeline from "@/components/ScoreTimeline";
-import LCARequestDialog from "@/components/LCARequestDialog";
+import LCAInfoBox from "@/components/LCAInfoBox";
 
 const Dashboard = () => {
   const session = useSession();
@@ -93,16 +93,13 @@ const Dashboard = () => {
       <div className="max-w-6xl mx-auto pt-24 px-6">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
-          <div className="flex gap-3">
-            <LCARequestDialog />
-            <Button 
-              onClick={handleStartNewAssessment}
-              className="bg-eco-primary hover:bg-eco-dark"
-            >
-              <PlayIcon className="mr-2 h-4 w-4" />
-              Start New Assessment
-            </Button>
-          </div>
+          <Button 
+            onClick={handleStartNewAssessment}
+            className="bg-eco-primary hover:bg-eco-dark"
+          >
+            <PlayIcon className="mr-2 h-4 w-4" />
+            Start New Assessment
+          </Button>
         </div>
         
         {isLoading ? (
@@ -116,19 +113,24 @@ const Dashboard = () => {
             <p className="text-xl text-gray-600">You haven't taken any assessments yet.</p>
           </div>
         ) : (
-          <>
-            <ScoreTimeline attempts={attempts} />
-            <div className="grid gap-6 md:grid-cols-2">
-              {attempts.map((attempt) => (
-                <AssessmentCard
-                  key={attempt.id}
-                  attempt={attempt}
-                  onDelete={handleDelete}
-                  isDeletingId={isDeletingId}
-                />
-              ))}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <ScoreTimeline attempts={attempts} />
+              <div className="grid gap-6 md:grid-cols-2">
+                {attempts.map((attempt) => (
+                  <AssessmentCard
+                    key={attempt.id}
+                    attempt={attempt}
+                    onDelete={handleDelete}
+                    isDeletingId={isDeletingId}
+                  />
+                ))}
+              </div>
             </div>
-          </>
+            <div className="lg:col-span-1">
+              <LCAInfoBox />
+            </div>
+          </div>
         )}
       </div>
     </div>
