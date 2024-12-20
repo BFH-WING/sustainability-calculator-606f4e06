@@ -1,5 +1,7 @@
 import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QuestionListProps {
   sections: QuizSection[];
@@ -20,6 +22,27 @@ const QuestionList = ({
   canNavigateToSection,
   questionErrors,
 }: QuestionListProps) => {
+  const [debugMode, setDebugMode] = useState(false);
+
+  useEffect(() => {
+    const fetchDebugMode = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("global_settings")
+          .select("value")
+          .eq("key", "debug_mode")
+          .single();
+
+        if (error) throw error;
+        setDebugMode(data.value === true);
+      } catch (error) {
+        console.error("Error fetching debug mode:", error);
+      }
+    };
+
+    fetchDebugMode();
+  }, []);
+
   return (
     <div className="space-y-6">
       {sections.map((section, sectionIndex) => (
@@ -51,7 +74,7 @@ const QuestionList = ({
                         <span className="mr-2 flex-shrink-0">{isAnswered ? "✓" : "○"}</span>
                         <span className="truncate max-w-[calc(100%-80px)]">{question.text}</span>
                       </span>
-                      {isAnswered && (
+                      {isAnswered && debugMode && (
                         <span className="text-xs font-medium bg-gray-100 px-2 py-0.5 rounded whitespace-nowrap flex-shrink-0">
                           {score.toFixed(1)}% (w: {question.weight})
                         </span>
