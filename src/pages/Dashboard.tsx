@@ -9,6 +9,7 @@ import { QuizAttempt } from "@/types/dashboard";
 import { Button } from "@/components/ui/button";
 import { PlayIcon, Trash2Icon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import RadarChart from "@/components/RadarChart";
 
 const Dashboard = () => {
   const session = useSession();
@@ -145,20 +146,30 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="space-y-4">
-              {attempts.map((attempt) => (
-                <div 
-                  key={attempt.id} 
-                  className="bg-white rounded-lg shadow-lg p-6"
-                >
-                  <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-lg font-semibold">
-                      Assessment on {format(new Date(attempt.created_at), 'MMMM d, yyyy')}
-                    </h3>
-                    <div className="flex items-center gap-4">
-                      <span className="text-2xl font-bold text-eco-primary">
-                        {attempt.total_score.toFixed(2)}
-                      </span>
+            <div className="grid gap-6 md:grid-cols-2">
+              {attempts.map((attempt) => {
+                const radarData = Object.entries(attempt.section_scores).map(([, data]) => ({
+                  subject: data.label,
+                  value: data.percentage
+                }));
+
+                return (
+                  <div 
+                    key={attempt.id} 
+                    className="bg-white rounded-lg shadow-lg p-4"
+                  >
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <p className="text-sm text-gray-500">
+                          {format(new Date(attempt.created_at), 'MMMM d, yyyy')}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl font-bold text-eco-primary">
+                            {attempt.total_score.toFixed(2)}
+                          </span>
+                          <span className="text-sm text-gray-500">out of 5</span>
+                        </div>
+                      </div>
                       <Button
                         variant="destructive"
                         size="sm"
@@ -168,25 +179,12 @@ const Dashboard = () => {
                         <Trash2Icon className="h-4 w-4" />
                       </Button>
                     </div>
+                    <div className="h-[200px]">
+                      <RadarChart data={radarData} color="#4CAF50" />
+                    </div>
                   </div>
-                  <div className="grid gap-4">
-                    {Object.entries(attempt.section_scores).map(([key, data]) => (
-                      <div key={key} className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-gray-600">{data.label}</span>
-                          <span className="font-medium">{data.percentage}%</span>
-                        </div>
-                        <div 
-                          className="h-2 bg-gray-100 rounded-full overflow-hidden"
-                          style={{
-                            background: `linear-gradient(to right, #4CAF50 ${data.percentage}%, #e5e7eb 0%)`
-                          }}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}
