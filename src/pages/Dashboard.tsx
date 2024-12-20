@@ -6,11 +6,15 @@ import { format } from "date-fns";
 import TopNav from "@/components/TopNav";
 import { toast } from "sonner";
 import { QuizAttempt } from "@/types/dashboard";
+import { Button } from "@/components/ui/button";
+import { PlayIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const session = useSession();
   const [attempts, setAttempts] = useState<QuizAttempt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAttempts = async () => {
@@ -67,7 +71,16 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
       <TopNav />
       <div className="max-w-6xl mx-auto pt-24 px-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Assessment History</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
+          <Button 
+            onClick={() => navigate('/')} 
+            className="bg-eco-primary hover:bg-eco-dark"
+          >
+            <PlayIcon className="mr-2 h-4 w-4" />
+            Start New Assessment
+          </Button>
+        </div>
         
         {isLoading ? (
           <div className="flex justify-center">
