@@ -2,8 +2,20 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import TopNav from "./TopNav";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSession } from "@supabase/auth-helpers-react";
 
 const Auth = () => {
+  const session = useSession();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (session) {
+      navigate('/dashboard');
+    }
+  }, [session, navigate]);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
@@ -29,7 +41,7 @@ const Auth = () => {
               },
             }}
             providers={[]}
-            redirectTo={window.location.origin}
+            redirectTo={`${window.location.origin}/dashboard`}
           />
         </div>
       </div>
