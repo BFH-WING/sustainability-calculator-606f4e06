@@ -75,10 +75,11 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
           <AlertDialogTrigger asChild>
             <Button
               variant="destructive"
-              size="sm"
+              size="icon"
+              className="h-7 w-7"
               disabled={isDeletingId === attempt.id}
             >
-              <Trash2Icon className="h-4 w-4" />
+              <Trash2Icon className="h-3.5 w-3.5" />
             </Button>
           </AlertDialogTrigger>
           <AlertDialogContent>
