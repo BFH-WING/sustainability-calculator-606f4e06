@@ -23,6 +23,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   useEffect(() => {
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session ? 'Logged in' : 'Not logged in');
       setSession(session);
       if (session) {
         checkAndSaveResults(session);
@@ -33,53 +34,16 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('Auth state changed:', _event, session ? 'Logged in' : 'Not logged in');
       setSession(session);
-      if (session) {
-        checkAndSaveResults(session);
-      }
+      // Remove this call to prevent double storing
+      // if (session) {
+      //   checkAndSaveResults(session);
+      // }
     });
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const checkAndSaveResults = async (currentSession: any) => {
-    if (!currentSession || resultsStored || isStoringResults) return;
-
-    try {
-      setIsStoringResults(true);
-      
-      // Check if results for this session already exist
-      const { data: existingResults } = await supabase
-        .from("quiz_results")
-        .select("id")
-        .eq("user_id", currentSession.user.id)
-        .eq("total_score", results.total)
-        .maybeSingle();
-
-      if (existingResults) {
-        console.log("Results already stored for this session");
-        setResultsStored(true);
-        return;
-      }
-
-      // Save new results
-      const { error } = await supabase.from("quiz_results").insert({
-        user_id: currentSession.user.id,
-        total_score: Math.round(results.total),
-        section_scores: sectionScores,
-      });
-
-      if (error) throw error;
-      
-      setResultsStored(true);
-      toast.success("Results saved successfully!");
-    } catch (error: any) {
-      console.error("Error saving results:", error);
-      toast.error("Failed to save results. Please try again.");
-    } finally {
-      setIsStoringResults(false);
-    }
-  };
 
   // Calculate scores per section
   const sectionScores = circularityQuestions.reduce((acc, section) => {
@@ -109,6 +73,55 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     subject: data.label,
     value: data.percentage,
   }));
+
+  const checkAndSaveResults = async (currentSession: any) => {
+    if (!currentSession || resultsStored || isStoringResults) {
+      console.log('Skipping save results:', { 
+        hasSession: !!currentSession, 
+        resultsStored, 
+        isStoringResults 
+      });
+      return;
+    }
+
+    try {
+      setIsStoringResults(true);
+      console.log('Checking for existing results...');
+      
+      // Check if results for this session already exist
+      const { data: existingResults } = await supabase
+        .from("quiz_results")
+        .select("id")
+        .eq("user_id", currentSession.user.id)
+        .eq("total_score", results.total)
+        .maybeSingle();
+
+      if (existingResults) {
+        console.log("Results already stored for this session");
+        setResultsStored(true);
+        return;
+      }
+
+      console.log('Storing new results...');
+      // Save new results
+      const { error } = await supabase.from("quiz_results").insert({
+        user_id: currentSession.user.id,
+        total_score: Math.round(results.total),
+        section_scores: sectionScores,
+      });
+
+      if (error) throw error;
+      
+      setResultsStored(true);
+      toast.success("Results saved successfully!");
+      console.log('Results stored successfully');
+    } catch (error: any) {
+      console.error("Error saving results:", error);
+      toast.error("Failed to save results. Please try again.");
+    } finally {
+      setIsStoringResults(false);
+    }
+  };
 
   const handleSaveResults = () => {
     if (session) {
