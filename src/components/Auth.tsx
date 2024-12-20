@@ -24,7 +24,7 @@ const Auth = () => {
             },
           },
         }}
-        providers={["google", "github"]}
+        providers={[]}
         redirectTo={window.location.origin}
       />
     </div>
