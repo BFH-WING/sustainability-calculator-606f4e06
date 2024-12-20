@@ -31,10 +31,8 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
           </p>
           <HoverCard>
             <HoverCardTrigger>
-              <div className="flex items-center gap-2 cursor-help">
-                <span className="text-2xl font-bold text-eco-primary">
-                  {attempt.total_score}%
-                </span>
+              <div className="cursor-help">
+                <CircularityLevel score={attempt.total_score} />
               </div>
             </HoverCardTrigger>
             <HoverCardContent className="w-80">
@@ -66,8 +64,6 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
           <Trash2Icon className="h-4 w-4" />
         </Button>
       </div>
-
-      <CircularityLevel score={attempt.total_score} />
       
       <div className="h-[200px]">
         <RadarChart data={radarData} color="#4CAF50" />
