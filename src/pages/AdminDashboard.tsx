@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { format } from "date-fns";
+import { formatDistanceToNow, format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
 import Footer from "@/components/Footer";
 
@@ -168,7 +168,12 @@ const AdminDashboard = () => {
                   <TableCell>{request.contact_name}</TableCell>
                   <TableCell>{request.contact_email}</TableCell>
                   <TableCell>
-                    {format(new Date(request.created_at), "PPp")}
+                    <span className="text-gray-600">
+                      {formatDistanceToNow(new Date(request.created_at), { addSuffix: true })}
+                    </span>
+                    <span className="text-gray-400 text-sm ml-1">
+                      ({format(new Date(request.created_at), "PPP")})
+                    </span>
                   </TableCell>
                 </TableRow>
               ))}
