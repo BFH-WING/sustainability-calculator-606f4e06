@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import AssessmentCard from "@/components/AssessmentCard";
 import ScoreTimeline from "@/components/ScoreTimeline";
 import LCAInfoBox from "@/components/LCAInfoBox";
+import Footer from "@/components/Footer";
 
 const Dashboard = () => {
   const session = useSession();
@@ -83,14 +84,15 @@ const Dashboard = () => {
         <div className="pt-24 px-6 text-center">
           <h1 className="text-2xl font-bold text-gray-900">Please sign in to view your dashboard</h1>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
+    <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
-      <div className="max-w-6xl mx-auto pt-24 px-6">
+      <div className="max-w-6xl mx-auto pt-24 px-6 flex-1">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
           <Button 
@@ -133,6 +135,7 @@ const Dashboard = () => {
           </div>
         )}
       </div>
+      <Footer />
     </div>
   );
 };

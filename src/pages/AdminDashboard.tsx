@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { format } from "date-fns";
 import { useToast } from "@/components/ui/use-toast";
+import Footer from "@/components/Footer";
 
 interface LCARequest {
   id: string;
@@ -122,14 +123,15 @@ const AdminDashboard = () => {
         <div className="pt-24 px-6 text-center">
           <div className="animate-spin h-8 w-8 border-4 border-eco-primary border-t-transparent rounded-full mx-auto"></div>
         </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
+    <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
-      <div className="max-w-6xl mx-auto pt-24 px-6">
+      <div className="max-w-6xl mx-auto pt-24 px-6 flex-1">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
         
         <div className="bg-white rounded-lg shadow p-6 mb-8">
@@ -174,6 +176,7 @@ const AdminDashboard = () => {
           </Table>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };
