@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, formatDistanceToNow } from "date-fns";
 import { Button } from "./ui/button";
 import { Trash2Icon } from "lucide-react";
 import RadarChart from "./RadarChart";
@@ -38,7 +38,12 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
       <div className="flex justify-between items-start mb-4">
         <div>
           <p className="text-sm text-gray-500">
-            {format(new Date(attempt.created_at), 'MMMM d, yyyy')}
+            <span className="text-gray-600">
+              {formatDistanceToNow(new Date(attempt.created_at), { addSuffix: true })}
+            </span>
+            <span className="text-gray-400 text-sm ml-1">
+              ({format(new Date(attempt.created_at), "PPP")})
+            </span>
           </p>
           <HoverCard>
             <HoverCardTrigger>
