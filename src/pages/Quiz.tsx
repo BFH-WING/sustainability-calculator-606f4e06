@@ -51,6 +51,18 @@ const Quiz = () => {
     setAnswers({});
     setQuestionErrors({});
     localStorage.removeItem(STORAGE_KEY);
+    
+    // Clear all percentage question data from localStorage
+    if (sections) {
+      sections.forEach(section => {
+        section.questions.forEach(question => {
+          if (question.type === 'percentage') {
+            localStorage.removeItem(`percentages-${question.id}`);
+          }
+        });
+      });
+    }
+    
     toast.success('Assessment reset successfully');
   };
 
