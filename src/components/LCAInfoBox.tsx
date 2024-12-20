@@ -10,15 +10,15 @@ const LCAInfoBox = () => {
           <h2 className="text-xl font-semibold text-gray-900">Life Cycle Assessment (LCA)</h2>
           <div className="space-y-2 text-gray-600">
             <p>
-              Life Cycle Assessment is an internationally standardised methodology (ISO 14040) that helps quantify environmental impacts related to products and services. It takes into account the entire life cycle of your product, identifying:
+              LCA is a standardized method (ISO 14040) to measure and improve your product's environmental impact throughout its lifecycle. Our assessment helps identify:
             </p>
             <ul className="list-disc pl-5 space-y-1">
-              <li>Environmental impacts and benefits</li>
-              <li>Potential trade-offs</li>
-              <li>Areas for improvement</li>
+              <li>Key environmental impacts</li>
+              <li>Improvement opportunities</li>
+              <li>Cost-saving potential</li>
             </ul>
             <p className="mt-4">
-              Companies increasingly use LCAs to reduce their overall environmental impact, improve product competitiveness, and apply for environmental certifications.
+              Get ahead of regulations and enhance your market position with an LCA certification.
             </p>
           </div>
           <div className="pt-4">
