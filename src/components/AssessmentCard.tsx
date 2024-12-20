@@ -1,14 +1,12 @@
 import { format, formatDistanceToNow } from "date-fns";
-import { Button } from "./ui/button";
 import { Trash2Icon } from "lucide-react";
 import RadarChart from "./RadarChart";
 import CircularityLevel from "./CircularityLevel";
-import { Separator } from "./ui/separator";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
-} from "./ui/hover-card";
+} from "@/components/ui/hover-card";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +17,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "./ui/alert-dialog";
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { QuizAttempt } from "@/types/dashboard";
 
 interface AssessmentCardProps {
@@ -29,14 +28,14 @@ interface AssessmentCardProps {
 }
 
 const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps) => {
-  const radarData = Object.entries(attempt.section_scores).map(([, data]) => ({
+  const radarData = Object.entries(attempt.section_scores).map(([_, data]) => ({
     subject: data.label,
     value: data.percentage,
   }));
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-4">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center mb-4">
         <p className="text-sm text-gray-500">
           <span className="text-gray-600">
             {formatDistanceToNow(new Date(attempt.created_at), { addSuffix: true })}
@@ -48,10 +47,9 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              variant="destructive"
+              variant="ghost"
               size="icon"
-              className="h-7 w-7"
-              disabled={isDeletingId === attempt.id}
+              className="h-7 w-7 text-gray-500 hover:text-red-600"
             >
               <Trash2Icon className="h-3.5 w-3.5" />
             </Button>
@@ -65,18 +63,17 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
-              <AlertDialogAction 
+              <AlertDialogAction
                 onClick={() => onDelete(attempt.id)}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                disabled={isDeletingId === attempt.id}
+                className="bg-red-600 hover:bg-red-700"
               >
-                Delete
+                {isDeletingId === attempt.id ? "Deleting..." : "Delete"}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
       </div>
-      
-      <Separator className="mb-4" />
       
       <HoverCard>
         <HoverCardTrigger>
