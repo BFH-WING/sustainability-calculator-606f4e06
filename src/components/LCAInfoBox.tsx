@@ -4,9 +4,9 @@ import LCARequestDialog from "./LCARequestDialog";
 const LCAInfoBox = () => {
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 mb-8">
-      <div className="flex items-start gap-4 max-w-full">
+      <div className="flex items-start gap-4">
         <InfoIcon className="h-6 w-6 text-eco-primary flex-shrink-0 mt-1" />
-        <div className="space-y-4 flex-1">
+        <div className="space-y-4 flex-1 min-w-0">
           <h2 className="text-xl font-semibold text-gray-900">Life Cycle Assessment (LCA)</h2>
           <div className="space-y-2 text-gray-600">
             <p>
@@ -21,7 +21,7 @@ const LCAInfoBox = () => {
               BFH can help you enhance your market position and meet sustainability goals through expert LCA guidance.
             </p>
           </div>
-          <div className="pt-4">
+          <div className="pt-4 w-full">
             <LCARequestDialog />
           </div>
         </div>

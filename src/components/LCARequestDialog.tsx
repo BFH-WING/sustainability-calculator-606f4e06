@@ -60,9 +60,9 @@ const LCARequestDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="bg-white hover:bg-gray-50">
+        <Button variant="outline" className="bg-white hover:bg-gray-50 w-full">
           <ClipboardList className="mr-2 h-4 w-4" />
-          Ready to Measure Your Environmental Impact?
+          Want to measure your environmental impact?
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
