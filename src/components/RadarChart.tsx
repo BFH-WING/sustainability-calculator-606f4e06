@@ -1,4 +1,4 @@
-import { ResponsiveContainer, RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, Radar, Legend } from 'recharts';
+import { ResponsiveContainer, RadarChart as RechartsRadar, PolarGrid, PolarAngleAxis, Radar } from 'recharts';
 
 interface RadarChartProps {
   data: Array<{
@@ -21,13 +21,11 @@ const RadarChart = ({ data, color }: RadarChartProps) => {
             tick={{ fill: '#6b7280', fontSize: 12 }}
           />
           <Radar
-            name="Score (%)"
             dataKey="value"
             stroke={color}
             fill={color}
             fillOpacity={0.5}
           />
-          <Legend />
         </RechartsRadar>
       </ResponsiveContainer>
     </div>
