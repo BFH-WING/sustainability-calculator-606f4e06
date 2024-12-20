@@ -5,21 +5,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { format } from "date-fns";
 import TopNav from "@/components/TopNav";
 import { toast } from "sonner";
-
-interface SectionScore {
-  score: number;
-  maxScore: number;
-  percentage: number;
-  label: string;
-}
-
-interface QuizAttempt {
-  id: string;
-  total_score: number;
-  section_scores: Record<string, SectionScore>;
-  created_at: string;
-  user_id: string;
-}
+import { QuizAttempt } from "@/types/dashboard";
 
 const Dashboard = () => {
   const session = useSession();
@@ -37,7 +23,17 @@ const Dashboard = () => {
         if (error) throw error;
 
         // Type assertion to ensure the data matches our QuizAttempt interface
-        setAttempts(data as QuizAttempt[]);
+        const typedData = data.map(item => ({
+          ...item,
+          section_scores: item.section_scores as Record<string, {
+            score: number;
+            maxScore: number;
+            percentage: number;
+            label: string;
+          }>
+        }));
+
+        setAttempts(typedData);
       } catch (error: any) {
         console.error('Error fetching attempts:', error);
         toast.error('Failed to load your previous attempts');
