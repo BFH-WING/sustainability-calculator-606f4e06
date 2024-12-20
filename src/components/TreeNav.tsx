@@ -21,7 +21,7 @@ const TreeNav = ({
   questionErrors,
 }: TreeNavProps) => {
   return (
-    <div className="fixed left-0 top-16 w-[40%] h-[calc(100vh-4rem)] bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
+    <div className="fixed left-0 top-16 w-[40%] h-screen bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
       <div className="flex flex-col h-full">
         <div className="flex-1 p-6">
           <QuestionList

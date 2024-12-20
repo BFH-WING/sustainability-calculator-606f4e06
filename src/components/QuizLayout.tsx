@@ -60,7 +60,9 @@ const QuizLayout = ({
           </div>
         </div>
       </div>
-      <Footer />
+      <div className="relative z-10">
+        <Footer />
+      </div>
     </div>
   );
 };
