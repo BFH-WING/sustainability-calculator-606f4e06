@@ -131,7 +131,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
-      <div className="max-w-6xl mx-auto pt-24 px-6 flex-1">
+      <div className="max-w-6xl mx-auto w-full pt-24 px-6 flex-1">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
         
         <div className="bg-white rounded-lg shadow p-6 mb-8">
