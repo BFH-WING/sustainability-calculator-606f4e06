@@ -1,16 +1,52 @@
-import { CircleArrowUp } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Button } from "./ui/button";
+import { toast } from "sonner";
 
-const TopNav = () => (
-  <div className="w-full bg-white/80 backdrop-blur-sm border-b border-eco-light fixed top-0 z-50">
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="h-16 flex items-center">
-        <div className="flex items-center space-x-2">
-          <CircleArrowUp className="h-8 w-8 text-eco-primary animate-spin-slow" />
-          <span className="text-xl font-bold text-eco-primary">BFH Circularity Assessment</span>
+const TopNav = () => {
+  const session = useSession();
+  const supabase = useSupabaseClient();
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error('Error signing out');
+    } else {
+      toast.success('Signed out successfully');
+    }
+  };
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-50">
+      <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
+        <Link to="/" className="text-xl font-bold text-eco-primary">
+          Circularity Assessment
+        </Link>
+        <div className="flex items-center gap-4">
+          {session ? (
+            <>
+              <Link 
+                to="/dashboard" 
+                className="text-gray-600 hover:text-eco-primary transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Button 
+                variant="ghost" 
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <Link to="/">
+              <Button variant="ghost">Sign In</Button>
+            </Link>
+          )}
         </div>
       </div>
-    </div>
-  </div>
-);
+    </nav>
+  );
+};
 
 export default TopNav;
