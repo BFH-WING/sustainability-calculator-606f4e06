@@ -1,5 +1,3 @@
-import { BFHLogo } from "@/assets/BFHLogo";
-
 const Footer = () => {
   return (
     <div className="p-6 border-t border-eco-light bg-white/80 mt-12">
