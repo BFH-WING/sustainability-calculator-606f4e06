@@ -118,6 +118,15 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     }
   };
 
+  const handleGoToDashboard = () => {
+    if (session) {
+      navigate('/dashboard');
+    } else {
+      navigate('/signin');
+      toast.info('Please sign in to view your dashboard');
+    }
+  };
+
   if (showAuth) {
     return (
       <div className="max-w-4xl mx-auto">
@@ -178,6 +187,12 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
             Save Results
           </button>
         )}
+        <button
+          onClick={handleGoToDashboard}
+          className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
+        >
+          {session ? 'Go to Dashboard' : 'Sign in to Save Results'}
+        </button>
       </div>
     </div>
   );
