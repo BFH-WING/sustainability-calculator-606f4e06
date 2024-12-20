@@ -3,6 +3,7 @@ import { Button } from "./ui/button";
 import { Trash2Icon } from "lucide-react";
 import RadarChart from "./RadarChart";
 import CircularityLevel from "./CircularityLevel";
+import { Separator } from "./ui/separator";
 import {
   HoverCard,
   HoverCardContent,
@@ -35,42 +36,15 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-4">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <p className="text-sm text-gray-500">
-            <span className="text-gray-600">
-              {formatDistanceToNow(new Date(attempt.created_at), { addSuffix: true })}
-            </span>
-            <span className="text-gray-400 text-sm ml-1">
-              ({format(new Date(attempt.created_at), "PPP")})
-            </span>
-          </p>
-          <HoverCard>
-            <HoverCardTrigger>
-              <div className="cursor-help">
-                <CircularityLevel score={attempt.total_score} />
-              </div>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-              <div className="space-y-3">
-                {Object.entries(attempt.section_scores).map(([key, data]) => (
-                  <div key={key} className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">{data.label}</span>
-                      <span className="font-medium">{data.percentage}%</span>
-                    </div>
-                    <div 
-                      className="h-1.5 bg-gray-100 rounded-full overflow-hidden"
-                      style={{
-                        background: `linear-gradient(to right, #4CAF50 ${data.percentage}%, #e5e7eb 0%)`
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </HoverCardContent>
-          </HoverCard>
-        </div>
+      <div className="flex justify-between items-center mb-2">
+        <p className="text-sm text-gray-500">
+          <span className="text-gray-600">
+            {formatDistanceToNow(new Date(attempt.created_at), { addSuffix: true })}
+          </span>
+          <span className="text-gray-400 text-sm ml-1">
+            ({format(new Date(attempt.created_at), "PPP")})
+          </span>
+        </p>
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
@@ -101,6 +75,34 @@ const AssessmentCard = ({ attempt, onDelete, isDeletingId }: AssessmentCardProps
           </AlertDialogContent>
         </AlertDialog>
       </div>
+      
+      <Separator className="mb-4" />
+      
+      <HoverCard>
+        <HoverCardTrigger>
+          <div className="cursor-help">
+            <CircularityLevel score={attempt.total_score} />
+          </div>
+        </HoverCardTrigger>
+        <HoverCardContent className="w-80">
+          <div className="space-y-3">
+            {Object.entries(attempt.section_scores).map(([key, data]) => (
+              <div key={key} className="space-y-1">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">{data.label}</span>
+                  <span className="font-medium">{data.percentage}%</span>
+                </div>
+                <div 
+                  className="h-1.5 bg-gray-100 rounded-full overflow-hidden"
+                  style={{
+                    background: `linear-gradient(to right, #4CAF50 ${data.percentage}%, #e5e7eb 0%)`
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </HoverCardContent>
+      </HoverCard>
       
       <div className="h-[200px]">
         <RadarChart data={radarData} color="#4CAF50" />
