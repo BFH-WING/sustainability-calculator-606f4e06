@@ -2,14 +2,33 @@ import { Link } from "react-router-dom";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { CircleFadingArrowUp } from "lucide-react";
+import { CircleFadingArrowUp, UserCog } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const TopNav = () => {
   const session = useSession();
-  const supabase = useSupabaseClient();
+  const supabaseClient = useSupabaseClient();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        setIsAdmin(profile?.role === "admin");
+      }
+    };
+
+    checkAdminStatus();
+  }, [session]);
 
   const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabaseClient.auth.signOut();
     if (error) {
       toast.error('Error signing out');
     } else {
@@ -33,6 +52,15 @@ const TopNav = () => {
               >
                 Dashboard
               </Link>
+              {isAdmin && (
+                <Link 
+                  to="/admin" 
+                  className="flex items-center gap-1 text-gray-600 hover:text-eco-primary transition-colors"
+                >
+                  <UserCog className="h-4 w-4" />
+                  <span>Admin</span>
+                </Link>
+              )}
               <Button 
                 variant="ghost" 
                 onClick={handleSignOut}
