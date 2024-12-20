@@ -7,13 +7,14 @@ import TopNav from "@/components/TopNav";
 import { toast } from "sonner";
 import { QuizAttempt } from "@/types/dashboard";
 import { Button } from "@/components/ui/button";
-import { PlayIcon } from "lucide-react";
+import { PlayIcon, Trash2Icon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const session = useSession();
   const [attempts, setAttempts] = useState<QuizAttempt[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeletingId, setIsDeletingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,7 +27,6 @@ const Dashboard = () => {
 
         if (error) throw error;
 
-        // Type assertion to ensure the data matches our QuizAttempt interface
         const typedData = data.map(item => ({
           ...item,
           section_scores: item.section_scores as Record<string, {
@@ -50,6 +50,26 @@ const Dashboard = () => {
       fetchAttempts();
     }
   }, [session]);
+
+  const handleDelete = async (id: string) => {
+    try {
+      setIsDeletingId(id);
+      const { error } = await supabase
+        .from('quiz_results')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setAttempts(prev => prev.filter(attempt => attempt.id !== id));
+      toast.success('Assessment deleted successfully');
+    } catch (error: any) {
+      console.error('Error deleting attempt:', error);
+      toast.error('Failed to delete assessment');
+    } finally {
+      setIsDeletingId(null);
+    }
+  };
 
   const chartData = attempts.map(attempt => ({
     date: format(new Date(attempt.created_at), 'MMM d, yyyy'),
@@ -135,9 +155,19 @@ const Dashboard = () => {
                     <h3 className="text-lg font-semibold">
                       Assessment on {format(new Date(attempt.created_at), 'MMMM d, yyyy')}
                     </h3>
-                    <span className="text-2xl font-bold text-eco-primary">
-                      {attempt.total_score.toFixed(2)}
-                    </span>
+                    <div className="flex items-center gap-4">
+                      <span className="text-2xl font-bold text-eco-primary">
+                        {attempt.total_score.toFixed(2)}
+                      </span>
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={() => handleDelete(attempt.id)}
+                        disabled={isDeletingId === attempt.id}
+                      >
+                        <Trash2Icon className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                   <div className="grid gap-4">
                     {Object.entries(attempt.section_scores).map(([key, data]) => (
