@@ -10,7 +10,7 @@ const LCAInfoBox = () => {
           <h2 className="text-xl font-semibold text-gray-900">Life Cycle Assessment (LCA)</h2>
           <div className="space-y-2 text-gray-600">
             <p>
-              LCA is a standardized method (ISO 14040) to measure and improve your product's environmental impact throughout its lifecycle. Our assessment helps identify:
+              LCA is a standardized method (ISO 14040) that helps measure and reduce the environmental footprint of your products and services. Our assessment helps identify:
             </p>
             <ul className="list-disc pl-5 space-y-1">
               <li>Key environmental impacts</li>
@@ -18,7 +18,7 @@ const LCAInfoBox = () => {
               <li>Cost-saving potential</li>
             </ul>
             <p className="mt-4">
-              Get ahead of regulations and enhance your market position with an LCA certification.
+              BFH can help you enhance your market position and meet sustainability goals through expert LCA guidance.
             </p>
           </div>
           <div className="pt-4">
