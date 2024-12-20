@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import { CircleUserRound } from "lucide-react";
+import { CircleFadingArrowUp } from "lucide-react";
 
 const TopNav = () => {
   const session = useSession();
@@ -21,7 +21,7 @@ const TopNav = () => {
     <nav className="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm z-50">
       <div className="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 text-xl font-bold text-eco-primary">
-          <CircleUserRound className="h-6 w-6" />
+          <CircleFadingArrowUp className="h-6 w-6" />
           <span>Circularity Assessment</span>
         </Link>
         <div className="flex items-center gap-4">
