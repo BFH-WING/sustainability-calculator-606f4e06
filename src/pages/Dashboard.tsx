@@ -10,6 +10,11 @@ import { Button } from "@/components/ui/button";
 import { PlayIcon, Trash2Icon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import RadarChart from "@/components/RadarChart";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 const Dashboard = () => {
   const session = useSession();
@@ -130,7 +135,7 @@ const Dashboard = () => {
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                     />
                     <YAxis 
-                      domain={[0, 5]}
+                      domain={[0, 100]}
                       tick={{ fill: '#6b7280', fontSize: 12 }}
                     />
                     <Tooltip />
@@ -163,12 +168,33 @@ const Dashboard = () => {
                         <p className="text-sm text-gray-500">
                           {format(new Date(attempt.created_at), 'MMMM d, yyyy')}
                         </p>
-                        <div className="flex items-center gap-2">
-                          <span className="text-2xl font-bold text-eco-primary">
-                            {attempt.total_score.toFixed(2)}
-                          </span>
-                          <span className="text-sm text-gray-500">out of 5</span>
-                        </div>
+                        <HoverCard>
+                          <HoverCardTrigger>
+                            <div className="flex items-center gap-2 cursor-help">
+                              <span className="text-2xl font-bold text-eco-primary">
+                                {Math.round(attempt.total_score * 20)}%
+                              </span>
+                            </div>
+                          </HoverCardTrigger>
+                          <HoverCardContent className="w-80">
+                            <div className="space-y-3">
+                              {Object.entries(attempt.section_scores).map(([key, data]) => (
+                                <div key={key} className="space-y-1">
+                                  <div className="flex justify-between text-sm">
+                                    <span className="text-gray-600">{data.label}</span>
+                                    <span className="font-medium">{data.percentage}%</span>
+                                  </div>
+                                  <div 
+                                    className="h-1.5 bg-gray-100 rounded-full overflow-hidden"
+                                    style={{
+                                      background: `linear-gradient(to right, #4CAF50 ${data.percentage}%, #e5e7eb 0%)`
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </HoverCardContent>
+                        </HoverCard>
                       </div>
                       <Button
                         variant="destructive"
