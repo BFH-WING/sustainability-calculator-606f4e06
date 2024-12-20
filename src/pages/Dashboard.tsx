@@ -9,6 +9,7 @@ import { PlayIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AssessmentCard from "@/components/AssessmentCard";
 import ScoreTimeline from "@/components/ScoreTimeline";
+import LCARequestDialog from "@/components/LCARequestDialog";
 
 const Dashboard = () => {
   const session = useSession();
@@ -92,13 +93,16 @@ const Dashboard = () => {
       <div className="max-w-6xl mx-auto pt-24 px-6">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
-          <Button 
-            onClick={handleStartNewAssessment}
-            className="bg-eco-primary hover:bg-eco-dark"
-          >
-            <PlayIcon className="mr-2 h-4 w-4" />
-            Start New Assessment
-          </Button>
+          <div className="flex gap-3">
+            <LCARequestDialog />
+            <Button 
+              onClick={handleStartNewAssessment}
+              className="bg-eco-primary hover:bg-eco-dark"
+            >
+              <PlayIcon className="mr-2 h-4 w-4" />
+              Start New Assessment
+            </Button>
+          </div>
         </div>
         
         {isLoading ? (

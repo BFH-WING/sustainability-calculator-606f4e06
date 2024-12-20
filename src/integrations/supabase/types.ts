@@ -9,6 +9,33 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      lca_requests: {
+        Row: {
+          business_name: string
+          contact_email: string
+          contact_name: string
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          business_name: string
+          contact_email: string
+          contact_name: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          business_name?: string
+          contact_email?: string
+          contact_name?: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
