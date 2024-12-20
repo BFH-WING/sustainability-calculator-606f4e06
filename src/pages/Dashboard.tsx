@@ -56,6 +56,10 @@ const Dashboard = () => {
     score: attempt.total_score
   }));
 
+  const handleStartNewAssessment = () => {
+    navigate('/', { state: { reset: true } });
+  };
+
   if (!session) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB]">
@@ -74,7 +78,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
           <Button 
-            onClick={() => navigate('/')} 
+            onClick={handleStartNewAssessment}
             className="bg-eco-primary hover:bg-eco-dark"
           >
             <PlayIcon className="mr-2 h-4 w-4" />

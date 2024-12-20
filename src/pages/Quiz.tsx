@@ -5,6 +5,7 @@ import QuizResults from "@/components/QuizResults";
 import QuizLayout from "@/components/QuizLayout";
 import { calculateResults } from "@/utils/quizCalculations";
 import { toast } from "sonner";
+import { useLocation } from "react-router-dom";
 
 const STORAGE_KEY = 'circularity-quiz-answers';
 
@@ -15,11 +16,20 @@ const Quiz = () => {
   const [answers, setAnswers] = useState<{ [key: string]: number }>({});
   const [completed, setCompleted] = useState(false);
   const [questionErrors, setQuestionErrors] = useState<{ [key: string]: boolean }>({});
+  const location = useLocation();
+
+  // Reset state when navigating to quiz with reset flag
+  useEffect(() => {
+    if (location.state?.reset) {
+      console.log("Resetting quiz state");
+      handleReset();
+    }
+  }, [location.state]);
 
   // Load answers from local storage on mount
   useEffect(() => {
     const savedAnswers = localStorage.getItem(STORAGE_KEY);
-    if (savedAnswers) {
+    if (savedAnswers && !location.state?.reset) {
       const parsedAnswers = JSON.parse(savedAnswers);
       setAnswers(parsedAnswers);
       console.log('Loaded answers from storage:', parsedAnswers);
@@ -34,7 +44,7 @@ const Quiz = () => {
     }
   }, [answers]);
 
-  const handleRestart = () => {
+  const handleReset = () => {
     setCompleted(false);
     setCurrentSectionIndex(0);
     setCurrentQuestionIndex(0);
@@ -153,7 +163,7 @@ const Quiz = () => {
       >
         <QuizResults 
           results={calculateResults(sections, answers)} 
-          onRestart={handleRestart} 
+          onRestart={handleReset}
         />
       </QuizLayout>
     );
