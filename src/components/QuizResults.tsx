@@ -1,7 +1,12 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import RadarChart from "./RadarChart";
 import { QuizResults as QuizResultsType } from "@/types/quiz";
 import { circularityQuestions } from "@/data/circularityQuestions";
 import CircularityLevel from "./CircularityLevel";
+import Auth from "./Auth";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QuizResultsProps {
   results: QuizResultsType;
@@ -9,8 +14,47 @@ interface QuizResultsProps {
 }
 
 const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
-  console.log('Rendering QuizResults with results:', results);
-  
+  const [session, setSession] = useState<any>(null);
+  const [showAuth, setShowAuth] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check current session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        saveResults();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const saveResults = async () => {
+    if (!session) return;
+
+    try {
+      const { error } = await supabase.from("quiz_results").insert({
+        user_id: session.user.id,
+        total_score: results.total,
+        section_scores: sectionScores,
+      });
+
+      if (error) throw error;
+      toast.success("Results saved successfully!");
+    } catch (error: any) {
+      console.error("Error saving results:", error);
+      toast.error("Failed to save results. Please try again.");
+    }
+  };
+
   // Calculate scores per section
   const sectionScores = circularityQuestions.reduce((acc, section) => {
     let totalScore = 0;
@@ -35,12 +79,26 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     return acc;
   }, {} as { [key: string]: { score: number; maxScore: number; percentage: number; label: string } });
 
-  console.log('Section scores:', sectionScores);
-
   const radarData = Object.entries(sectionScores).map(([id, data]) => ({
     subject: data.label,
     value: data.percentage,
   }));
+
+  const handleSaveResults = () => {
+    if (session) {
+      saveResults();
+    } else {
+      setShowAuth(true);
+    }
+  };
+
+  if (showAuth) {
+    return (
+      <div className="max-w-4xl mx-auto">
+        <Auth />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto overflow-y-auto max-h-[calc(100vh-16rem)] pr-4">
@@ -79,13 +137,21 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         ))}
       </div>
 
-      <div className="text-center mt-8 mb-8">
+      <div className="flex justify-center gap-4 mt-8 mb-8">
         <button
           onClick={onRestart}
-          className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
+          className="bg-white text-eco-primary border-2 border-eco-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-primary hover:text-white transition-colors"
         >
           Retake Assessment
         </button>
+        {!session && (
+          <button
+            onClick={handleSaveResults}
+            className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
+          >
+            Save Results
+          </button>
+        )}
       </div>
     </div>
   );
