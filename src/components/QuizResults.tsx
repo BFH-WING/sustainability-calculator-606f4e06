@@ -23,7 +23,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const navigate = useNavigate();
 
   // Round the total score to 2 decimal places
-  const roundedTotalScore = Number(results.total.toFixed(2));
+  const roundedTotalScore = Math.round(results.total);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -86,12 +86,17 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       setIsStoringResults(true);
       console.log('Checking for existing results...');
       
-      const { data: existingResults } = await supabase
+      const { data: existingResults, error: checkError } = await supabase
         .from("quiz_results")
         .select("id")
         .eq("user_id", currentSession.user.id)
         .eq("total_score", roundedTotalScore)
         .maybeSingle();
+
+      if (checkError) {
+        console.error("Error checking existing results:", checkError);
+        throw checkError;
+      }
 
       if (existingResults) {
         console.log("Results already stored for this session");
@@ -99,14 +104,24 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         return;
       }
 
-      console.log('Storing new results...');
-      const { error } = await supabase.from("quiz_results").insert({
+      console.log('Storing new results...', {
         user_id: currentSession.user.id,
         total_score: roundedTotalScore,
         section_scores: sectionScores,
       });
 
-      if (error) throw error;
+      const { error: insertError } = await supabase
+        .from("quiz_results")
+        .insert({
+          user_id: currentSession.user.id,
+          total_score: roundedTotalScore,
+          section_scores: sectionScores,
+        });
+
+      if (insertError) {
+        console.error("Error inserting results:", insertError);
+        throw insertError;
+      }
       
       setResultsStored(true);
       toast.success("Results saved successfully!");
