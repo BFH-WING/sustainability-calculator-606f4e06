@@ -51,6 +51,18 @@ export const endOfLifeSection: QuizSection = {
         { id: "e3-5", text: "No warranty", value: 1 },
         { id: "e3-6", text: "I don't know", value: 0 }
       ]
+    },
+    {
+      id: "eol-4",
+      text: "Do you have a process in place for the collection of your own (worn) products?",
+      subcategory: "Business models for take back and recycling",
+      type: "single_choice",
+      weight: 0.5,
+      options: [
+        { id: "e4-1", text: "Yes - Own collection system", value: 5 },
+        { id: "e4-2", text: "Yes - Outsourced", value: 3 },
+        { id: "e4-3", text: "No", value: 0 }
+      ]
     }
   ]
 };
