@@ -1,69 +1,82 @@
-# Welcome to your Lovable project
+# Circularity Assessment Tool
 
-## Project info
+A diagnostic tool for measuring organizational circularity maturity developed by the Bern University of Applied Sciences.
+
+## Project Info
 
 **URL**: https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0
 
-## How can I edit this code?
+## Installation & Development
 
-There are several ways of editing your application.
+There are several ways to work with this codebase:
 
-**Use Lovable**
+### Local Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+Requirements:
+- Node.js & npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
+# Navigate to project directory
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Using Lovable
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Visit the [Lovable Project](https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0) and start prompting. Changes made via Lovable will be committed automatically to the repository.
 
-**Use GitHub Codespaces**
+### Edit on GitHub
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- Navigate to the desired file(s)
+- Click the "Edit" button (pencil icon)
+- Make your changes and commit
 
-## What technologies are used for this project?
+### Use GitHub Codespaces
 
-This project is built with .
+1. Navigate to the main repository page
+2. Click "Code" (green button)
+3. Select "Codespaces" tab
+4. Click "New codespace"
+
+## Technologies
+
+This project is built with modern web technologies:
 
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase (Backend & Authentication)
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0) and click on Share -> Publish.
+### Using Lovable
 
-## I want to use a custom domain - is that possible?
+Open [Lovable](https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0) and click Share -> Publish.
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+### Custom Domain
+
+While we don't currently support custom domains directly through Lovable, you can deploy to your own domain using Netlify. Visit our [Custom domains documentation](https://docs.lovable.dev/tips-tricks/custom-domain/) for details.
+
+## Credits
+
+**Developed by:**
+- Dr. Maria A. Franco (Research & Content)
+- Moritz Maier (Implementation)
+
+**Institution:**
+Bern University of Applied Sciences  
+Industrial Engineering and Management Science (WING)
+
+## Disclaimer
+
+The results of this diagnostic tool are not intended to provide a measure of environmental sustainability impact derived from the degree of circularity attained by the organization.
