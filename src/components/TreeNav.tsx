@@ -21,7 +21,7 @@ const TreeNav = ({
   questionErrors,
 }: TreeNavProps) => {
   return (
-    <div className="fixed left-0 w-[40%] bg-white/80 backdrop-blur-sm border-r border-eco-light">
+    <div className="w-[40%] bg-white/80 backdrop-blur-sm border-r border-eco-light">
       <div className="p-6">
         <QuestionList
           sections={sections}
