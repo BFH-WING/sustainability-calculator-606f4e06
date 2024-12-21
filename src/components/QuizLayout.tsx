@@ -45,19 +45,17 @@ const QuizLayout = ({
             canNavigateToSection={canNavigateToSection}
             questionErrors={questionErrors}
           />
-          <div className="ml-[40%] flex-1">
+          <div className="flex-1">
             <div className="w-[60%] mx-auto pt-24 px-6">
-              <div className="max-w-3xl mx-auto">
-                <QuizProgress
-                  sections={sections}
-                  currentSectionIndex={currentSectionIndex}
-                  currentQuestionIndex={currentQuestionIndex}
-                  onPrevious={onPrevious}
-                  onNext={onNext}
-                  canGoNext={canGoNext}
-                />
-                {children}
-              </div>
+              <QuizProgress
+                sections={sections}
+                currentSectionIndex={currentSectionIndex}
+                currentQuestionIndex={currentQuestionIndex}
+                onPrevious={onPrevious}
+                onNext={onNext}
+                canGoNext={canGoNext}
+              />
+              {children}
             </div>
           </div>
         </div>
