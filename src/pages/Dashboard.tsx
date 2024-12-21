@@ -92,7 +92,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
-      <div className="max-w-6xl mx-auto pt-24 px-6 flex-1">
+      <div className="max-w-6xl mx-auto pt-24 px-6 flex-1 pb-16">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
           <Button 
