@@ -11,7 +11,7 @@ export const endOfLifeSection: QuizSection = {
       description: "What percentage of total sales are eligible under the mentioned business models?",
       subcategory: "Business models (current)",
       type: "percentage",
-      weight: 0.6,
+      weight: 0.35, // Increased weight due to complexity and importance
       options: [
         { id: "e1-1", text: "Sharing (0-100%)", value: 100 },
         { id: "e1-2", text: "Rental/Leasing (0-100%)", value: 80 },
@@ -27,7 +27,7 @@ export const endOfLifeSection: QuizSection = {
       description: "Full spare-parts stock available from the manufacturer or its dealers",
       subcategory: "Lifetime extension through repair",
       type: "single_choice",
-      weight: 0.4,
+      weight: 0.20, // Adjusted for balanced assessment
       options: [
         { id: "e2-1", text: "Excellent", value: 5 },
         { id: "e2-2", text: "Good", value: 4 },
@@ -42,7 +42,7 @@ export const endOfLifeSection: QuizSection = {
       text: "What is the average warranty period?",
       subcategory: "Lifetime extension through repair",
       type: "single_choice",
-      weight: 0.4,
+      weight: 0.20, // Equal weight with spare parts availability
       options: [
         { id: "e3-1", text: ">75% of the useful life of the product", value: 5 },
         { id: "e3-2", text: "26-75% of the useful life of the product", value: 4 },
@@ -57,7 +57,7 @@ export const endOfLifeSection: QuizSection = {
       text: "Do you have a process in place for the collection of your own (worn) products?",
       subcategory: "Business models for take back and recycling",
       type: "single_choice",
-      weight: 0.5,
+      weight: 0.25, // Significant weight for end-of-life handling
       options: [
         { id: "e4-1", text: "Yes - Own collection system", value: 5 },
         { id: "e4-2", text: "Yes - Outsourced", value: 3 },
