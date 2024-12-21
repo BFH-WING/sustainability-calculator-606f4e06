@@ -93,55 +93,61 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
       <TopNav />
       <div className="flex-1 pb-16">
-        <div className="max-w-[1920px] mx-auto px-6">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pt-24">
-            <h1 className="text-3xl font-bold text-gray-900">Your Assessment History</h1>
-            <Button 
-              onClick={handleStartNewAssessment}
-              className="bg-eco-primary hover:bg-eco-dark"
-            >
-              <PlayIcon className="mr-2 h-4 w-4" />
-              Start New Assessment
-            </Button>
-          </div>
+        <div className="container max-w-6xl mx-auto pt-24 px-6">
+          <h1 className="text-3xl font-bold text-gray-900 mb-8">Your Assessment History</h1>
           
-          {isLoading ? (
-            <div className="flex justify-center">
-              <div className="animate-spin-slow">
-                <div className="w-16 h-16 border-4 border-eco-primary border-t-transparent rounded-full" />
+          <div className="bg-white rounded-lg shadow p-6 mb-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+              <div>
+                <p className="text-gray-600">Track your progress and start new assessments</p>
               </div>
+              <Button 
+                onClick={handleStartNewAssessment}
+                className="bg-eco-primary hover:bg-eco-dark"
+              >
+                <PlayIcon className="mr-2 h-4 w-4" />
+                Start New Assessment
+              </Button>
             </div>
-          ) : attempts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-xl text-gray-600">You haven't taken any assessments yet.</p>
-            </div>
-          ) : (
-            <div className="space-y-8">
-              <div className="bg-white rounded-lg shadow-lg">
-                <div className="grid grid-cols-12 gap-8 p-6">
-                  <div className="col-span-12 md:col-span-8 pr-12 border-r border-gray-200">
-                    <h2 className="text-xl font-semibold mb-4">Score Timeline</h2>
-                    <div className="h-[400px]">
-                      <ScoreTimeline attempts={attempts} />
-                    </div>
-                  </div>
-                  <div className="col-span-12 md:col-span-4">
-                    <LCAInfoBox />
-                  </div>
+            
+            {isLoading ? (
+              <div className="flex justify-center py-12">
+                <div className="animate-spin-slow">
+                  <div className="w-16 h-16 border-4 border-eco-primary border-t-transparent rounded-full" />
                 </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {attempts.map((attempt) => (
-                  <AssessmentCard
-                    key={attempt.id}
-                    attempt={attempt}
-                    onDelete={handleDelete}
-                    isDeletingId={isDeletingId}
-                  />
-                ))}
+            ) : attempts.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-xl text-gray-600">You haven't taken any assessments yet.</p>
               </div>
-            </div>
-          )}
+            ) : (
+              <div className="space-y-8">
+                <div className="bg-gray-50 rounded-lg p-6">
+                  <div className="grid grid-cols-12 gap-8">
+                    <div className="col-span-12 md:col-span-8 pr-0 md:pr-8 border-r-0 md:border-r border-gray-200">
+                      <h2 className="text-xl font-semibold mb-4">Score Timeline</h2>
+                      <div className="h-[400px]">
+                        <ScoreTimeline attempts={attempts} />
+                      </div>
+                    </div>
+                    <div className="col-span-12 md:col-span-4">
+                      <LCAInfoBox />
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {attempts.map((attempt) => (
+                    <AssessmentCard
+                      key={attempt.id}
+                      attempt={attempt}
+                      onDelete={handleDelete}
+                      isDeletingId={isDeletingId}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <Footer />
