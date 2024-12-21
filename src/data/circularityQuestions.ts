@@ -69,6 +69,22 @@ export const circularityQuestions: QuizSection[] = [
           { id: "d4-5", text: "50% less", value: 1 },
           { id: "d4-6", text: "I don't know", value: 0 }
         ]
+      },
+      {
+        id: "design-5",
+        text: "What is the material composition of your product(s)?",
+        description: "Distribution of material types by weight relative to total material inflow weight. Categories are mutually exclusive.",
+        subcategory: "Material composition",
+        type: "percentage",
+        weight: 0.4,
+        options: [
+          { id: "d5-1", text: "Virgin material content (0-100%)", value: 20 },
+          { id: "d5-2", text: "Reused/upcycled material content (0-100%)", value: 100 },
+          { id: "d5-3", text: "Recycled material content (0-100%)", value: 80 },
+          { id: "d5-4", text: "Biodegradable/renewable material content (0-100%)", value: 60 },
+          { id: "d5-5", text: "I don't know", value: 0 }
+        ],
+        source_url: "Note: The ideal circular product would minimize virgin material and maximize reused, recycled, and biodegradable/renewable content. Scoring is based on the overall composition, with more points for higher percentages of circular materials."
       }
     ]
   },
