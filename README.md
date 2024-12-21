@@ -2,13 +2,7 @@
 
 A diagnostic tool for measuring organizational circularity maturity developed by the Bern University of Applied Sciences.
 
-## Project Info
-
-**URL**: https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0
-
 ## Installation & Development
-
-There are several ways to work with this codebase:
 
 ### Local Development
 
@@ -28,10 +22,6 @@ npm install
 # Start development server
 npm run dev
 ```
-
-### Using Lovable
-
-Visit the [Lovable Project](https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0) and start prompting. Changes made via Lovable will be committed automatically to the repository.
 
 ### Edit on GitHub
 
@@ -59,13 +49,7 @@ This project is built with modern web technologies:
 
 ## Deployment
 
-### Using Lovable
-
-Open [Lovable](https://lovable.dev/projects/b55acd0e-dd93-44ff-8175-e973ed86f1a0) and click Share -> Publish.
-
-### Custom Domain
-
-While we don't currently support custom domains directly through Lovable, you can deploy to your own domain using Netlify. Visit our [Custom domains documentation](https://docs.lovable.dev/tips-tricks/custom-domain/) for details.
+The application can be deployed using any hosting service that supports static websites, such as Netlify, Vercel, or GitHub Pages.
 
 ## Credits
 
