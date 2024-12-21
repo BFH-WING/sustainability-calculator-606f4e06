@@ -11,7 +11,7 @@ export const endOfLifeSection: QuizSection = {
       description: "What percentage of total sales are eligible under the mentioned business models?",
       subcategory: "Business models (current)",
       type: "percentage",
-      weight: 0.35, // Increased weight due to complexity and importance
+      weight: 0.35, // Highest weight due to complexity and importance
       options: [
         { id: "e1-1", text: "Sharing (0-100%)", value: 100 },
         { id: "e1-2", text: "Rental/Leasing (0-100%)", value: 80 },
@@ -27,7 +27,7 @@ export const endOfLifeSection: QuizSection = {
       description: "Full spare-parts stock available from the manufacturer or its dealers",
       subcategory: "Lifetime extension through repair",
       type: "single_choice",
-      weight: 0.20, // Adjusted for balanced assessment
+      weight: 0.20, // Balanced with warranty period
       options: [
         { id: "e2-1", text: "Excellent", value: 5 },
         { id: "e2-2", text: "Good", value: 4 },
@@ -42,7 +42,7 @@ export const endOfLifeSection: QuizSection = {
       text: "What is the average warranty period?",
       subcategory: "Lifetime extension through repair",
       type: "single_choice",
-      weight: 0.20, // Equal weight with spare parts availability
+      weight: 0.20, // Equal weight with spare parts
       options: [
         { id: "e3-1", text: ">75% of the useful life of the product", value: 5 },
         { id: "e3-2", text: "26-75% of the useful life of the product", value: 4 },

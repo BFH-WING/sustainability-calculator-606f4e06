@@ -11,7 +11,7 @@ export const materialSourcingSection: QuizSection = {
       description: "Applied to virgin, reused/upcycled, recycled, and biodegradable materials",
       subcategory: "Geographical proximity of sourcing",
       type: "percentage",
-      weight: 0.6,
+      weight: 0.60, // Higher weight due to environmental impact
       options: [
         { id: "s1-1", text: "Countries outside of Europe (0-100%)", value: 20 },
         { id: "s1-2", text: "Other european countries (0-100%)", value: 40 },
@@ -26,7 +26,7 @@ export const materialSourcingSection: QuizSection = {
       text: "What modes of transportation are used for the different sourcing locations?",
       subcategory: "Modes of transport",
       type: "percentage",
-      weight: 0.4,
+      weight: 0.40, // Complementary to geographical sourcing
       options: [
         { id: "s2-1", text: "Air (0-100%)", value: 20 },
         { id: "s2-2", text: "Maritime (0-100%)", value: 40 },
