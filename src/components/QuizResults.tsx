@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import RadarChart from "./RadarChart";
 import { QuizResults as QuizResultsType } from "@/types/quiz";
 import { circularityQuestions } from "@/data/circularityQuestions";
-import CircularityLevel from "./CircularityLevel";
 import Auth from "./Auth";
 import { supabase } from "@/integrations/supabase/client";
+import ResultsHeader from "./results/ResultsHeader";
+import ResultsChart from "./results/ResultsChart";
+import DetailedScores from "./results/DetailedScores";
+import ResultsActions from "./results/ResultsActions";
 
 interface QuizResultsProps {
   results: QuizResultsType;
@@ -24,7 +26,6 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const roundedTotalScore = Number(results.total.toFixed(2));
 
   useEffect(() => {
-    // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
       console.log('Initial session check:', session ? 'Logged in' : 'Not logged in');
       setSession(session);
@@ -43,7 +44,6 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Calculate scores per section
   const sectionScores = circularityQuestions.reduce((acc, section) => {
     let totalScore = 0;
     let answeredQuestions = 0;
@@ -67,7 +67,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
     return acc;
   }, {} as { [key: string]: { score: number; maxScore: number; percentage: number; label: string } });
 
-  const radarData = Object.entries(sectionScores).map(([id, data]) => ({
+  const radarData = Object.entries(sectionScores).map(([_, data]) => ({
     subject: data.label,
     value: data.percentage,
   }));
@@ -146,63 +146,16 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
   return (
     <div className="max-w-4xl mx-auto overflow-y-auto max-h-[calc(100vh-16rem)] pr-4">
-      <h1 className="text-3xl font-bold text-center mb-8 text-eco-dark">
-        Your Circularity Assessment Results
-      </h1>
-
-      <CircularityLevel score={roundedTotalScore} />
-      
-      <div className="mb-12">
-        <div className="h-[400px]">
-          <RadarChart 
-            data={radarData} 
-            color="#4CAF50"
-          />
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <h2 className="text-xl font-semibold text-eco-dark">Detailed Scores by Section</h2>
-        {Object.entries(sectionScores).map(([id, data]) => (
-          <div key={id} className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="flex-1 font-medium">{data.label}</span>
-              <span className="text-gray-500">
-                Score: {data.score}/{data.maxScore} ({data.percentage}%)
-              </span>
-            </div>
-            <div 
-              className="h-2 bg-gray-100 rounded-full overflow-hidden"
-              style={{
-                background: `linear-gradient(to right, #4CAF50 ${data.percentage}%, #e5e7eb 0%)`
-              }}
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="flex justify-center gap-4 mt-8 mb-8">
-        <button
-          onClick={onRestart}
-          className="bg-white text-eco-primary border-2 border-eco-primary px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-primary hover:text-white transition-colors"
-        >
-          Retake Assessment
-        </button>
-        {!session && !resultsStored && (
-          <button
-            onClick={handleSaveResults}
-            className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
-          >
-            Save Results
-          </button>
-        )}
-        <button
-          onClick={handleGoToDashboard}
-          className="bg-eco-primary text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-eco-dark transition-colors"
-        >
-          {session ? 'Go to Dashboard' : 'Sign in to Save Results'}
-        </button>
-      </div>
+      <ResultsHeader totalScore={roundedTotalScore} />
+      <ResultsChart radarData={radarData} />
+      <DetailedScores sectionScores={sectionScores} />
+      <ResultsActions
+        onRestart={onRestart}
+        onSaveResults={handleSaveResults}
+        onGoToDashboard={handleGoToDashboard}
+        showSaveButton={!session && !resultsStored}
+        isLoggedIn={!!session}
+      />
     </div>
   );
 };
