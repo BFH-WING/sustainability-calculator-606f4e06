@@ -1,31 +1,22 @@
+import { useState, useEffect } from "react";
 import { useQuizData } from "@/hooks/useQuizData";
 import QuizQuestion from "@/components/QuizQuestion";
 import QuizResults from "@/components/QuizResults";
 import QuizLayout from "@/components/QuizLayout";
 import { calculateResults } from "@/utils/quizCalculations";
+import { toast } from "sonner";
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { useQuizState } from "@/hooks/useQuizState";
+
+const STORAGE_KEY = 'circularity-quiz-answers';
 
 const Quiz = () => {
   const { data: sections, isLoading } = useQuizData();
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<{ [key: string]: number }>({});
+  const [completed, setCompleted] = useState(false);
+  const [questionErrors, setQuestionErrors] = useState<{ [key: string]: boolean }>({});
   const location = useLocation();
-  const {
-    currentSectionIndex,
-    currentQuestionIndex,
-    answers,
-    completed,
-    questionErrors,
-    handleReset,
-    handleNext,
-    handlePrevious,
-    handleQuestionSelect,
-    setAnswers,
-    setQuestionErrors,
-    setCompleted,
-    setCurrentSectionIndex,
-    setCurrentQuestionIndex,
-  } = useQuizState();
 
   // Reset state when navigating to quiz with reset flag
   useEffect(() => {
@@ -33,7 +24,47 @@ const Quiz = () => {
       console.log("Resetting quiz state");
       handleReset();
     }
-  }, [location.state, handleReset]);
+  }, [location.state]);
+
+  // Load answers from local storage on mount
+  useEffect(() => {
+    const savedAnswers = localStorage.getItem(STORAGE_KEY);
+    if (savedAnswers && !location.state?.reset) {
+      const parsedAnswers = JSON.parse(savedAnswers);
+      setAnswers(parsedAnswers);
+      console.log('Loaded answers from storage:', parsedAnswers);
+    }
+  }, []);
+
+  // Save answers to local storage whenever they change
+  useEffect(() => {
+    if (Object.keys(answers).length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers));
+      console.log('Saved answers to storage:', answers);
+    }
+  }, [answers]);
+
+  const handleReset = () => {
+    setCompleted(false);
+    setCurrentSectionIndex(0);
+    setCurrentQuestionIndex(0);
+    setAnswers({});
+    setQuestionErrors({});
+    localStorage.removeItem(STORAGE_KEY);
+    
+    // Clear all percentage question data from localStorage
+    if (sections) {
+      sections.forEach(section => {
+        section.questions.forEach(question => {
+          if (question.type === 'percentage') {
+            localStorage.removeItem(`percentages-${question.id}`);
+          }
+        });
+      });
+    }
+    
+    toast.success('Assessment reset successfully');
+  };
 
   const handleAnswer = (value: number) => {
     if (!sections) return;
@@ -58,6 +89,36 @@ const Quiz = () => {
       ...prev,
       [currentQuestion.id]: hasError
     }));
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    } else if (currentSectionIndex > 0) {
+      const prevSection = sections![currentSectionIndex - 1];
+      setCurrentSectionIndex(currentSectionIndex - 1);
+      setCurrentQuestionIndex(prevSection.questions.length - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (!sections) return;
+
+    if (currentQuestionIndex < sections[currentSectionIndex].questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else if (currentSectionIndex < sections.length - 1) {
+      setCurrentSectionIndex(currentSectionIndex + 1);
+      setCurrentQuestionIndex(0);
+    } else {
+      setCompleted(true);
+    }
+  };
+
+  const handleQuestionSelect = (sectionIndex: number, questionIndex: number) => {
+    if (canNavigateToSection(sectionIndex)) {
+      setCurrentSectionIndex(sectionIndex);
+      setCurrentQuestionIndex(questionIndex);
+    }
   };
 
   const canNavigateToSection = (sectionIndex: number) => {
@@ -131,8 +192,8 @@ const Quiz = () => {
       answers={answers}
       onQuestionSelect={handleQuestionSelect}
       canNavigateToSection={canNavigateToSection}
-      onPrevious={() => handlePrevious(sections)}
-      onNext={() => handleNext(sections)}
+      onPrevious={handlePrevious}
+      onNext={handleNext}
       canGoNext={canGoNext}
       questionErrors={questionErrors}
     >
