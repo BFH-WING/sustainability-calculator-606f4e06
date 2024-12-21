@@ -46,22 +46,24 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
 
   const sectionScores = circularityQuestions.reduce((acc, section) => {
     let totalScore = 0;
-    let answeredQuestions = 0;
+    let maxPossibleScore = 0;
 
     section.questions.forEach(question => {
       const answer = results[question.id];
       if (answer !== undefined) {
         totalScore += (answer * question.weight);
-        answeredQuestions += question.weight;
+        // Calculate max possible score (100% * weight for each answered question)
+        maxPossibleScore += (100 * question.weight);
       }
     });
 
-    const percentage = answeredQuestions > 0 ? (totalScore / answeredQuestions) : 0;
+    // Calculate percentage based on max possible score
+    const percentage = maxPossibleScore > 0 ? Math.round((totalScore / maxPossibleScore) * 100) : 0;
     
     acc[section.id] = {
       score: Math.round(totalScore * 10) / 10,
-      maxScore: answeredQuestions * 100,
-      percentage: Math.round(percentage),
+      maxScore: maxPossibleScore,
+      percentage: percentage,
       label: section.title
     };
     return acc;
