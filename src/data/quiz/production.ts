@@ -45,6 +45,20 @@ export const productionSection: QuizSection = {
         { id: "p3-3", text: "I don't know", value: 0 },
         { id: "p3-4", text: "Does not apply", value: 0 }
       ]
+    },
+    {
+      id: "prod-4",
+      text: "What is the recycling rate of the organization's industrial solid waste?",
+      description: "Calculated by dividing the weight of the recycled industrial waste by the weight of the total waste generated",
+      subcategory: "Industrial waste",
+      type: "percentage",
+      weight: 0.5,
+      options: [
+        { id: "p4-1", text: "0-100%", value: 100 },
+        { id: "p4-2", text: "I don't know", value: 0 },
+        { id: "p4-3", text: "Does not apply", value: 0 }
+      ],
+      source_url: "https://www.sciencedirect.com/science/article/pii/S2525609230014588"
     }
   ]
 };
