@@ -59,6 +59,20 @@ export const productionSection: QuizSection = {
         { id: "p4-3", text: "Does not apply", value: 0 }
       ],
       source_url: "https://www.sciencedirect.com/science/article/pii/S2525609230014588"
+    },
+    {
+      id: "prod-5",
+      text: "What packaging type do you use for the analyzed product?",
+      subcategory: "Packaging type",
+      type: "single_choice",
+      weight: 0.5,
+      options: [
+        { id: "p5-1", text: "Reusable", value: 100 },
+        { id: "p5-2", text: "Biodegradable", value: 80 },
+        { id: "p5-3", text: "Fully recyclable", value: 60 },
+        { id: "p5-4", text: "Partially recyclable", value: 40 },
+        { id: "p5-5", text: "Not recyclable", value: 0 }
+      ]
     }
   ]
 };
