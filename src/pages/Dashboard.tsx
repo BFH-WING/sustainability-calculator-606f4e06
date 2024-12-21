@@ -119,7 +119,7 @@ const Dashboard = () => {
             <div className="space-y-8">
               <div className="bg-white rounded-lg shadow-lg">
                 <div className="grid grid-cols-12 gap-8 p-6">
-                  <div className="col-span-12 md:col-span-8 border-r border-gray-200">
+                  <div className="col-span-12 md:col-span-8 pr-12 border-r border-gray-200">
                     <h2 className="text-xl font-semibold mb-4">Score Timeline</h2>
                     <div className="h-[400px]">
                       <ScoreTimeline attempts={attempts} />
