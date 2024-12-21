@@ -36,6 +36,21 @@ export const endOfLifeSection: QuizSection = {
         { id: "e2-5", text: "Null", value: 1 },
         { id: "e2-6", text: "I don't know", value: 0 }
       ]
+    },
+    {
+      id: "eol-3",
+      text: "What is the average warranty period?",
+      subcategory: "Lifetime extension through repair",
+      type: "single_choice",
+      weight: 0.4,
+      options: [
+        { id: "e3-1", text: ">75% of the useful life of the product", value: 5 },
+        { id: "e3-2", text: "26-75% of the useful life of the product", value: 4 },
+        { id: "e3-3", text: "Warranty during 25% or less of the average useful life of the product", value: 3 },
+        { id: "e3-4", text: "Warranty for less than 1 year", value: 2 },
+        { id: "e3-5", text: "No warranty", value: 1 },
+        { id: "e3-6", text: "I don't know", value: 0 }
+      ]
     }
   ]
 };
