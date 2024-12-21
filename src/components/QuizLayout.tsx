@@ -2,6 +2,7 @@ import { QuizSection } from "@/types/quiz";
 import TreeNav from "./TreeNav";
 import QuizProgress from "./QuizProgress";
 import TopNav from "./TopNav";
+import Footer from "./Footer";
 
 interface QuizLayoutProps {
   sections: QuizSection[];
@@ -58,6 +59,9 @@ const QuizLayout = ({
             </div>
           </div>
         </div>
+      </div>
+      <div className="relative z-10">
+        <Footer />
       </div>
     </div>
   );

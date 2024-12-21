@@ -1,6 +1,5 @@
 import { QuizSection } from "@/types/quiz";
 import QuestionList from "./TreeNav/QuestionList";
-import Footer from "./Footer";
 
 interface TreeNavProps {
   sections: QuizSection[];
@@ -22,9 +21,9 @@ const TreeNav = ({
   questionErrors,
 }: TreeNavProps) => {
   return (
-    <div className="fixed left-0 top-16 w-[40%] h-screen bg-white/80 backdrop-blur-sm border-r border-eco-light flex flex-col">
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-6">
+    <div className="fixed left-0 top-16 w-[40%] h-screen bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
+      <div className="flex flex-col h-full">
+        <div className="flex-1 p-6">
           <QuestionList
             sections={sections}
             currentSectionIndex={currentSectionIndex}
@@ -35,9 +34,6 @@ const TreeNav = ({
             questionErrors={questionErrors}
           />
         </div>
-      </div>
-      <div className="flex-shrink-0">
-        <Footer />
       </div>
     </div>
   );
