@@ -15,8 +15,6 @@ const Footer = () => {
             <p>
               Developed by: <a href="https://www.bfh.ch/de/ueber-die-bfh/personen/iqgcoyge3rvz/" className="text-eco-primary hover:text-eco-dark underline" target="_blank" rel="noopener noreferrer">Dr. Maria A. Franco</a>
               <br />
-              Implemented by: <a href="https://www.bfh.ch/de/ueber-die-bfh/personen/hjv2xroqxwn5/" className="text-eco-primary hover:text-eco-dark underline" target="_blank" rel="noopener noreferrer">Moritz Maier</a>
-              <br />
               Bern University of Applied Sciences - <a 
                 href="https://www.bfh.ch/de/themen/circular-economy-labs-ce-lab/" 
                 className="text-gray-500 hover:text-eco-primary underline" 
@@ -25,6 +23,8 @@ const Footer = () => {
               >
                 Circular Economy Lab
               </a>
+              <br />
+              Implemented by: <a href="https://www.bfh.ch/de/ueber-die-bfh/personen/hjv2xroqxwn5/" className="text-eco-primary hover:text-eco-dark underline" target="_blank" rel="noopener noreferrer">Moritz Maier</a>
             </p>
           </div>
         </div>
