@@ -10,7 +10,7 @@ export const productionSection: QuizSection = {
       text: "What percentage of the organization's consumed energy comes from renewable sources?",
       subcategory: "Energy",
       type: "percentage",
-      weight: 0.35,
+      weight: 0.25,  // Changed from 0.35
       options: [
         { id: "p1-1", text: "Solar (0-100%)", value: 100 },
         { id: "p1-2", text: "Wind (0-100%)", value: 100 },
@@ -25,7 +25,7 @@ export const productionSection: QuizSection = {
       text: "What percentage of the organization's consumed water is recirculated internally?",
       subcategory: "Water",
       type: "percentage",
-      weight: 0.15,
+      weight: 0.15,  // Unchanged
       options: [
         { id: "p2-1", text: "0-100%", value: 100 },
         { id: "p2-2", text: "I don't know", value: 0 },
@@ -38,7 +38,7 @@ export const productionSection: QuizSection = {
       description: "Examples: fly ash, steam, CO2, waste heat, chemicals",
       subcategory: "Flow of production waste",
       type: "percentage",
-      weight: 0.25,
+      weight: 0.25,  // Unchanged
       options: [
         { id: "p3-1", text: "Own operations (0-100%)", value: 100 },
         { id: "p3-2", text: "Other organization's operations (0-100%)", value: 80 },
@@ -52,7 +52,7 @@ export const productionSection: QuizSection = {
       description: "Calculated by dividing the weight of the recycled industrial waste by the weight of the total waste generated",
       subcategory: "Industrial waste",
       type: "percentage",
-      weight: 0.25,
+      weight: 0.25,  // Unchanged
       options: [
         { id: "p4-1", text: "0-100%", value: 100 },
         { id: "p4-2", text: "I don't know", value: 0 },
@@ -65,7 +65,7 @@ export const productionSection: QuizSection = {
       text: "What packaging type do you use for the analyzed product?",
       subcategory: "Packaging type",
       type: "single_choice",
-      weight: 0.25,
+      weight: 0.10,  // Changed from 0.25
       options: [
         { id: "p5-1", text: "Reusable", value: 100 },
         { id: "p5-2", text: "Biodegradable", value: 80 },
