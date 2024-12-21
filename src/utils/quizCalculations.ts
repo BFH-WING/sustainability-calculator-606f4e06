@@ -14,8 +14,8 @@ export const calculateResults = (sections: QuizSection[], answers: { [key: strin
     });
   });
 
-  // Calculate the weighted average as the total score
-  const total = totalWeight > 0 ? Math.round((totalScore / totalWeight)) : 0;
+  // Calculate the weighted average and round to 2 decimal places
+  const total = totalWeight > 0 ? Number((totalScore / totalWeight).toFixed(2)) : 0;
 
   return {
     ...answers,

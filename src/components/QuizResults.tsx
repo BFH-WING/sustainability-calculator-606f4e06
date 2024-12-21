@@ -20,6 +20,9 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
   const [resultsStored, setResultsStored] = useState(false);
   const navigate = useNavigate();
 
+  // Round the total score to 2 decimal places
+  const roundedTotalScore = Number(results.total.toFixed(2));
+
   useEffect(() => {
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -30,16 +33,11 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       }
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log('Auth state changed:', _event, session ? 'Logged in' : 'Not logged in');
       setSession(session);
-      // Remove this call to prevent double storing
-      // if (session) {
-      //   checkAndSaveResults(session);
-      // }
     });
 
     return () => subscription.unsubscribe();
@@ -88,12 +86,11 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       setIsStoringResults(true);
       console.log('Checking for existing results...');
       
-      // Check if results for this session already exist
       const { data: existingResults } = await supabase
         .from("quiz_results")
         .select("id")
         .eq("user_id", currentSession.user.id)
-        .eq("total_score", results.total)
+        .eq("total_score", roundedTotalScore)
         .maybeSingle();
 
       if (existingResults) {
@@ -103,10 +100,9 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
       }
 
       console.log('Storing new results...');
-      // Save new results
       const { error } = await supabase.from("quiz_results").insert({
         user_id: currentSession.user.id,
-        total_score: Math.round(results.total),
+        total_score: roundedTotalScore,
         section_scores: sectionScores,
       });
 
@@ -154,7 +150,7 @@ const QuizResults = ({ results, onRestart }: QuizResultsProps) => {
         Your Circularity Assessment Results
       </h1>
 
-      <CircularityLevel score={results.total} />
+      <CircularityLevel score={roundedTotalScore} />
       
       <div className="mb-12">
         <div className="h-[400px]">
