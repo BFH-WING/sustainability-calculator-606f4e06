@@ -31,6 +31,20 @@ export const productionSection: QuizSection = {
         { id: "p2-2", text: "I don't know", value: 0 },
         { id: "p2-3", text: "Does not apply", value: 0 }
       ]
+    },
+    {
+      id: "prod-3",
+      text: "What percentage of your operation's residual waste and/or by-products are fed back to operations?",
+      description: "Examples: fly ash, steam, CO2, waste heat, chemicals",
+      subcategory: "Flow of production waste",
+      type: "percentage",
+      weight: 0.5,
+      options: [
+        { id: "p3-1", text: "Own operations (0-100%)", value: 100 },
+        { id: "p3-2", text: "Other organization's operations (0-100%)", value: 80 },
+        { id: "p3-3", text: "I don't know", value: 0 },
+        { id: "p3-4", text: "Does not apply", value: 0 }
+      ]
     }
   ]
 };
