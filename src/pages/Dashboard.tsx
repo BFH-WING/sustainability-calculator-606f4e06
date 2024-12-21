@@ -118,19 +118,19 @@ const Dashboard = () => {
           ) : (
             <div className="space-y-8">
               <div className="bg-white rounded-lg shadow-lg">
-                <div className="grid md:grid-cols-2 gap-8 p-6">
-                  <div className="border-r border-gray-200">
+                <div className="grid grid-cols-12 gap-8 p-6">
+                  <div className="col-span-12 md:col-span-8 border-r border-gray-200">
                     <h2 className="text-xl font-semibold mb-4">Score Timeline</h2>
                     <div className="h-[400px]">
                       <ScoreTimeline attempts={attempts} />
                     </div>
                   </div>
-                  <div>
+                  <div className="col-span-12 md:col-span-4">
                     <LCAInfoBox />
                   </div>
                 </div>
               </div>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {attempts.map((attempt) => (
                   <AssessmentCard
                     key={attempt.id}
