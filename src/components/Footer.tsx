@@ -19,9 +19,14 @@ const Footer = () => {
               <br />
               Bern University of Applied Sciences
               <br />
-              <span className="text-gray-500">
-                Industrial Engineering and Management Science (WING)
-              </span>
+              <a 
+                href="https://www.bfh.ch/de/themen/circular-economy-labs-ce-lab/" 
+                className="text-gray-500 hover:text-eco-primary underline" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                Circular Economy Lab
+              </a>
             </p>
           </div>
         </div>
