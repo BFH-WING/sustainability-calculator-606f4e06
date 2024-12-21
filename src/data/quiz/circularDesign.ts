@@ -11,7 +11,7 @@ export const circularDesignSection: QuizSection = {
       description: "Products generally consist of different materials that are distributed throughout the product, e.g. in different components",
       subcategory: "Complexity of product architecture",
       type: "single_choice",
-      weight: 0.4,
+      weight: 0.15,
       options: [
         { id: "d1-1", text: "2-5", value: 5 },
         { id: "d1-2", text: "6-9", value: 3 },
@@ -27,7 +27,7 @@ export const circularDesignSection: QuizSection = {
       description: "Circular design demand less materials for the same performance and quality",
       subcategory: "Material efficiency",
       type: "single_choice",
-      weight: 0.3,
+      weight: 0.15,
       options: [
         { id: "d2-1", text: "50% less", value: 5 },
         { id: "d2-2", text: "25% less", value: 4 },
@@ -43,7 +43,7 @@ export const circularDesignSection: QuizSection = {
       text: "How modular is the product(s)' design so that it facilitates rapid disassembly and assembly of its parts?",
       subcategory: "Design for disassembly and modularity",
       type: "single_choice",
-      weight: 0.3,
+      weight: 0.20,
       options: [
         { id: "d3-1", text: "Excellent (75-95% separable joints and accessibility)", value: 5 },
         { id: "d3-2", text: "Good (50-75% separable joints)", value: 4 },
@@ -59,7 +59,7 @@ export const circularDesignSection: QuizSection = {
       description: "Product lifetime comparison",
       subcategory: "Design for durability",
       type: "single_choice",
-      weight: 0.3,
+      weight: 0.20,
       options: [
         { id: "d4-1", text: "2x more", value: 5 },
         { id: "d4-2", text: "1.5x more", value: 4 },
@@ -75,7 +75,7 @@ export const circularDesignSection: QuizSection = {
       description: "Distribution of material types by weight relative to total material inflow weight. Categories are mutually exclusive.",
       subcategory: "Material composition",
       type: "percentage",
-      weight: 0.4,
+      weight: 0.20,
       options: [
         { id: "d5-1", text: "Virgin material content (0-100%)", value: 20 },
         { id: "d5-2", text: "Reused/upcycled material content (0-100%)", value: 100 },
@@ -91,7 +91,7 @@ export const circularDesignSection: QuizSection = {
       description: "Hazardous chemicals in products that impede recycling and reuse, with the aim to boost product's circularity",
       subcategory: "Hazardous substances",
       type: "single_choice",
-      weight: 0.3,
+      weight: 0.10,
       options: [
         { id: "d6-1", text: "Yes", value: 1 },
         { id: "d6-2", text: "No", value: 5 },
