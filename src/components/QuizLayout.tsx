@@ -46,7 +46,7 @@ const QuizLayout = ({
             questionErrors={questionErrors}
           />
           <div className="ml-[40%] flex-1">
-            <div className="max-w-4xl mx-auto pt-24 px-6">
+            <div className="w-[60%] mx-auto pt-24 px-6">
               <div className="max-w-3xl mx-auto">
                 <QuizProgress
                   sections={sections}
