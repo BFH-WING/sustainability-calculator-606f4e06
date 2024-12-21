@@ -56,12 +56,10 @@ const QuizLayout = ({
                 canGoNext={canGoNext}
               />
               {children}
+              <Footer />
             </div>
           </div>
         </div>
-      </div>
-      <div className="relative z-10">
-        <Footer />
       </div>
     </div>
   );
