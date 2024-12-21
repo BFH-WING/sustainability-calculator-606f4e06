@@ -21,16 +21,18 @@ const TreeNav = ({
   questionErrors,
 }: TreeNavProps) => {
   return (
-    <div className="fixed left-0 top-16 w-[40%] h-screen bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
-      <QuestionList
-        sections={sections}
-        currentSectionIndex={currentSectionIndex}
-        currentQuestionIndex={currentQuestionIndex}
-        answers={answers}
-        onQuestionSelect={onQuestionSelect}
-        canNavigateToSection={canNavigateToSection}
-        questionErrors={questionErrors}
-      />
+    <div className="fixed left-0 top-16 w-[40%] h-[calc(100vh-4rem)] bg-white/80 backdrop-blur-sm border-r border-eco-light overflow-y-auto">
+      <div className="p-6">
+        <QuestionList
+          sections={sections}
+          currentSectionIndex={currentSectionIndex}
+          currentQuestionIndex={currentQuestionIndex}
+          answers={answers}
+          onQuestionSelect={onQuestionSelect}
+          canNavigateToSection={canNavigateToSection}
+          questionErrors={questionErrors}
+        />
+      </div>
     </div>
   );
 };
