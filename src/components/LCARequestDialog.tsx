@@ -60,7 +60,10 @@ const LCARequestDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="bg-white hover:bg-gray-50 w-full">
+        <Button 
+          variant="default" 
+          className="w-full bg-eco-primary hover:bg-eco-dark text-white font-medium py-2.5"
+        >
           <ClipboardList className="mr-2 h-4 w-4" />
           Request Life Cycle Assessment
         </Button>

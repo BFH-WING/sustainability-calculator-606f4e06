@@ -21,10 +21,10 @@ const LCAInfoBox = () => {
               BFH can help you enhance your market position and meet sustainability goals through expert LCA guidance.
             </p>
           </div>
-          <div className="pt-4 w-full">
-            <LCARequestDialog />
-          </div>
         </div>
+      </div>
+      <div className="mt-6 pt-4 border-t border-gray-100">
+        <LCARequestDialog />
       </div>
     </div>
   );
