@@ -53,6 +53,22 @@ export const circularityQuestions: QuizSection[] = [
           { id: "d3-5", text: "I don't know", value: 0 }
         ],
         source_url: "https://www.sciencedirect.com/science/article/pii/S0959652623005029"
+      },
+      {
+        id: "design-4",
+        text: "What is the product(s)' average lifetime relative to the industry average?",
+        description: "Product lifetime comparison",
+        subcategory: "Design for durability",
+        type: "single_choice",
+        weight: 0.3,
+        options: [
+          { id: "d4-1", text: "2x more", value: 5 },
+          { id: "d4-2", text: "1.5x more", value: 4 },
+          { id: "d4-3", text: "1x equal lifetime", value: 3 },
+          { id: "d4-4", text: "25% less", value: 2 },
+          { id: "d4-5", text: "50% less", value: 1 },
+          { id: "d4-6", text: "I don't know", value: 0 }
+        ]
       }
     ]
   },
