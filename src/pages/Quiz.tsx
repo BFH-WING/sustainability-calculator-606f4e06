@@ -22,6 +22,9 @@ const Quiz = () => {
     handleQuestionSelect,
     setAnswers,
     setQuestionErrors,
+    setCompleted,
+    setCurrentSectionIndex,
+    setCurrentQuestionIndex,
   } = useQuizState();
 
   // Reset state when navigating to quiz with reset flag
