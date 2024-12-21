@@ -13,9 +13,9 @@ const Footer = () => {
               className="h-12 object-contain"
             />
             <p>
-              Developed by: Dr. Maria A. Franco
+              Developed by: <a href="https://www.bfh.ch/de/ueber-die-bfh/personen/iqgcoyge3rvz/" className="text-eco-primary hover:text-eco-dark underline" target="_blank" rel="noopener noreferrer">Dr. Maria A. Franco</a>
               <br />
-              Implemented by: Moritz Maier
+              Implemented by: <a href="https://www.bfh.ch/de/ueber-die-bfh/personen/hjv2xroqxwn5/" className="text-eco-primary hover:text-eco-dark underline" target="_blank" rel="noopener noreferrer">Moritz Maier</a>
               <br />
               Bern University of Applied Sciences
               <br />
