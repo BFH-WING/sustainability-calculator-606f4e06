@@ -2,7 +2,6 @@ import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
 import { useEffect, useState } from "react";
 import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
-import { Query } from "appwrite";
 
 interface QuestionListProps {
   sections: QuizSection[];
@@ -29,24 +28,19 @@ const QuestionList = ({
     const fetchDebugMode = async () => {
       try {
         console.log('Fetching debug mode setting...');
-        const documents = await databases.listDocuments(
+        const document = await databases.getDocument(
           DATABASE_ID,
           COLLECTIONS.GLOBAL_SETTINGS,
-          [Query.equal('key', 'debug_mode')]
+          'debug-mode-setting'
         );
-        console.log('Debug mode documents:', documents);
-
-        if (documents.documents.length > 0) {
-          const value = documents.documents[0].value === 'true';
-          console.log('Setting debug mode to:', value);
-          setDebugMode(value);
-        } else {
-          console.log('No debug mode setting found');
-        }
+        console.log('Debug mode document:', document);
+        const value = document.value === 'true';
+        console.log('Setting debug mode to:', value);
+        setDebugMode(value);
       } catch (error) {
         console.error("Error fetching debug mode:", error);
         if ((error as any)?.code === 404) {
-          console.log('Collection not found, defaulting to false');
+          console.log('Document not found, defaulting to false');
         }
       }
     };
