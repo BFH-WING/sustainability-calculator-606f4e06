@@ -1,9 +1,8 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
-import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
+import { toast } from "sonner";
+import { databases } from "@/integrations/appwrite/client";
 import { useState } from "react";
-import { ID, Query } from "appwrite";
 
 interface DebugModeToggleProps {
   initialDebugMode: boolean;
@@ -11,57 +10,29 @@ interface DebugModeToggleProps {
 }
 
 const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggleProps) => {
-  const { toast } = useToast();
   const [debugMode, setDebugMode] = useState(initialDebugMode);
 
   const toggleDebugMode = async () => {
     try {
       const newValue = !debugMode;
       
-      // First try to find existing debug_mode setting
-      const response = await databases.listDocuments(
-        DATABASE_ID,
-        COLLECTIONS.GLOBAL_SETTINGS,
-        [Query.equal('key', 'debug_mode')]
+      // Update the debug_mode document
+      await databases.updateDocument(
+        'sustainability_calculator',
+        'global_settings',
+        'debug_mode',
+        {
+          value: newValue
+        }
       );
-
-      if (response.documents.length > 0) {
-        // Update existing setting
-        await databases.updateDocument(
-          DATABASE_ID,
-          COLLECTIONS.GLOBAL_SETTINGS,
-          response.documents[0].$id,
-          {
-            value: newValue
-          }
-        );
-      } else {
-        // Create new setting
-        await databases.createDocument(
-          DATABASE_ID,
-          COLLECTIONS.GLOBAL_SETTINGS,
-          ID.unique(),
-          {
-            key: 'debug_mode',
-            value: newValue
-          }
-        );
-      }
       
       setDebugMode(newValue);
       onDebugModeChange(newValue);
       
-      toast({
-        title: "Debug Mode Updated",
-        description: `Debug mode has been ${newValue ? "enabled" : "disabled"}.`,
-      });
+      toast.success(`Debug mode has been ${newValue ? "enabled" : "disabled"}`);
     } catch (error) {
       console.error("Error updating debug mode:", error);
-      toast({
-        title: "Error",
-        description: "Failed to update debug mode.",
-        variant: "destructive",
-      });
+      toast.error("Failed to update debug mode");
     }
   };
 

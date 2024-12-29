@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
 import { useEffect, useState } from "react";
-import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
-import { Query } from "appwrite";
+import { databases } from "@/integrations/appwrite/client";
 
 interface QuestionListProps {
   sections: QuizSection[];
@@ -28,14 +27,14 @@ const QuestionList = ({
   useEffect(() => {
     const fetchDebugMode = async () => {
       try {
-        const response = await databases.listDocuments(
-          DATABASE_ID,
-          COLLECTIONS.GLOBAL_SETTINGS,
-          [Query.equal('key', 'debug_mode')]
+        const response = await databases.getDocument(
+          'sustainability_calculator',
+          'global_settings',
+          'debug_mode'
         );
 
-        if (response.documents.length > 0) {
-          setDebugMode(response.documents[0].value === true);
+        if (response) {
+          setDebugMode(response.value === true);
         }
       } catch (error) {
         console.error("Error fetching debug mode:", error);
