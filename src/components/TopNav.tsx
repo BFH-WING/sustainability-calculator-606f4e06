@@ -14,6 +14,7 @@ const TopNav = () => {
     const checkSession = async () => {
       try {
         const currentSession = await account.getSession('current');
+        console.log('Session check:', currentSession ? 'Active session found' : 'No active session');
         setSession(currentSession);
         // You would need to implement admin check logic here
         // For now, we'll set it to false
@@ -34,6 +35,7 @@ const TopNav = () => {
       toast.success('Signed out successfully');
       navigate('/');
     } catch (error) {
+      console.error('Error signing out:', error);
       toast.error('Error signing out');
     }
   };

@@ -14,6 +14,7 @@ const Auth = () => {
     const checkSession = async () => {
       try {
         const session = await account.getSession('current');
+        console.log('Session check:', session ? 'Active session found' : 'No active session');
         if (session) {
           navigate('/dashboard');
         }
@@ -34,12 +35,22 @@ const Auth = () => {
     const password = formData.get('password') as string;
 
     try {
+      console.log('Attempting to sign in...');
       await account.createEmailSession(email, password);
+      console.log('Sign in successful');
       toast.success('Signed in successfully!');
       navigate('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
-      toast.error('Failed to sign in. Please check your credentials.');
+      let errorMessage = 'Failed to sign in. Please check your credentials.';
+      
+      if (error?.message) {
+        if (error.message.includes('Invalid credentials')) {
+          errorMessage = 'Invalid email or password.';
+        }
+      }
+      
+      toast.error(errorMessage);
     }
   };
 
