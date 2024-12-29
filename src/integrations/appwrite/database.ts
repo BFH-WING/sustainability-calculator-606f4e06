@@ -17,11 +17,14 @@ export const initializeDatabase = async () => {
         
         // Create collections if they don't exist
         try {
-            await databases.createCollection(
+            await databases.createDocument(
                 DATABASE_ID,
+                COLLECTIONS.QUIZ_RESULTS,
                 ID.unique(),
-                'Quiz Results',
-                'Stores quiz results for users'
+                {
+                    name: 'Quiz Results',
+                    description: 'Stores quiz results for users'
+                }
             );
             console.log('Quiz Results collection created');
         } catch (error: any) {
@@ -29,11 +32,14 @@ export const initializeDatabase = async () => {
         }
 
         try {
-            await databases.createCollection(
+            await databases.createDocument(
                 DATABASE_ID,
+                COLLECTIONS.LCA_REQUESTS,
                 ID.unique(),
-                'LCA Requests',
-                'Stores LCA requests from users'
+                {
+                    name: 'LCA Requests',
+                    description: 'Stores LCA requests from users'
+                }
             );
             console.log('LCA Requests collection created');
         } catch (error: any) {
@@ -41,11 +47,14 @@ export const initializeDatabase = async () => {
         }
 
         try {
-            await databases.createCollection(
+            await databases.createDocument(
                 DATABASE_ID,
+                COLLECTIONS.PROFILES,
                 ID.unique(),
-                'Profiles',
-                'Stores user profiles'
+                {
+                    name: 'Profiles',
+                    description: 'Stores user profiles'
+                }
             );
             console.log('Profiles collection created');
         } catch (error: any) {
@@ -53,11 +62,14 @@ export const initializeDatabase = async () => {
         }
 
         try {
-            await databases.createCollection(
+            await databases.createDocument(
                 DATABASE_ID,
+                COLLECTIONS.GLOBAL_SETTINGS,
                 ID.unique(),
-                'Global Settings',
-                'Stores application settings'
+                {
+                    name: 'Global Settings',
+                    description: 'Stores application settings'
+                }
             );
             console.log('Global Settings collection created');
         } catch (error: any) {
