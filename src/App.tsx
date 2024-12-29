@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Auth from "./components/Auth";
 import SignUp from "./components/SignUp";
+import { SchemaSetup } from "./utils/appwriteSchema";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,9 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <div className="fixed top-4 right-4 z-50">
+        <SchemaSetup />
+      </div>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Quiz />} />
