@@ -1,7 +1,9 @@
 import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { databases } from "@/integrations/appwrite/client";
+import { DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
+import { Query } from "appwrite";
 
 interface QuestionListProps {
   sections: QuizSection[];
@@ -27,14 +29,15 @@ const QuestionList = ({
   useEffect(() => {
     const fetchDebugMode = async () => {
       try {
-        const { data, error } = await supabase
-          .from("global_settings")
-          .select("value")
-          .eq("key", "debug_mode")
-          .single();
+        const response = await databases.listDocuments(
+          DATABASE_ID,
+          COLLECTIONS.GLOBAL_SETTINGS,
+          [Query.equal('key', 'debug_mode')]
+        );
 
-        if (error) throw error;
-        setDebugMode(data.value === true);
+        if (response.documents.length > 0) {
+          setDebugMode(response.documents[0].value === true);
+        }
       } catch (error) {
         console.error("Error fetching debug mode:", error);
       }
