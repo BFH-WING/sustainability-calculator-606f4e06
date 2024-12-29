@@ -1,3 +1,4 @@
+import React from 'react';
 import { Client, Databases, ID } from 'appwrite';
 
 const client = new Client()
@@ -19,95 +20,124 @@ export const setupCollectionSchemas = async () => {
     console.log('Setting up Appwrite collection schemas...');
 
     try {
-        // Quiz Results Collection
-        await databases.createStringAttribute(
+        // Create collections first
+        for (const [name, id] of Object.entries(COLLECTIONS)) {
+            try {
+                await databases.createCollection(
+                    DATABASE_ID,
+                    id,
+                    name
+                );
+                console.log(`Created collection: ${name}`);
+            } catch (error: any) {
+                if (error.code !== 409) { // Skip if collection already exists
+                    throw error;
+                }
+                console.log(`Collection ${name} already exists`);
+            }
+        }
+
+        // Quiz Results Collection Attributes
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.QUIZ_RESULTS,
             'user_id',
+            'string',
             255,
             true
         );
-        await databases.createIntegerAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.QUIZ_RESULTS,
             'total_score',
+            'integer',
             true
         );
-        await databases.createJsonAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.QUIZ_RESULTS,
             'section_scores',
+            'string',
             true
         );
         console.log('Quiz Results schema created successfully');
 
-        // LCA Requests Collection
-        await databases.createStringAttribute(
+        // LCA Requests Collection Attributes
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.LCA_REQUESTS,
             'user_id',
+            'string',
             255,
             true
         );
-        await databases.createStringAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.LCA_REQUESTS,
             'business_name',
+            'string',
             255,
             true
         );
-        await databases.createStringAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.LCA_REQUESTS,
             'contact_email',
+            'string',
             255,
             true
         );
-        await databases.createStringAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.LCA_REQUESTS,
             'contact_name',
+            'string',
             255,
             true
         );
         console.log('LCA Requests schema created successfully');
 
-        // Profiles Collection
-        await databases.createStringAttribute(
+        // Profiles Collection Attributes
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.PROFILES,
             'user_id',
+            'string',
             255,
             true
         );
-        await databases.createBooleanAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.PROFILES,
             'is_admin',
+            'boolean',
             false
         );
-        await databases.createStringAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.PROFILES,
             'role',
+            'string',
             255,
             true,
             'user'
         );
         console.log('Profiles schema created successfully');
 
-        // Global Settings Collection
-        await databases.createStringAttribute(
+        // Global Settings Collection Attributes
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.GLOBAL_SETTINGS,
             'key',
+            'string',
             255,
             true
         );
-        await databases.createJsonAttribute(
+        await databases.createAttribute(
             DATABASE_ID,
             COLLECTIONS.GLOBAL_SETTINGS,
             'value',
+            'string',
             true
         );
         console.log('Global Settings schema created successfully');
@@ -118,8 +148,7 @@ export const setupCollectionSchemas = async () => {
     }
 };
 
-// Create a setup component to initialize the schemas
-export const SchemaSetup = () => {
+export const SchemaSetup: React.FC = () => {
     const handleSetupClick = async () => {
         try {
             await setupCollectionSchemas();
