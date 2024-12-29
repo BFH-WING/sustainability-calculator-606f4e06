@@ -21,36 +21,48 @@ export const setupCollectionSchemas = async () => {
 
     try {
         // Create collections
-        await databases.createCollection(
+        await databases.createDocument(
             DATABASE_ID,
             ID.unique(),
             COLLECTIONS.QUIZ_RESULTS,
-            ['role:all'],
-            ['role:all']
+            {
+                name: 'Quiz Results',
+                permissions: ['role:all'],
+                documentSecurity: false
+            }
         );
 
-        await databases.createCollection(
+        await databases.createDocument(
             DATABASE_ID,
             ID.unique(),
             COLLECTIONS.LCA_REQUESTS,
-            ['role:all'],
-            ['role:all']
+            {
+                name: 'LCA Requests',
+                permissions: ['role:all'],
+                documentSecurity: false
+            }
         );
 
-        await databases.createCollection(
+        await databases.createDocument(
             DATABASE_ID,
             ID.unique(),
             COLLECTIONS.PROFILES,
-            ['role:all'],
-            ['role:all']
+            {
+                name: 'User Profiles',
+                permissions: ['role:all'],
+                documentSecurity: false
+            }
         );
 
-        await databases.createCollection(
+        await databases.createDocument(
             DATABASE_ID,
             ID.unique(),
             COLLECTIONS.GLOBAL_SETTINGS,
-            ['role:all'],
-            ['role:all']
+            {
+                name: 'Global Settings',
+                permissions: ['role:all'],
+                documentSecurity: false
+            }
         );
 
         // Create attributes for each collection
@@ -76,8 +88,8 @@ export const setupCollectionSchemas = async () => {
                 id: COLLECTIONS.PROFILES,
                 attributes: [
                     { key: 'user_id', type: 'string', size: 255, required: true },
-                    { key: 'is_admin', type: 'boolean', required: false, defaultValue: false },
-                    { key: 'role', type: 'string', size: 255, required: true, defaultValue: 'user' }
+                    { key: 'is_admin', type: 'boolean', required: true },
+                    { key: 'role', type: 'string', size: 255, required: true }
                 ]
             },
             {
@@ -91,13 +103,16 @@ export const setupCollectionSchemas = async () => {
 
         for (const collection of collections) {
             for (const attr of collection.attributes) {
-                await databases.createAttribute(
+                await databases.createDocument(
                     DATABASE_ID,
                     collection.id,
-                    attr.key,
-                    attr.type,
-                    attr.required,
-                    attr.defaultValue
+                    ID.unique(),
+                    {
+                        attributeName: attr.key,
+                        type: attr.type,
+                        size: attr.size,
+                        required: attr.required
+                    }
                 );
             }
         }

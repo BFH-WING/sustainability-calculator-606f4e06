@@ -5,12 +5,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQuizData } from "@/hooks/useQuizData";
 import QuizLayout from "@/components/QuizLayout";
 import { SchemaSetup } from "@/utils/appwriteSchema";
+import QuizQuestion from "@/components/QuizQuestion";
 
 const Quiz = () => {
   const navigate = useNavigate();
   const session = useSession();
   const { data: sections, isLoading } = useQuizData();
   const [debugMode, setDebugMode] = useState(false);
+  const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [answers, setAnswers] = useState<{ [key: string]: number }>({});
+  const [questionErrors, setQuestionErrors] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     const fetchDebugMode = async () => {
@@ -31,6 +36,43 @@ const Quiz = () => {
     fetchDebugMode();
   }, []);
 
+  const handleQuestionSelect = (sectionIndex: number, questionIndex: number) => {
+    setCurrentSectionIndex(sectionIndex);
+    setCurrentQuestionIndex(questionIndex);
+  };
+
+  const canNavigateToSection = (sectionIndex: number) => {
+    // Allow navigation to current or previous sections
+    return sectionIndex <= currentSectionIndex;
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
+    } else if (currentSectionIndex > 0) {
+      setCurrentSectionIndex(currentSectionIndex - 1);
+      setCurrentQuestionIndex(sections![currentSectionIndex - 1].questions.length - 1);
+    }
+  };
+
+  const handleNext = () => {
+    const currentSection = sections![currentSectionIndex];
+    if (currentQuestionIndex < currentSection.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
+    } else if (currentSectionIndex < sections!.length - 1) {
+      setCurrentSectionIndex(currentSectionIndex + 1);
+      setCurrentQuestionIndex(0);
+    }
+  };
+
+  const handleAnswer = (value: number) => {
+    const currentQuestion = sections![currentSectionIndex].questions[currentQuestionIndex];
+    setAnswers(prev => ({
+      ...prev,
+      [currentQuestion.id]: value
+    }));
+  };
+
   if (isLoading || !sections) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex items-center justify-center">
@@ -39,14 +81,40 @@ const Quiz = () => {
     );
   }
 
+  const currentQuestion = sections[currentSectionIndex].questions[currentQuestionIndex];
+  const canGoNext = answers[currentQuestion.id] !== undefined;
+
   return (
     <>
+      <QuizLayout
+        sections={sections}
+        currentSectionIndex={currentSectionIndex}
+        currentQuestionIndex={currentQuestionIndex}
+        answers={answers}
+        onQuestionSelect={handleQuestionSelect}
+        canNavigateToSection={canNavigateToSection}
+        onPrevious={handlePrevious}
+        onNext={handleNext}
+        canGoNext={canGoNext}
+        questionErrors={questionErrors}
+      >
+        <QuizQuestion
+          question={currentQuestion}
+          onAnswer={handleAnswer}
+          selectedValue={answers[currentQuestion.id]}
+          onError={(hasError) => {
+            setQuestionErrors(prev => ({
+              ...prev,
+              [currentQuestion.id]: hasError
+            }));
+          }}
+        />
+      </QuizLayout>
       {debugMode && (
         <div className="fixed bottom-4 right-4 z-50">
           <SchemaSetup />
         </div>
       )}
-      <QuizLayout sections={sections} />
     </>
   );
 };
