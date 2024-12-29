@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
 import { useEffect, useState } from "react";
 import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
+import { Query } from "appwrite";
 
 interface QuestionListProps {
   sections: QuizSection[];
@@ -27,14 +28,14 @@ const QuestionList = ({
   useEffect(() => {
     const fetchDebugMode = async () => {
       try {
-        const response = await databases.getDocument(
+        const documents = await databases.listDocuments(
           DATABASE_ID,
           COLLECTIONS.GLOBAL_SETTINGS,
-          'debug_mode'
+          [Query.equal('key', 'debug_mode')]
         );
 
-        if (response) {
-          setDebugMode(response.value === 'true'); // Convert string to boolean
+        if (documents.documents.length > 0) {
+          setDebugMode(documents.documents[0].value === 'true');
         }
       } catch (error) {
         console.error("Error fetching debug mode:", error);

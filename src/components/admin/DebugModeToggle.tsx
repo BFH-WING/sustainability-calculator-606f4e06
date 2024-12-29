@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
 import { useState } from "react";
+import { Query } from "appwrite";
 
 interface DebugModeToggleProps {
   initialDebugMode: boolean;
@@ -16,15 +17,36 @@ const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggl
     try {
       const newValue = !debugMode;
       
-      await databases.updateDocument(
+      // First, try to get the existing document
+      const documents = await databases.listDocuments(
         DATABASE_ID,
         COLLECTIONS.GLOBAL_SETTINGS,
-        'debug_mode',
-        {
-          key: 'debug_mode',
-          value: newValue.toString() // Convert boolean to string for Appwrite
-        }
+        [Query.equal('key', 'debug_mode')]
       );
+
+      if (documents.documents.length > 0) {
+        // Update existing document
+        const docId = documents.documents[0].$id;
+        await databases.updateDocument(
+          DATABASE_ID,
+          COLLECTIONS.GLOBAL_SETTINGS,
+          docId,
+          {
+            value: newValue ? 'true' : 'false'
+          }
+        );
+      } else {
+        // Create new document if it doesn't exist
+        await databases.createDocument(
+          DATABASE_ID,
+          COLLECTIONS.GLOBAL_SETTINGS,
+          'unique()',
+          {
+            key: 'debug_mode',
+            value: newValue ? 'true' : 'false'
+          }
+        );
+      }
       
       setDebugMode(newValue);
       onDebugModeChange(newValue);
