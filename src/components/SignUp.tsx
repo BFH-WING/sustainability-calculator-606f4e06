@@ -19,13 +19,29 @@ const SignUp = () => {
     const password = formData.get('password') as string;
 
     try {
-      await account.create(ID.unique(), email, password);
+      console.log('Attempting to create account...');
+      const newAccount = await account.create(ID.unique(), email, password);
+      console.log('Account created successfully:', newAccount);
+
+      console.log('Creating email session...');
       await account.createEmailSession(email, password);
+      console.log('Email session created successfully');
+
       toast.success('Account created successfully!');
       navigate('/dashboard');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Signup failed:', error);
-      toast.error('Failed to create account. Please try again.');
+      let errorMessage = 'Failed to create account. Please try again.';
+      
+      if (error?.message) {
+        if (error.message.includes('already exists')) {
+          errorMessage = 'An account with this email already exists.';
+        } else if (error.message.includes('password')) {
+          errorMessage = 'Password must be at least 8 characters long.';
+        }
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
