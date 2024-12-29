@@ -4,7 +4,6 @@ import { useSession } from "@supabase/auth-helpers-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuizData } from "@/hooks/useQuizData";
 import QuizLayout from "@/components/QuizLayout";
-import { SchemaSetup } from "@/utils/appwriteSchema";
 import QuizQuestion from "@/components/QuizQuestion";
 
 const Quiz = () => {
@@ -42,7 +41,6 @@ const Quiz = () => {
   };
 
   const canNavigateToSection = (sectionIndex: number) => {
-    // Allow navigation to current or previous sections
     return sectionIndex <= currentSectionIndex;
   };
 
@@ -85,37 +83,30 @@ const Quiz = () => {
   const canGoNext = answers[currentQuestion.id] !== undefined;
 
   return (
-    <>
-      <QuizLayout
-        sections={sections}
-        currentSectionIndex={currentSectionIndex}
-        currentQuestionIndex={currentQuestionIndex}
-        answers={answers}
-        onQuestionSelect={handleQuestionSelect}
-        canNavigateToSection={canNavigateToSection}
-        onPrevious={handlePrevious}
-        onNext={handleNext}
-        canGoNext={canGoNext}
-        questionErrors={questionErrors}
-      >
-        <QuizQuestion
-          question={currentQuestion}
-          onAnswer={handleAnswer}
-          selectedValue={answers[currentQuestion.id]}
-          onError={(hasError) => {
-            setQuestionErrors(prev => ({
-              ...prev,
-              [currentQuestion.id]: hasError
-            }));
-          }}
-        />
-      </QuizLayout>
-      {debugMode && (
-        <div className="fixed bottom-4 right-4 z-50">
-          <SchemaSetup />
-        </div>
-      )}
-    </>
+    <QuizLayout
+      sections={sections}
+      currentSectionIndex={currentSectionIndex}
+      currentQuestionIndex={currentQuestionIndex}
+      answers={answers}
+      onQuestionSelect={handleQuestionSelect}
+      canNavigateToSection={canNavigateToSection}
+      onPrevious={handlePrevious}
+      onNext={handleNext}
+      canGoNext={canGoNext}
+      questionErrors={questionErrors}
+    >
+      <QuizQuestion
+        question={currentQuestion}
+        onAnswer={handleAnswer}
+        selectedValue={answers[currentQuestion.id]}
+        onError={(hasError) => {
+          setQuestionErrors(prev => ({
+            ...prev,
+            [currentQuestion.id]: hasError
+          }));
+        }}
+      />
+    </QuizLayout>
   );
 };
 
