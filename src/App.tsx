@@ -1,27 +1,32 @@
-import { useEffect } from 'react';
-import { initializeAppwrite } from './integrations/appwrite/database';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
-import Auth from './components/Auth';
-import { Toaster } from 'sonner';
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Quiz from "./pages/Quiz";
+import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import Auth from "./components/Auth";
+import SignUp from "./components/SignUp";
 
-const App = () => {
-  useEffect(() => {
-    initializeAppwrite();
-  }, []);
+const queryClient = new QueryClient();
 
-  return (
-    <>
-      <Router>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Quiz />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/signin" element={<Auth />} />
-          <Route path="*" element={<Dashboard />} />
+          <Route path="/signup" element={<SignUp />} />
         </Routes>
-      </Router>
-      <Toaster position="top-center" />
-    </>
-  );
-};
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
 
 export default App;
