@@ -22,6 +22,7 @@ const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggl
         'global_settings',
         'debug_mode',
         {
+          key: 'debug_mode',
           value: newValue
         }
       );
