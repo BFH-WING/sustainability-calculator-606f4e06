@@ -1,38 +1,40 @@
-import { Link } from "react-router-dom";
-import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { CircleFadingArrowUp, UserCog, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { account } from "@/integrations/appwrite/client";
 
 const TopNav = () => {
-  const session = useSession();
-  const supabaseClient = useSupabaseClient();
+  const navigate = useNavigate();
+  const [session, setSession] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("role")
-          .eq("id", session.user.id)
-          .single();
-
-        setIsAdmin(profile?.role === "admin");
+    const checkSession = async () => {
+      try {
+        const currentSession = await account.getSession('current');
+        setSession(currentSession);
+        // You would need to implement admin check logic here
+        // For now, we'll set it to false
+        setIsAdmin(false);
+      } catch (error) {
+        console.log('No active session');
+        setSession(null);
       }
     };
 
-    checkAdminStatus();
-  }, [session]);
+    checkSession();
+  }, []);
 
   const handleSignOut = async () => {
-    const { error } = await supabaseClient.auth.signOut();
-    if (error) {
-      toast.error('Error signing out');
-    } else {
+    try {
+      await account.deleteSession('current');
+      setSession(null);
       toast.success('Signed out successfully');
+      navigate('/');
+    } catch (error) {
+      toast.error('Error signing out');
     }
   };
 

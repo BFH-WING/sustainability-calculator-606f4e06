@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { account } from '@/integrations/appwrite/client';
 import TopNav from "./TopNav";
 import Footer from "./Footer";
+import { toast } from "sonner";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -34,9 +35,11 @@ const Auth = () => {
 
     try {
       await account.createEmailSession(email, password);
+      toast.success('Signed in successfully!');
       navigate('/dashboard');
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error('Failed to sign in. Please check your credentials.');
     }
   };
 
