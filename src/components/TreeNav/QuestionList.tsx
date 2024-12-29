@@ -28,17 +28,26 @@ const QuestionList = ({
   useEffect(() => {
     const fetchDebugMode = async () => {
       try {
+        console.log('Fetching debug mode setting...');
         const documents = await databases.listDocuments(
           DATABASE_ID,
           COLLECTIONS.GLOBAL_SETTINGS,
           [Query.equal('key', 'debug_mode')]
         );
+        console.log('Debug mode documents:', documents);
 
         if (documents.documents.length > 0) {
-          setDebugMode(documents.documents[0].value === 'true');
+          const value = documents.documents[0].value === 'true';
+          console.log('Setting debug mode to:', value);
+          setDebugMode(value);
+        } else {
+          console.log('No debug mode setting found');
         }
       } catch (error) {
         console.error("Error fetching debug mode:", error);
+        if ((error as any)?.code === 404) {
+          console.log('Collection not found, defaulting to false');
+        }
       }
     };
 
