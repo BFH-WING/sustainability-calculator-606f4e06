@@ -34,7 +34,7 @@ const QuestionList = ({
         );
 
         if (response) {
-          setDebugMode(response.value === true);
+          setDebugMode(response.value === 'true'); // Convert string to boolean
         }
       } catch (error) {
         console.error("Error fetching debug mode:", error);

@@ -22,7 +22,7 @@ const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggl
         'debug_mode',
         {
           key: 'debug_mode',
-          value: newValue
+          value: newValue.toString() // Convert boolean to string for Appwrite
         }
       );
       
