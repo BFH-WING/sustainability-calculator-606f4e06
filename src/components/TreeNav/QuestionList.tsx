@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
 import { useEffect, useState } from "react";
-import { databases } from "@/integrations/appwrite/client";
-import { DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
+import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
 import { Query } from "appwrite";
 
 interface QuestionListProps {

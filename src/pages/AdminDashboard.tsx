@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { databases } from "@/integrations/appwrite/client";
+import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
 import TopNav from "@/components/TopNav";
 import { useToast } from "@/components/ui/use-toast";
 import { Query } from "appwrite";
@@ -49,8 +49,8 @@ const AdminDashboard = () => {
   const fetchRequests = async () => {
     try {
       const response = await databases.listDocuments(
-        'sustainability_calculator',
-        'lca_requests'
+        DATABASE_ID,
+        COLLECTIONS.LCA_REQUESTS
       );
       setRequests(response.documents as unknown as LCARequest[]);
     } catch (error) {
@@ -68,8 +68,8 @@ const AdminDashboard = () => {
   const fetchDebugMode = async () => {
     try {
       const response = await databases.listDocuments(
-        'sustainability_calculator',
-        'global_settings',
+        DATABASE_ID,
+        COLLECTIONS.GLOBAL_SETTINGS,
         [Query.equal('key', 'debug_mode')]
       );
 

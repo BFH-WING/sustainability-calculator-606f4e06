@@ -1,9 +1,9 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { databases } from "@/integrations/appwrite/client";
+import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
 import { useState } from "react";
-import { ID } from "appwrite";
+import { ID, Query } from "appwrite";
 
 interface DebugModeToggleProps {
   initialDebugMode: boolean;
@@ -18,16 +18,35 @@ const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggl
     try {
       const newValue = !debugMode;
       
-      // Update or create debug_mode setting
-      await databases.createDocument(
-        'sustainability_calculator',
-        'global_settings',
-        ID.unique(),
-        {
-          key: 'debug_mode',
-          value: newValue
-        }
+      // First try to find existing debug_mode setting
+      const response = await databases.listDocuments(
+        DATABASE_ID,
+        COLLECTIONS.GLOBAL_SETTINGS,
+        [Query.equal('key', 'debug_mode')]
       );
+
+      if (response.documents.length > 0) {
+        // Update existing setting
+        await databases.updateDocument(
+          DATABASE_ID,
+          COLLECTIONS.GLOBAL_SETTINGS,
+          response.documents[0].$id,
+          {
+            value: newValue
+          }
+        );
+      } else {
+        // Create new setting
+        await databases.createDocument(
+          DATABASE_ID,
+          COLLECTIONS.GLOBAL_SETTINGS,
+          ID.unique(),
+          {
+            key: 'debug_mode',
+            value: newValue
+          }
+        );
+      }
       
       setDebugMode(newValue);
       onDebugModeChange(newValue);
