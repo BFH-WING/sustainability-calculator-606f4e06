@@ -1,21 +1,35 @@
-import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
-import { ThemeSupa } from "@supabase/auth-ui-shared";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { account } from '@/integrations/appwrite/client';
+import { ID } from 'appwrite';
 import TopNav from "./TopNav";
 import Footer from "./Footer";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSession } from "@supabase/auth-helpers-react";
+import { toast } from "sonner";
 
 const SignUp = () => {
-  const session = useSession();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (session) {
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      await account.create(ID.unique(), email, password);
+      await account.createEmailSession(email, password);
+      toast.success('Account created successfully!');
       navigate('/dashboard');
+    } catch (error) {
+      console.error('Signup failed:', error);
+      toast.error('Failed to create account. Please try again.');
+    } finally {
+      setLoading(false);
     }
-  }, [session, navigate]);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#F2FCE2] to-[#F1F0FB] flex flex-col">
@@ -28,28 +42,43 @@ const SignUp = () => {
           <p className="text-gray-600 text-center mb-6">
             Sign up to save your assessment results and track your progress over time.
           </p>
-          <SupabaseAuth
-            supabaseClient={supabase}
-            appearance={{
-              theme: ThemeSupa,
-              variables: {
-                default: {
-                  colors: {
-                    brand: '#4CAF50',
-                    brandAccent: '#388E3C',
-                  },
-                },
-              },
-            }}
-            view="sign_up"
-            providers={[]}
-            redirectTo={`${window.location.origin}/dashboard`}
-          />
+          <form onSubmit={handleSignUp} className="space-y-4">
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                required
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-primary focus:ring-eco-primary"
+              />
+            </div>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                minLength={8}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-eco-primary focus:ring-eco-primary"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-eco-primary text-white rounded-md py-2 px-4 hover:bg-eco-dark transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Creating Account...' : 'Sign Up'}
+            </button>
+          </form>
         </div>
       </div>
-      <div className="relative z-10">
-        <Footer />
-      </div>
+      <Footer />
     </div>
   );
 };
