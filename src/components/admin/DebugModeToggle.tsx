@@ -1,7 +1,7 @@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
 import { useState } from "react";
 
 interface DebugModeToggleProps {
@@ -16,16 +16,15 @@ const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggl
     try {
       const newValue = !debugMode;
       
-      const { error } = await supabase
-        .from('global_settings')
-        .upsert({
+      await databases.updateDocument(
+        DATABASE_ID,
+        COLLECTIONS.GLOBAL_SETTINGS,
+        'debug_mode',
+        {
           key: 'debug_mode',
           value: newValue
-        }, {
-          onConflict: 'key'
-        });
-
-      if (error) throw error;
+        }
+      );
       
       setDebugMode(newValue);
       onDebugModeChange(newValue);
