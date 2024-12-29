@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { CircleFadingArrowUp, UserCog, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
 import { account } from "@/integrations/appwrite/client";
+import { checkIsAdmin } from "@/utils/adminUtils";
 
 const TopNav = () => {
   const navigate = useNavigate();
@@ -16,12 +17,15 @@ const TopNav = () => {
         const currentSession = await account.getSession('current');
         console.log('Session check:', currentSession ? 'Active session found' : 'No active session');
         setSession(currentSession);
-        // You would need to implement admin check logic here
-        // For now, we'll set it to false
-        setIsAdmin(false);
+        
+        if (currentSession) {
+          const adminStatus = await checkIsAdmin();
+          setIsAdmin(adminStatus);
+        }
       } catch (error) {
         console.log('No active session');
         setSession(null);
+        setIsAdmin(false);
       }
     };
 
@@ -32,6 +36,7 @@ const TopNav = () => {
     try {
       await account.deleteSession('current');
       setSession(null);
+      setIsAdmin(false);
       toast.success('Signed out successfully');
       navigate('/');
     } catch (error) {
