@@ -18,9 +18,9 @@ const DebugModeToggle = ({ initialDebugMode, onDebugModeChange }: DebugModeToggl
       
       // Update the debug_mode document
       await databases.updateDocument(
-        'sustainability_calculator',
-        'global_settings',
-        'debug_mode',
+        'sustainability_calculator',  // This is the correct database ID
+        'global_settings',           // Collection ID
+        'debug_mode',                // Document ID
         {
           key: 'debug_mode',
           value: newValue

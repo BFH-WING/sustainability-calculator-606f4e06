@@ -28,9 +28,9 @@ const QuestionList = ({
     const fetchDebugMode = async () => {
       try {
         const response = await databases.getDocument(
-          'sustainability_calculator',
-          'global_settings',
-          'debug_mode'
+          'sustainability_calculator',  // This is the correct database ID
+          'global_settings',           // Collection ID
+          'debug_mode'                 // Document ID
         );
 
         if (response) {
