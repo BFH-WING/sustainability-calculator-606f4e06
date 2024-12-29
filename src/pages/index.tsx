@@ -6,9 +6,9 @@ export default function Home() {
   const handleTestInsert = async () => {
     try {
       await insertTestQuizResult();
-      toast.success("Test quiz result inserted successfully!");
+      toast.success("Test quiz result inserted successfully to Appwrite!");
     } catch (error) {
-      toast.error("Failed to insert test result. Make sure you're logged in!");
+      toast.error("Failed to insert test result to Appwrite. Make sure you're logged in!");
     }
   };
 
@@ -19,7 +19,7 @@ export default function Home() {
         onClick={handleTestInsert}
         className="bg-green-600 hover:bg-green-700"
       >
-        Insert Test Quiz Result
+        Insert Test Quiz Result (Appwrite)
       </Button>
     </div>
   );
