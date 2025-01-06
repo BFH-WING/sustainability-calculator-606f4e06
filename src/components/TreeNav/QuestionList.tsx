@@ -8,6 +8,8 @@ interface QuestionListProps {
   currentQuestionIndex: number;
   onQuestionSelect: (sectionIndex: number, questionIndex: number) => void;
   answers: { [key: string]: number };
+  canNavigateToSection: (sectionIndex: number) => boolean;
+  questionErrors?: { [key: string]: boolean };
 }
 
 const QuestionList = ({
@@ -16,6 +18,8 @@ const QuestionList = ({
   currentQuestionIndex,
   onQuestionSelect,
   answers,
+  canNavigateToSection,
+  questionErrors,
 }: QuestionListProps) => {
   const [debugMode, setDebugMode] = useState(false);
 
@@ -61,10 +65,13 @@ const QuestionList = ({
               <button
                 key={question.id}
                 onClick={() => onQuestionSelect(sIndex, qIndex)}
+                disabled={!canNavigateToSection(sIndex)}
                 className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center space-x-2
                   ${currentSectionIndex === sIndex && currentQuestionIndex === qIndex
                     ? "bg-eco-primary text-white"
-                    : "hover:bg-eco-light"
+                    : canNavigateToSection(sIndex)
+                      ? "hover:bg-eco-light"
+                      : "opacity-50 cursor-not-allowed"
                   }`}
               >
                 <span
