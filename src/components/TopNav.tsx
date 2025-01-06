@@ -1,47 +1,38 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useSession, useSupabaseClient } from "@supabase/auth-helpers-react";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 import { CircleFadingArrowUp, UserCog, LayoutDashboard } from "lucide-react";
 import { useEffect, useState } from "react";
-import { account } from "@/integrations/appwrite/client";
-import { checkIsAdmin } from "@/utils/adminUtils";
+import { supabase } from "@/integrations/supabase/client";
 
 const TopNav = () => {
-  const navigate = useNavigate();
-  const [session, setSession] = useState<any>(null);
+  const session = useSession();
+  const supabaseClient = useSupabaseClient();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const currentSession = await account.getSession('current');
-        console.log('Session check:', currentSession ? 'Active session found' : 'No active session');
-        setSession(currentSession);
-        
-        if (currentSession) {
-          const adminStatus = await checkIsAdmin();
-          setIsAdmin(adminStatus);
-        }
-      } catch (error) {
-        console.log('No active session');
-        setSession(null);
-        setIsAdmin(false);
+    const checkAdminStatus = async () => {
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", session.user.id)
+          .single();
+
+        setIsAdmin(profile?.role === "admin");
       }
     };
 
-    checkSession();
-  }, []);
+    checkAdminStatus();
+  }, [session]);
 
   const handleSignOut = async () => {
-    try {
-      await account.deleteSession('current');
-      setSession(null);
-      setIsAdmin(false);
-      toast.success('Signed out successfully');
-      navigate('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
+    const { error } = await supabaseClient.auth.signOut();
+    if (error) {
       toast.error('Error signing out');
+    } else {
+      toast.success('Signed out successfully');
     }
   };
 
