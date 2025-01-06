@@ -1,26 +1,21 @@
-import { cn } from "@/lib/utils";
 import { QuizSection } from "@/types/quiz";
 import { useEffect, useState } from "react";
-import { databases, DATABASE_ID, COLLECTIONS } from "@/integrations/appwrite/client";
+import { supabase } from "@/integrations/supabase/client";
 
 interface QuestionListProps {
   sections: QuizSection[];
   currentSectionIndex: number;
   currentQuestionIndex: number;
-  answers: { [key: string]: number };
   onQuestionSelect: (sectionIndex: number, questionIndex: number) => void;
-  canNavigateToSection: (sectionIndex: number) => boolean;
-  questionErrors?: { [key: string]: boolean };
+  answers: { [key: string]: number };
 }
 
 const QuestionList = ({
   sections,
   currentSectionIndex,
   currentQuestionIndex,
-  answers,
   onQuestionSelect,
-  canNavigateToSection,
-  questionErrors,
+  answers,
 }: QuestionListProps) => {
   const [debugMode, setDebugMode] = useState(false);
 
@@ -28,68 +23,68 @@ const QuestionList = ({
     const fetchDebugMode = async () => {
       try {
         console.log('Fetching debug mode setting...');
-        const document = await databases.getDocument(
-          DATABASE_ID,
-          COLLECTIONS.GLOBAL_SETTINGS,
-          'debug-mode-setting'
-        );
-        console.log('Debug mode document:', document);
-        const value = document.value === 'true';
+        const { data, error } = await supabase
+          .from('global_settings')
+          .select('value')
+          .eq('key', 'debug_mode')
+          .single();
+
+        if (error) {
+          console.error('Error fetching debug mode:', error);
+          return;
+        }
+
+        console.log('Debug mode setting:', data);
+        const value = data?.value === true;
         console.log('Setting debug mode to:', value);
         setDebugMode(value);
       } catch (error) {
         console.error("Error fetching debug mode:", error);
-        if ((error as any)?.code === 404) {
-          console.log('Document not found, defaulting to false');
-        }
       }
     };
 
     fetchDebugMode();
   }, []);
 
-  return (
-    <div className="space-y-6">
-      {sections.map((section, sectionIndex) => (
-        <div key={section.id} className="space-y-2">
-          <h3 className="font-medium text-gray-900">{section.title}</h3>
-          <ul className="space-y-1 pl-4">
-            {section.questions.map((question, qIndex) => {
-              const isAnswered = answers[question.id] !== undefined;
-              const isCurrent = currentSectionIndex === sectionIndex && currentQuestionIndex === qIndex;
-              const hasError = questionErrors?.[question.id];
-              const score = answers[question.id];
-              const canNavigate = canNavigateToSection(sectionIndex);
+  // Helper function to check if a question is answered
+  const isQuestionAnswered = (questionId: string) => answers[questionId] !== undefined;
 
-              return (
-                <li key={question.id} className="text-sm">
-                  <button
-                    onClick={() => canNavigate && onQuestionSelect(sectionIndex, qIndex)}
-                    className={cn(
-                      "text-left w-full px-2 py-1 rounded",
-                      isCurrent && "bg-eco-light text-eco-dark font-medium",
-                      !isCurrent && canNavigate && "hover:bg-gray-50",
-                      hasError && "text-red-500",
-                      !canNavigate && "cursor-not-allowed opacity-50"
-                    )}
-                    disabled={!canNavigate}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="flex items-center min-w-0 flex-1">
-                        <span className="mr-2 flex-shrink-0">{isAnswered ? "✓" : "○"}</span>
-                        <span className="truncate max-w-[calc(100%-80px)]">{question.text}</span>
-                      </span>
-                      {isAnswered && debugMode && (
-                        <span className="text-xs font-medium bg-gray-100 px-2 py-0.5 rounded whitespace-nowrap flex-shrink-0">
-                          {score.toFixed(1)}% (w: {question.weight})
-                        </span>
-                      )}
-                    </div>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+  return (
+    <div className="space-y-4">
+      {sections.map((section, sIndex) => (
+        <div key={section.id} className="space-y-2">
+          <h3 className="font-medium text-sm text-gray-700">
+            {section.title}
+          </h3>
+          <div className="space-y-1">
+            {section.questions.map((question, qIndex) => (
+              <button
+                key={question.id}
+                onClick={() => onQuestionSelect(sIndex, qIndex)}
+                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors flex items-center space-x-2
+                  ${currentSectionIndex === sIndex && currentQuestionIndex === qIndex
+                    ? "bg-eco-primary text-white"
+                    : "hover:bg-eco-light"
+                  }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                    isQuestionAnswered(question.id)
+                      ? "bg-eco-secondary"
+                      : "bg-gray-300"
+                  }`}
+                />
+                <span className="flex-1">
+                  {debugMode ? `[${question.id}] ` : ""}Question {qIndex + 1}
+                  {question.subcategory && (
+                    <span className="text-xs opacity-75 ml-1">
+                      ({question.subcategory})
+                    </span>
+                  )}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       ))}
     </div>
